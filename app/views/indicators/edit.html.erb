@@ -1,0 +1,8 @@
+<h2><%=l(:label_kpi_indicators_edit)%></h2>
+
+
+<%= labelled_form_for @indicator do |f| %>
+<%= render :partial => 'indicators/form', :locals => { :f => f } %>
+<% end %>
+
+<%= render :partial => 'kpi/sidebar' %>

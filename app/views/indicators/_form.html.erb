@@ -1,0 +1,60 @@
+<%= error_messages_for 'indicator' %>
+
+<div class="h">
+<div class="splitcontentleft">
+<div class="box tabular">
+
+<p><%= f.text_field :name, :required => true, :label => l(:kpi_indicator_name_label), :style=>'width: 98%;' %></p>
+<p><%= f.select :kpi_category_id, (@kpi_categories.collect {|p| [p.name, p.id]}), :label => l(:kpi_category_label), :required => true %></p>
+<p><%= f.select :kpi_unit_id, (@kpi_units.collect {|p| [p.name, p.id]}), :label => l(:kpi_indicator_unit_label), :required => true %></p>
+<p>   <%= f.text_area :description,
+                   :cols => 60,
+                   :rows => (@indicator.description.blank? ? 10 : [[10, @indicator.description.length / 50].max, 70].min),
+                   :class => 'wiki-edit',
+                   :no_label => true %>
+</p>
+</div>
+</div>
+
+<div class="splitcontentright">
+<div class="box tabular">
+<p><%= f.select :interpretation, ([[l("kpi_interpretation_label_#{Indicator::INTERPRETATION_FACT}"), Indicator::INTERPRETATION_FACT],
+								  [l("kpi_interpretation_label_#{Indicator::INTERPRETATION_MATRIX}"), Indicator::INTERPRETATION_MATRIX]]),
+								  :label => l(:kpi_interpretation_label), :required => true %></p>
+
+
+<% if @indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s %>
+	<% table_style='style="display:none;"'.html_safe %>
+<% else %>
+	<% table_style='' %>
+<% end %>
+
+<table class="list" id="kpi_matrix" <%= table_style %>>
+<tr>
+<th><%= l(:value_of_fact) %></th>
+<th><%= l(:percent) %></th>
+<th></th>
+</tr>
+
+<% if !@indicator.matrix['value_of_fact'].nil? %>
+	<% style='style="display:none;"'  %>
+	<% style='' if @indicator.matrix['value_of_fact'].size>1 %>
+	<% @indicator.matrix['value_of_fact'].each do |v| %>
+		<%= get_matrix_row(v, @indicator.matrix['percent'][@indicator.matrix['value_of_fact'].index(v)], style) %>
+	<% end %>
+<% else %>
+	<%= get_matrix_row %>
+<% end %>
+
+
+
+</table>
+
+</div>
+</div>
+
+</div>
+
+<div>
+<%= submit_tag l(@indicator.new_record? ? :button_create : :button_save) %>
+</div>

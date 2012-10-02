@@ -1,0 +1,35 @@
+<div class="contextual">
+<%= link_to l(:label_kpi_indicators_new), new_indicator_path, :class => 'icon icon-add' %>
+</div>
+
+<h2><%=l(:label_kpi_indicators)%></h2>
+
+<table class="list indicators">
+<thead>
+	<tr>
+	<th><%= l(:label_kpi_indicators) %></th>
+	<th><%= l(:kpi_interpretation_label) %></th>
+	<th></th>
+	</tr>
+</thead>
+
+<tbody>
+<% @indicators.each do |indicator| %>
+	<tr class="<%= indicator.kpi_category.color %>">
+		<td><%= link_to h(indicator.name), edit_indicator_path(indicator) %></td>
+		<td><%= l("kpi_interpretation_label_#{indicator.interpretation}") %></td>
+		<td class="buttons">
+			<%= link_to(l(:button_copy), { :controller => 'indicators', :action => 'new', :copy_from => indicator }, :class => 'icon icon-copy') %>
+
+		    <%= link_to(l(:button_delete), indicator_path(indicator),
+		                                   :method => :delete,
+		                                   :confirm => l(:text_are_you_sure),
+		                                   :class => 'icon icon-del') %>
+		</td>
+	</tr>
+<% end %>
+</tbody>
+
+</table>
+
+<%= render :partial => 'kpi/sidebar' %>

@@ -1,0 +1,17 @@
+# English strings go here for Rails i18n
+ru:
+  label_kpi_indicators: "Показатели результативности"
+  label_kpi_patterns: "Шаблоны расчета"
+  label_kpi_indicators_new: "Добавить показатель"
+  label_kpi_patterns_new: "Добавить шаблон"
+  kpi_indicator_name_label: "Название показателя"
+  kpi_indicator_unit_label: "Единица измерения"
+  kpi_category_label: "Категория"
+  kpi_interpretation_label: "Интерпритация"
+  kpi_interpretation_label_0: "Фактическая"
+  kpi_interpretation_label_1: "Матрица интерпритации"
+  percent: "Процент"
+  value_of_fact: "Факт"
+  label_matrix_row_add: "Добавить"
+  label_matrix_row_del: "Удалить"
+  label_kpi_indicators_edit: "Редактировать показать"

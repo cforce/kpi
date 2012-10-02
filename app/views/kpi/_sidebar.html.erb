@@ -1,0 +1,15 @@
+<% content_for :sidebar do %>
+<ul>
+	<li>
+	<%= link_to "<span>#{l(:label_kpi_indicators)}</span>".html_safe, {:controller => "indicators", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='indicators'}" %>
+	</li>
+	<li>
+	<%= link_to "<span>#{l(:label_kpi_patterns)}</span>".html_safe, {:controller => "kpi_patterns", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_patterns'}" %>
+	</li>
+</ul>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag 'kpi.js', :plugin => 'kpi' %>
+  <%= stylesheet_link_tag 'kpi.css', :plugin => 'kpi' %>
+<% end %>

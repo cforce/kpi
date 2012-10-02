@@ -1,0 +1,28 @@
+#kpi_matrix
+	{
+	width: auto;
+	margin: 10px 0px 0px 182px;
+	}
+
+#kpi_matrix input
+	{
+	width: 60px;
+	}
+
+table.indicators tr.red td
+	{
+	background-color: #FCF7ED; 	
+	}
+table.indicators tr.green td
+	{
+	background-color: #f1fbec; 	
+	}
+table.indicators tr.blue td
+	{
+	background-color: #e6f1f9;
+	}
+
+table.indicators td
+	{
+	padding: 4px;
+	}
