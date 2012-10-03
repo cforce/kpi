@@ -1,0 +1,18 @@
+<%= error_messages_for 'pattern' %>
+
+<div class="h">
+<div class="box tabular">
+
+<p><%= f.text_field :name, :required => true, :label => l(:kpi_pattern_name_label), :style=>'width: 80%;' %></p>
+<p>   <%= f.text_area :description,
+                   :cols => 60,
+                   :rows => (@pattern.description.blank? ? 10 : [[10, @pattern.description.length / 50].max, 70].min),
+                   :class => 'wiki-edit',
+                   :label => l(:kpi_description_label)%>
+</p>
+</div>
+</div>
+
+<div>
+<%= submit_tag l(@pattern.new_record? ? :button_create : :button_save) %>
+</div>

@@ -1,0 +1,57 @@
+<div class="splitcontentleft">
+<% if @pattern.users.any? %>
+  <table class="list users">
+    <thead><tr>
+      <th><%= l(:label_user) %></th>
+      <th style="width:15%"></th>
+    </tr></thead>
+    <tbody>
+    <% @pattern.users.sort.each do |user| %>
+      <tr id="user-<%= user.id %>" class="<%= cycle 'odd', 'even' %>">
+        <td class="user"><%= link_to_user user %></td>
+        <td class="buttons">
+
+            <%= link_to_remote(
+                  l(:button_delete),
+                  { :url => kpi_pattern_user_path(@pattern, :user_id => user),
+                    :method => :delete },
+                  :class => 'icon icon-del'
+                ) %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+</div>
+
+<div class="splitcontentright">
+<% users = User.active.not_in_kpi_pattern(@pattern).all(:limit => 100) %>
+<% if users.any? %>
+  <%= form_for(@pattern, :remote => true, :url => kpi_patters_users_path(@pattern),
+               :html => {:method => :post}) do |f| %>
+    <fieldset><legend><%=l(:label_user_new)%></legend>
+    <p><%= label_tag "user_search", l(:label_user_search) %><%= text_field_tag 'user_search', nil %></p>
+
+    <%= observe_field(:user_search,
+                 :frequency => 0.5,
+                 :update => :users,
+                 :url => autocomplete_for_user_kpi_pattern_path(@pattern),
+                 :method => :get,
+                 :before => '$("user_search").addClassName("ajax-loading")',
+                 :complete => '$("user_search").removeClassName("ajax-loading")',
+                 :with => 'q')
+                  %>
+
+    <div id="users">
+      <%= principals_check_box_tags 'user_ids[]', users %>
+    </div>
+
+    <p><%= submit_tag l(:button_add) %></p>
+    </fieldset>
+  <% end %>
+<% end %>
+
+</div>

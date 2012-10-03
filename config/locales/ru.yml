@@ -15,3 +15,7 @@ ru:
   label_matrix_row_add: "Добавить"
   label_matrix_row_del: "Удалить"
   label_kpi_indicators_edit: "Редактировать показать"
+  kpi_pattern_name_label: "Название шаблона"
+  kpi_description_label: "Описание"
+  label_kpi_patterns_edit: "Редактировать шаблон расчета"
+  label_assigned_list: "На кого распространяется"
