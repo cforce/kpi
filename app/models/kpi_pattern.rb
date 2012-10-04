@@ -4,4 +4,6 @@ class KpiPattern < ActiveRecord::Base
 
 	has_many :kpi_pattern_users
 	has_many :users, :through => :kpi_pattern_users
+	has_many :kpi_pattern_indicators
+	has_many :indicators, :through => :kpi_pattern_indicators
 end

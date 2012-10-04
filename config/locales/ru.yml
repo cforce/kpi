@@ -19,3 +19,7 @@ ru:
   kpi_description_label: "Описание"
   label_kpi_patterns_edit: "Редактировать шаблон расчета"
   label_assigned_list: "На кого распространяется"
+  label_indicator_search: "Найти показатель"
+  label_indicator_new: "Прикрепить новый показатель"
+  indicator_label: "Прикрепить новый показатель"
+  weight_label: "Вес"

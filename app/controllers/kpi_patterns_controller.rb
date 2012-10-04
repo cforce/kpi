@@ -45,11 +45,11 @@ class KpiPatternsController < ApplicationController
     end
 
 	def destroy
-	    @tracker = KpiPattern.find(params[:id])
+	    @pattern = KpiPattern.find(params[:id])
 	    #unless @tracker.issues.empty?
 	    #  flash[:error] = l(:error_can_not_delete_tracker)
 	    #else
-	      @tracker.destroy
+	      @pattern.destroy
 	    #end
 	    redirect_to :action => 'index'
 	end    
@@ -78,16 +78,47 @@ class KpiPatternsController < ApplicationController
 	    end
 	end
 
+	def add_indicators
+	    @pattern = KpiPattern.find(params[:id])
+	    indicators = Indicator.find_all_by_id(params[:indicator_ids])
+	    @pattern.indicators << indicators if request.post?
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
+	          indicators.each {|indicator| page.visual_effect(:highlight, "indicator-#{indicator.id}") }
+	        }
+	      }
+	    end
+	end
+
+	def remove_indicator
+	    @pattern = KpiPattern.find(params[:id])
+	    @pattern.indicators.delete(Indicator.find(params[:indicator_id])) if request.delete?
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
+	      format.js { render(:update) {|page| page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'} }
+	    end
+	end
+
+
 	def autocomplete_for_user
 	    @pattern = KpiPattern.find(params[:id])
 	    @users = User.active.not_in_kpi_pattern(@pattern).like(params[:q]).all(:limit => 100)
 	    render 'groups/autocomplete_for_user', :layout => false
 	end
 
+	def autocomplete_for_indicator
+	    @pattern = KpiPattern.find(params[:id])
+	    @indicators = Indicator.not_in_kpi_pattern(@pattern).where("name like ?", "%#{params[:q]}%").limit(1)
+	    render 'kpi_patterns/autocomplete_for_indicator', :layout => false
+	end	
+
 	private
 
 	def find_patterns
-	 	@indicators=KpiPattern.order(:name)
+	 	@patterns=KpiPattern.order(:name)
 	end
 
 end

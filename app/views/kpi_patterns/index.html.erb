@@ -4,4 +4,30 @@
 
 <h2><%=l(:label_kpi_patterns)%></h2>
 
+<table class="list indicators">
+<thead>
+	<tr>
+	<th><%= l(:label_kpi_indicators) %></th>
+	<th></th>
+	</tr>
+</thead>
+
+<tbody>
+<% @patterns.each do |pattern| %>
+	<tr class="">
+		<td><%= link_to h(pattern.name), edit_kpi_pattern_path(pattern) %></td>
+		<td class="buttons">
+			<%= link_to(l(:button_copy), { :controller => 'kpi_patterns', :action => 'new', :copy_from => pattern }, :class => 'icon icon-copy') %>
+
+		    <%= link_to(l(:button_delete), kpi_pattern_path(pattern),
+		                                   :method => :delete,
+		                                   :confirm => l(:text_are_you_sure),
+		                                   :class => 'icon icon-del') %>
+		</td>
+	</tr>
+<% end %>
+</tbody>
+
+</table>
+
 <%= render :partial => 'kpi/sidebar' %>

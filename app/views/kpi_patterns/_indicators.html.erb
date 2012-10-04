@@ -1,0 +1,66 @@
+<div class="splitcontentleft">
+<% if @pattern.indicators.any? %>
+
+  <%= form_for(@pattern, :remote => true, :url => kpi_patters_indicators_path(@pattern),
+               :html => {:method => :post}) do |f| %>
+  <table class="list indicators">
+    <thead><tr>
+      <th><%= l(:indicator_label) %></th>
+      <th style="width:5%"><%= l(:weight_label) %></th>
+      <th style="width:5%"></th>
+    </tr></thead>
+    <tbody>
+    <% @pattern.kpi_pattern_indicators.sort_by{|e| e.indicator.name}.each do |pattern_indicator| %>
+      <tr id="indicator-<%= pattern_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= pattern_indicator.indicator.kpi_category.color %>">
+        <td class="indicator"><%= link_to h(pattern_indicator.indicator.name), edit_indicator_path(pattern_indicator.indicator) %></td>
+        <td class="weight"><input type="text" name="percent[pattern_indicator.id]" value="<%= h pattern_indicator.percent %>" /></td>
+        <td class="buttons">
+
+            <%= link_to_remote(
+                  l(:button_delete),
+                  { :url => kpi_pattern_indicator_path(@pattern, :indicator_id => pattern_indicator.indicator),
+                    :method => :delete },
+                  :class => 'icon icon-del'
+                ) %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+  <p><%= submit_tag l(:button_save) %></p>
+
+  <% end %>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+</div>
+
+<div class="splitcontentright">
+<% indicators = Indicator.not_in_kpi_pattern(@pattern).all(:limit => 100) %>
+<% if indicators.any? %>
+  <%= form_for(@pattern, :remote => true, :url => kpi_patters_indicators_path(@pattern),
+               :html => {:method => :post}) do |f| %>
+    <fieldset><legend><%=l(:label_indicator_new)%></legend>
+    <p><%= label_tag "indicators_search", l(:label_indicator_search) %><%= text_field_tag 'indicators_search', nil %></p>
+
+    <%= observe_field(:indicators_search,
+                 :frequency => 0.5,
+                 :update => :indicators,
+                 :url => autocomplete_for_indicator_kpi_pattern_path(@pattern),
+                 :method => :get,
+                 :before => '$("indicators_search").addClassName("ajax-loading")',
+                 :complete => '$("indicators_search").removeClassName("ajax-loading")',
+                 :with => 'q')
+                  %>
+
+    <div id="indicators">
+      <%= indicators_check_box_tags 'indicator_ids[]', indicators %>
+    </div>
+
+    <p><%= submit_tag l(:button_add) %></p>
+    </fieldset>
+  <% end %>
+<% end %>
+
+</div>

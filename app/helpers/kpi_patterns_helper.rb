@@ -6,4 +6,13 @@ module KpiPatternsHelper
            
             ]
   end
+
+
+  def indicators_check_box_tags(name, indicators)
+    s = ''
+    indicators.sort.each do |indicator|
+      s << "<label>#{ check_box_tag name, indicator.id, false } #{h indicator}</label>\n"
+    end
+    s.html_safe
+  end
 end
