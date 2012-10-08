@@ -1,0 +1,36 @@
+<div class="contextual">
+<%= render :partial => 'kpi/kpi_common_links' %>
+</div>
+
+<h2><%=l(:label_kpi_calc_periods)%></h2>
+
+<table class="list indicators">
+<thead>
+	<tr>
+	<th><%= l(:label_kpi_calc_periods) %></th>
+	<th><%= l(:field_kpi_pattern) %></th>
+	<th></th>
+	</tr>
+</thead>
+
+<tbody>
+<% @periods.each do |period| %>
+	<tr>
+		<td>
+
+			<%= link_to "#{format_date period.date} &mdash; #{format_date period.date.end_of_month}".html_safe, edit_kpi_calc_period_path(period) %> 
+			(<%= I18n.t("date.abbr_month_names")[period.date.month] %>) </td>
+		<td><%= link_to h(period.kpi_pattern.name), edit_kpi_pattern_path(period) %></td>
+		<td class="buttons">
+		    <%= link_to(l(:button_delete), kpi_calc_period_path(period),
+		                                   :method => :delete,
+		                                   :confirm => l(:text_are_you_sure),
+		                                   :class => 'icon icon-del') %>
+		</td>
+	</tr>
+<% end %>
+</tbody>
+
+</table>
+
+<%= render :partial => 'kpi/sidebar' %>

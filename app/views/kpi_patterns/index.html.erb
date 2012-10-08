@@ -1,10 +1,10 @@
 <div class="contextual">
-<%= link_to l(:label_kpi_patterns_new), new_kpi_pattern_path, :class => 'icon icon-add' %>
+<%= render :partial => 'kpi/kpi_common_links' %>
 </div>
 
-<h2><%=l(:label_kpi_patterns)%></h2>
+<h2><%= l(:label_kpi_patterns) %></h2>
 
-<table class="list indicators">
+<table class="list patterns">
 <thead>
 	<tr>
 	<th><%= l(:label_kpi_indicators) %></th>
@@ -14,7 +14,7 @@
 
 <tbody>
 <% @patterns.each do |pattern| %>
-	<tr class="">
+	<tr class="<%= 'not_integrity' if pattern.integrity %>">
 		<td><%= link_to h(pattern.name), edit_kpi_pattern_path(pattern) %></td>
 		<td class="buttons">
 			<%= link_to(l(:button_copy), { :controller => 'kpi_patterns', :action => 'new', :copy_from => pattern }, :class => 'icon icon-copy') %>

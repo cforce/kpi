@@ -22,10 +22,16 @@ table.indicators tr.blue td
 	background-color: #e6f1f9;
 	}
 
-table.indicators td
+table.indicators td, table.patterns td
 	{
 	padding: 4px;
 	}
+
+table.patterns tr.warning
+	{
+	text-align: left;
+	}
+
 
 input#indicators_search {
 	background: url(../images/magnifier.png) no-repeat 2px 50%;
@@ -54,3 +60,9 @@ table.indicators td.weight input
 	{
 	width: 60px;
 	}
+
+tr.not_integrity
+	{
+	background-color: #FFEBC1;
+	}
+

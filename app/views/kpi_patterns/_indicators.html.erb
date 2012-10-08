@@ -1,7 +1,20 @@
+<% if @indicator_save_errors.any? %>
+  <div id="errorExplanation">
+  <ul>
+<% @indicator_save_errors.each do |error| %>
+  <li><%= h error %></li>
+<% end %>
+  </ul>
+  </div>
+<% end %>
+
+<%= @pp %>
+
+
 <div class="splitcontentleft">
 <% if @pattern.indicators.any? %>
 
-  <%= form_for(@pattern, :remote => true, :url => kpi_patters_indicators_path(@pattern),
+  <%= form_for(@pattern, :remote => true, :url => kpi_patterns_indicators_edit_path(@pattern),
                :html => {:method => :post}) do |f| %>
   <table class="list indicators">
     <thead><tr>
@@ -13,7 +26,9 @@
     <% @pattern.kpi_pattern_indicators.sort_by{|e| e.indicator.name}.each do |pattern_indicator| %>
       <tr id="indicator-<%= pattern_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= pattern_indicator.indicator.kpi_category.color %>">
         <td class="indicator"><%= link_to h(pattern_indicator.indicator.name), edit_indicator_path(pattern_indicator.indicator) %></td>
-        <td class="weight"><input type="text" name="percent[pattern_indicator.id]" value="<%= h pattern_indicator.percent %>" /></td>
+        <td class="weight">
+        <input type="text" name="percent[<%= h pattern_indicator.id %>]" value="<%= h pattern_indicator.percent %>" />
+        </td>
         <td class="buttons">
 
             <%= link_to_remote(

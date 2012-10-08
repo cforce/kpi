@@ -1,3 +1,7 @@
 <h2><%=l(:label_kpi_patterns_new)%></h2>
 
+<%= labelled_form_for @pattern do |f| %>
+<%= render :partial => 'kpi_patterns/form', :locals => { :f => f } %>
+<% end %>
+
 <%= render :partial => 'kpi/sidebar' %>

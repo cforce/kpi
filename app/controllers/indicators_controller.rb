@@ -3,8 +3,6 @@ class IndicatorsController < ApplicationController
 	before_filter :find_categories, :only => [:new, :edit]
 	before_filter :find_indicators, :only => [:index]
 
-
-
 	def index
 		
 	end
@@ -49,13 +47,16 @@ class IndicatorsController < ApplicationController
     end
 
 	def destroy
-	    @tracker = Indicator.find(params[:id])
-	    #unless @tracker.issues.empty?
-	    #  flash[:error] = l(:error_can_not_delete_tracker)
-	    #else
-	      @tracker.destroy
-	    #end
-	    redirect_to :action => 'index'
+	    @indicator = Indicator.find(params[:id])
+	    @indicator.destroy
+
+	    if @indicator.errors.any?
+		   flash[:error] = @indicator.errors.full_messages.join("<br>").html_safe
+		   redirect_to :action => 'index'
+	    else
+	       redirect_to :action => 'index'
+	    end
+	
 	end    
 
 	private

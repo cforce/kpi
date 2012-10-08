@@ -2,8 +2,8 @@
 class KpiPatternsController < ApplicationController
 
 	before_filter :find_patterns, :only => [:index]
-
-
+	before_filter :get_pattern, :except => [:new, :create, :index]
+	#before_filter :get_integrity_warnings, :only => [:update_indicators, :add_indicators, :remove_indicator, :edit]
 
 	def index
 		
@@ -20,11 +20,12 @@ class KpiPatternsController < ApplicationController
 	end
 
 	def edit
-		@pattern ||= KpiPattern.find(params[:id])
+		#@pattern ||= KpiPattern.find(params[:id])
+		get_integrity_warnings
 	end
 
 	def update
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    if request.put? and @pattern.update_attributes(params[:kpi_pattern])
 	      flash[:notice] = l(:notice_successful_update)
 	      redirect_to(edit_kpi_pattern_path(@pattern))
@@ -45,7 +46,7 @@ class KpiPatternsController < ApplicationController
     end
 
 	def destroy
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    #unless @tracker.issues.empty?
 	    #  flash[:error] = l(:error_can_not_delete_tracker)
 	    #else
@@ -55,7 +56,7 @@ class KpiPatternsController < ApplicationController
 	end    
 
 	def add_users
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    users = User.find_all_by_id(params[:user_ids])
 	    @pattern.users << users if request.post?
 	    respond_to do |format|
@@ -70,7 +71,7 @@ class KpiPatternsController < ApplicationController
 	end
 
 	def remove_user
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    @pattern.users.delete(User.find(params[:user_id])) if request.delete?
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'groups', :action => 'edit', :id => @pattern, :tab => 'users' }
@@ -79,43 +80,93 @@ class KpiPatternsController < ApplicationController
 	end
 
 	def add_indicators
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    indicators = Indicator.find_all_by_id(params[:indicator_ids])
 	    @pattern.indicators << indicators if request.post?
+	    get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
 	      format.js {
 	        render(:update) {|page|
 	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
+	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
 	          indicators.each {|indicator| page.visual_effect(:highlight, "indicator-#{indicator.id}") }
 	        }
 	      }
 	    end
 	end
 
+	def update_indicators
+		#@pattern = KpiPattern.find(params[:id])
+		params[:percent].each{|k,v|
+			kpi_pattern_undicator=KpiPatternIndicator.find(k)
+			kpi_pattern_undicator.percent=v
+			kpi_pattern_undicator.save
+			kpi_pattern_undicator.errors.full_messages.each do |error_msg| 
+			      @indicator_save_errors.push(error_msg)
+			    end 			
+			}
+		get_integrity_warnings
+
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'update_indicators', :id => @pattern, :tab => 'indicators' }
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
+	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
+	        }
+	      }
+	    end
+	end
+
 	def remove_indicator
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    @pattern.indicators.delete(Indicator.find(params[:indicator_id])) if request.delete?
+	    get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'} }
+	      format.js { render(:update) {|page|
+	      	 page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
+	      	 page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
+	      	 } }
 	    end
 	end
 
 
 	def autocomplete_for_user
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    @users = User.active.not_in_kpi_pattern(@pattern).like(params[:q]).all(:limit => 100)
 	    render 'groups/autocomplete_for_user', :layout => false
 	end
 
 	def autocomplete_for_indicator
-	    @pattern = KpiPattern.find(params[:id])
+	    #@pattern = KpiPattern.find(params[:id])
 	    @indicators = Indicator.not_in_kpi_pattern(@pattern).where("name like ?", "%#{params[:q]}%").limit(1)
 	    render 'kpi_patterns/autocomplete_for_indicator', :layout => false
 	end	
 
 	private
+
+	def get_pattern
+		@indicator_save_errors=[]
+		@indicator_save_warnings=[]
+		@pattern = KpiPattern.find(params[:id])
+	end 
+
+	def get_integrity_warnings
+		if(@pattern.integrity?)
+			if ! @pattern.integrity
+				@pattern.integrity=true
+				@pattern.save
+			end
+		else
+			@indicator_save_warnings.push('indicators_weight_sum_not_equal_100') 
+			if @pattern.integrity
+				@pattern.integrity=false
+				@pattern.save
+			end
+		end
+	end
 
 	def find_patterns
 	 	@patterns=KpiPattern.order(:name)

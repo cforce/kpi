@@ -4,6 +4,7 @@ class CreateKpiPatterns < ActiveRecord::Migration
     create_table :kpi_patterns do |t|
       t.string :name
       t.text :description
+      t.boolean :integrity, :default => false
       t.timestamps
     end
   end

@@ -1,0 +1,7 @@
+<% if @indicator_save_warnings.any? %>
+<div class="flash warning">
+<% @indicator_save_warnings.each do |error| %>
+	  <%= l(error) %>
+<% end %>	
+</div>
+<% end %>

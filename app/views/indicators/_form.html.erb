@@ -23,7 +23,7 @@
 								  :label => l(:kpi_interpretation_label), :required => true %></p>
 
 
-<% if @indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s %>
+<% if @indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s or @indicator.interpretation.nil? %>
 	<% table_style='style="display:none;"'.html_safe %>
 <% else %>
 	<% table_style='' %>
@@ -36,7 +36,7 @@
 <th></th>
 </tr>
 
-<% if !@indicator.matrix['value_of_fact'].nil? %>
+<% if !@indicator.matrix.nil? and !@indicator.matrix['value_of_fact'].nil? %>
 	<% style='style="display:none;"'  %>
 	<% style='' if @indicator.matrix['value_of_fact'].size>1 %>
 	<% @indicator.matrix['value_of_fact'].each do |v| %>

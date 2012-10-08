@@ -2,7 +2,8 @@ class Indicator < ActiveRecord::Base
   validates_presence_of :name, :kpi_category_id, :kpi_unit_id, :interpretation
   validates_uniqueness_of :name
   validates_length_of :name, :maximum => 120
-
+  before_destroy :pattern_not_exist
+ 
   serialize :matrix
 
   belongs_to :kpi_category
@@ -19,6 +20,11 @@ class Indicator < ActiveRecord::Base
 
   INTERPRETATION_FACT = 0
   INTERPRETATION_MATRIX = 1
+
+  def pattern_not_exist 	
+    errors.add(:base, l(:you_can_not_destroy_indicator)) if kpi_pattern_indicators.any?
+    errors.blank?
+  end
 
   def to_s
   	name
