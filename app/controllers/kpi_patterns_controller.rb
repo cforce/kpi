@@ -3,6 +3,7 @@ class KpiPatternsController < ApplicationController
 
 	before_filter :find_patterns, :only => [:index]
 	before_filter :get_pattern, :except => [:new, :create, :index]
+	before_filter :find_category_weights, :except => [:new, :create, :index]
 	#before_filter :get_integrity_warnings, :only => [:update_indicators, :add_indicators, :remove_indicator, :edit]
 
 	def index
@@ -83,6 +84,9 @@ class KpiPatternsController < ApplicationController
 	    #@pattern = KpiPattern.find(params[:id])
 	    indicators = Indicator.find_all_by_id(params[:indicator_ids])
 	    @pattern.indicators << indicators if request.post?
+	    #indicators.map{|c| c.kpi_category}.uniq().each{|c| 
+	    	#KpiPatternCategory.create(:kpi_pattern_id => @pattern.id, :category_id => c.id, :percent => c.percent)
+	    	#}	    
 	    get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
@@ -106,6 +110,11 @@ class KpiPatternsController < ApplicationController
 			      @indicator_save_errors.push(error_msg)
 			    end 			
 			}
+		params[:cat_percent].each{|k,v|
+			pc=KpiPatternCategory.where(:kpi_category_id => k, :kpi_pattern_id => @pattern.id).first
+			pc.percent=v
+			pc.save
+			}
 		get_integrity_warnings
 
 	    respond_to do |format|
@@ -121,7 +130,8 @@ class KpiPatternsController < ApplicationController
 
 	def remove_indicator
 	    #@pattern = KpiPattern.find(params[:id])
-	    @pattern.indicators.delete(Indicator.find(params[:indicator_id])) if request.delete?
+	    #@pattern.indicators.delete(Indicator.find(params[:indicator_id])) if request.delete?
+	    KpiPatternIndicator.find(params[:indicator_id]).destroy if request.delete?
 	    get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
@@ -149,7 +159,7 @@ class KpiPatternsController < ApplicationController
 
 	def get_pattern
 		@indicator_save_errors=[]
-		@indicator_save_warnings=[]
+		@kpi_warnings=[]
 		@pattern = KpiPattern.find(params[:id])
 	end 
 
@@ -160,7 +170,7 @@ class KpiPatternsController < ApplicationController
 				@pattern.save
 			end
 		else
-			@indicator_save_warnings.push('indicators_weight_sum_not_equal_100') 
+			@kpi_warnings.push('indicators_weight_sum_not_equal_100') 
 			if @pattern.integrity
 				@pattern.integrity=false
 				@pattern.save
@@ -170,6 +180,13 @@ class KpiPatternsController < ApplicationController
 
 	def find_patterns
 	 	@patterns=KpiPattern.order(:name)
+	end
+
+	def find_category_weights
+		@category_weights={}
+		@pattern.kpi_pattern_categories.each{|e|
+			@category_weights[e.kpi_category_id]=e.percent
+			}
 	end
 
 end

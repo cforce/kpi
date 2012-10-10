@@ -20,7 +20,7 @@
 
 			<%= link_to "#{format_date period.date} &mdash; #{format_date period.date.end_of_month}".html_safe, edit_kpi_calc_period_path(period) %> 
 			(<%= I18n.t("date.abbr_month_names")[period.date.month] %>) </td>
-		<td><%= link_to h(period.kpi_pattern.name), edit_kpi_pattern_path(period) %></td>
+		<td><%= link_to h(period.kpi_pattern.name), edit_kpi_pattern_path(period.kpi_pattern) %></td>
 		<td class="buttons">
 		    <%= link_to(l(:button_delete), kpi_calc_period_path(period),
 		                                   :method => :delete,

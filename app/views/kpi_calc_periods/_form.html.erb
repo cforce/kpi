@@ -4,8 +4,8 @@
 <div class="box tabular">
 <p>
 	<label for=""><%= l(:calc_period) %> <span class="required"> *</span></label>
-	<%= select_month(Date.today, :use_short_month => true) %>
-	<%= select_year(Date.today, :start_year => Date.today.year, :end_year => Date.today.year+1) %>
+	<%= select_month(@period.new_record? ? Date.today : @period.date, :use_short_month => true) %>
+	<%= select_year(@period.new_record? ? Date.today : @period.date, :start_year => Date.today.year, :end_year => Date.today.year+1) %>
 </p>
 
 <p>

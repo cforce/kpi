@@ -10,10 +10,19 @@ RedmineApp::Application.routes.draw do
 	match 'kpi_patterns/:id/update_indicators', :controller => 'kpi_patterns', :action => 'update_indicators', :id => /\d+/, :via => :post, :as => 'kpi_patterns_indicators_edit'
 	match 'kpi_patterns/:id/indicators/:indicator_id', :controller => 'kpi_patterns', :action => 'remove_indicator', :id => /\d+/, :via => :delete, :as => 'kpi_pattern_indicator'
 	match 'kpi_patterns/:copy_from/copy', :to => 'kpi_patterns#edit'
+
 	resources :kpi_patterns do
 	    member do
 	      get 'autocomplete_for_user'
 	      get 'autocomplete_for_indicator'
+	    end
+	end
+
+	resources :kpi_calc_periods do
+	    member do
+	      post 'add_inspectors'
+	      get 'autocomplete_for_user'
+	      delete 'remove_inspector/:indicator_inspector_id', :action => 'remove_inspector', :as => 'remove_inspector'
 	    end
 	end
 

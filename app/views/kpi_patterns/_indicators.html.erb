@@ -23,8 +23,19 @@
       <th style="width:5%"></th>
     </tr></thead>
     <tbody>
-    <% @pattern.kpi_pattern_indicators.sort_by{|e| e.indicator.name}.each do |pattern_indicator| %>
-      <tr id="indicator-<%= pattern_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= pattern_indicator.indicator.kpi_category.color %>">
+    <% last_category=nil %>
+    <% color='' %>
+    <% @pattern.kpi_pattern_indicators.sort_by{|e| e.indicator.kpi_category.name.to_s+e.indicator.name.to_s}.each do |pattern_indicator| %>
+      <% if last_category!=pattern_indicator.indicator.kpi_category %>
+        <% last_category=pattern_indicator.indicator.kpi_category %>
+        <% color=last_category.color %>
+        <tr class="<%= color %>">
+          <td><b><%= last_category.name %></b></td>
+          <td class="weight"><input type="text" name="cat_percent[<%= h last_category.id %>]" value="<%= @category_weights[last_category.id] %>" /></td>
+          <td></td>
+        </tr>
+      <% end %>
+      <tr id="indicator-<%= pattern_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= color %>">
         <td class="indicator"><%= link_to h(pattern_indicator.indicator.name), edit_indicator_path(pattern_indicator.indicator) %></td>
         <td class="weight">
         <input type="text" name="percent[<%= h pattern_indicator.id %>]" value="<%= h pattern_indicator.percent %>" />
@@ -33,12 +44,13 @@
 
             <%= link_to_remote(
                   l(:button_delete),
-                  { :url => kpi_pattern_indicator_path(@pattern, :indicator_id => pattern_indicator.indicator),
+                  { :url => kpi_pattern_indicator_path(@pattern, :indicator_id => pattern_indicator.id),
                     :method => :delete },
                   :class => 'icon icon-del'
                 ) %>
         </td>
       </tr>
+      
     <% end %>
     </tbody>
   </table>

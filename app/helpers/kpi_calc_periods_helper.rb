@@ -1,9 +1,9 @@
 module KpiCalcPeriodsHelper
   def kpi_periods_settings_tabs
-    tabs = [{:name => 'users', :partial => 'kpi_calc_periods/users', :label => :label_inspector_list},
-            {:name => 'general', :partial => 'kpi_calc_periods/general', :label => :label_general}
-           
-            ]
+    tabs = [{:name => 'general', :partial => 'kpi_calc_periods/general', :label => :label_general},
+            {:name => 'users', :partial => 'kpi_calc_periods/users', :label => :label_inspector_list},
+            {:name => 'plan_values', :partial => 'kpi_calc_periods/plan_values', :label => :label_plan_values}
+          ]
   end
 
 
