@@ -111,6 +111,7 @@ class KpiPatternsController < ApplicationController
 			    end 			
 			}
 		params[:cat_percent].each{|k,v|
+			#Rails.logger.debug("ssssssss____#{k}____#{@pattern.id}")
 			pc=KpiPatternCategory.where(:kpi_category_id => k, :kpi_pattern_id => @pattern.id).first
 			pc.percent=v
 			pc.save
@@ -122,7 +123,7 @@ class KpiPatternsController < ApplicationController
 	      format.js {
 	        render(:update) {|page|
 	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
+	          page.replace_html "tab-content-plan_values", :partial => 'kpi_patterns/indicators'
 	        }
 	      }
 	    end

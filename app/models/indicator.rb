@@ -13,6 +13,9 @@ class Indicator < ActiveRecord::Base
   has_many :kpi_pattern_indicators
   has_many :kpi_patterns, :through => :kpi_pattern_indicators
 
+  has_many :kpi_period_indicators
+  has_many :kpi_calc_periods, :through => :kpi_period_indicators
+
 	scope :not_in_kpi_pattern, lambda {|pattern|
 		pattern_id = pattern.is_a?(KpiPattern) ? pattern.id : pattern.to_i
 		{ :conditions => ["#{Indicator.table_name}.id NOT IN (SELECT pi.indicator_id FROM kpi_pattern_indicators pi WHERE pi.kpi_pattern_id = ?)", pattern_id] }

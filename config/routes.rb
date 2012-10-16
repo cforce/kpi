@@ -23,6 +23,8 @@ RedmineApp::Application.routes.draw do
 	      post 'add_inspectors'
 	      get 'autocomplete_for_user'
 	      delete 'remove_inspector/:indicator_inspector_id', :action => 'remove_inspector', :as => 'remove_inspector'
+	      post 'update_inspectors', :action => 'update_inspectors', :as => 'update_inspectors'
+	      post 'update_plans', :action => 'update_plans', :as => 'update_plans'
 	    end
 	end
 

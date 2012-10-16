@@ -1,5 +1,9 @@
+<%= render :partial => 'kpi/errors' %>
+
 <div class="splitcontentleft">
 <% if @period.kpi_indicator_inspectors.any? %>
+<%= form_for(@period, :remote => true, :url => update_inspectors_kpi_calc_period_path(@period),
+               :html => {:method => :post}) do |f| %>
   <table class="list indicators">
     <thead>
     	<tr>
@@ -35,10 +39,17 @@
     <% end %>
     </tbody>
   </table>
+
+<p><%= submit_tag l(:button_save) %></p>
+<% end %>
 <% else %>
   <p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>
+
+<p class="nodata"><%= l(:label_head_is_inspector_if_you_havenot_checked_message) %></p>
+
 </div>
+
 
 
 <div class="splitcontentright">

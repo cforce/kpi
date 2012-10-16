@@ -6,7 +6,7 @@ Redmine::Plugin.register :kpi do
   url 'http://pitin.su'
   author_url 'http://pitin.su'
 
-  #menu :top_menu, :my_page, { :controller => 'my', :action => 'page' }, :caption => Proc.new { User.current.my_page_caption },  :if => Proc.new { User.current.logged? }, :first => true
+  menu :top_menu, :my_marks, { :controller => 'my', :action => 'page' }, :caption => Proc.new { User.current.my_kpi_marks_caption },  :if => Proc.new { User.current.logged? }, :first => true
 end
 
 Rails.application.config.to_prepare do

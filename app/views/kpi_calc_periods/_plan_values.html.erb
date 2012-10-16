@@ -1,1 +1,33 @@
-asdsad
+ <%= form_for(@period, :remote => true, :url => update_plans_kpi_calc_period_path(@period),
+               :html => {:method => :post}) do |f| %> 
+  <table class="list indicators">
+    <thead>
+    	<tr>
+      	<th><%= l(:label_kpi_indicators) %></th>
+      	<th style="width:5%"><%= l(:label_plan_values) %></th>
+   		</tr>
+   	</thead>
+    <tbody>
+    <% last_indicator_id=0 %>
+    <% @period.kpi_period_indicators.joins(:indicator).where("indicators.interpretation=?", Indicator::INTERPRETATION_FACT).includes(:indicator => [:kpi_unit]).order("#{Indicator.table_name}.name").each do |e| %>
+
+      <tr id="indicator-<%= e.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= e.indicator.kpi_category.color %>">
+        <td class="indicator">
+        	<% if e.indicator_id!=last_indicator_id %>
+        		<%= link_to h(e.indicator.name), edit_indicator_path(e.indicator) %>
+        	<% end %>
+        	<% last_indicator_id = e.indicator_id %>
+        </td>
+        <td class="weight">
+        <input type="text" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" /> <%= e.indicator.kpi_unit.abridgement %>
+        </td>
+
+      </tr>
+
+    <% end %>
+    </tbody>
+  </table>
+
+  <p><%= submit_tag l(:button_save) %></p>
+
+   <% end %> 

@@ -1,0 +1,9 @@
+<% if @saved_errors.any? %>
+  <div id="errorExplanation">
+  <ul>
+<% @saved_errors.each do |error| %>
+  <li><%= h error %></li>
+<% end %>
+  </ul>
+  </div>
+<% end %>
