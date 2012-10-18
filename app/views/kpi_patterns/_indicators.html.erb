@@ -23,20 +23,23 @@
     <tbody>
     <% last_category=nil %>
     <% color='' %>
+    <% i=1 
+       j=1000 %>
     <% @pattern.kpi_pattern_indicators.sort_by{|e| e.indicator.kpi_category.name.to_s+e.indicator.name.to_s}.each do |pattern_indicator| %>
       <% if last_category!=pattern_indicator.indicator.kpi_category %>
         <% last_category=pattern_indicator.indicator.kpi_category %>
         <% color=last_category.color %>
         <tr class="<%= color %>">
           <td><b><%= last_category.name %></b></td>
-          <td class="weight"><input type="text" name="cat_percent[<%= h last_category.id %>]" value="<%= @category_weights[last_category.id] %>" /></td>
+          <td class="weight"><input tabindex="<%= j %>" type="text" name="cat_percent[<%= h last_category.id %>]" value="<%= @category_weights[last_category.id.to_s] %>" /> </td>
           <td></td>
+          <% j+=1 %>
         </tr>
       <% end %>
       <tr id="indicator-<%= pattern_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= color %>">
         <td class="indicator"><%= link_to h(pattern_indicator.indicator.name), edit_indicator_path(pattern_indicator.indicator) %></td>
         <td class="weight">
-        <input type="text" name="percent[<%= h pattern_indicator.id %>]" value="<%= h pattern_indicator.percent %>" />
+        <input type="text" tabindex="<%= i %>" name="percent[<%= h pattern_indicator.id %>]" value="<%= h pattern_indicator.percent %>" />
         </td>
         <td class="buttons">
 
@@ -49,6 +52,7 @@
         </td>
       </tr>
       
+      <% i+=1 %>
     <% end %>
     </tbody>
   </table>

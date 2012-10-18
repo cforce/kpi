@@ -1,0 +1,24 @@
+<h2><%=l(:label_kpi_marks)%></h2>
+
+<table class="list indicators">
+    <thead>
+    	<tr>
+      	<th><%= l(:label_kpi_indicators) %></th>
+      	<th style="width:5%"><%= l(:my_kpi_mark) %></th>
+   		</tr>
+   	</thead>
+
+    <tbody>
+		<% @marks.each do |mark| %>
+			<tr>
+			<td>
+				<%= format_date mark.date %>
+			</td>
+			<td>
+			</td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<%= render :partial => 'kpi/sidebar' %>

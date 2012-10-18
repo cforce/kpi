@@ -1,8 +1,8 @@
 class KpiCalcPeriodsController < ApplicationController
-	before_filter :find_period, :only => [:edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
+	before_filter :find_period, :only => [:edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans, :activate]
 	before_filter :find_patterns, :only => [:new, :edit]
 	before_filter :find_calc_periods, :only => [:index]
-	before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
+	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
 	before_filter :find_users, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
 
 
@@ -15,8 +15,23 @@ class KpiCalcPeriodsController < ApplicationController
 	end
 
 	def edit
-		#@period ||= KpiCalcPeriod.find(params[:id])
-		get_integrity_warnings
+		#get_integrity_warnings
+	end
+
+	def activate
+		error=''
+		error+="<br/>"+l(:inspectors_weight_sum_not_equal_100) if not @period.inspectors_sum_integrity?
+		error+="<br/>"+l(:inspectors_null_percent_integrity_is_false) if not @period.inspectors_null_percent_integrity?
+		error+="<br/>"+l(:indicators_integrity_is_false) if not @period.indicators_integrity?
+
+		if error.empty?
+			@period.assign_immediate_superior
+			@period.create_marks
+		else
+			flash[:error] = l(:period_integrity_false)+" "+error
+		end
+
+		redirect_to(edit_kpi_calc_period_path(@period))
 	end
 
 	def update
@@ -74,14 +89,13 @@ class KpiCalcPeriodsController < ApplicationController
 	    params[:user_ids].each do |user_id|
 	    	indicator_inspector=KpiIndicatorInspector.new
 	    	indicator_inspector.user_id=user_id
-	    	indicator_inspector.indicator_id=params[:inspector][:indicator_id]
-	    	indicator_inspector.kpi_calc_period_id=@period.id
+	    	indicator_inspector.kpi_period_indicator_id=params[:inspector][:period_indicator_id]
 	    	indicator_inspector.save
 	    	indicators.push(indicator_inspector)
 	    	end
 	    end
 
-	    get_integrity_warnings
+	    #get_integrity_warnings
 
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
@@ -98,7 +112,7 @@ class KpiCalcPeriodsController < ApplicationController
 	def remove_inspector
 		@indicator_inspector = KpiIndicatorInspector.find(params[:indicator_inspector_id])
 		@indicator_inspector.destroy
-		get_integrity_warnings
+		#get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
 	      format.js { render(:update) {|page| page.replace_html "tab-content-users", :partial => 'kpi_calc_periods/users'
@@ -116,7 +130,7 @@ class KpiCalcPeriodsController < ApplicationController
 			      @saved_errors.push(error_msg)
 			    end 			
 			}	
-		get_integrity_warnings
+		#get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
 	      format.js { render(:update) {|page| page.replace_html "tab-content-users", :partial => 'kpi_calc_periods/users'
@@ -134,7 +148,7 @@ class KpiCalcPeriodsController < ApplicationController
 			      @saved_errors.push(error_msg)
 			    end 			
 			}	
-		get_integrity_warnings
+		#get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'plan_values' }
 	      format.js { render(:update) {|page| page.replace_html "tab-content-plan_values", :partial => 'kpi_calc_periods/plan_values'
@@ -146,6 +160,7 @@ class KpiCalcPeriodsController < ApplicationController
 	private
 
 
+=begin
 	def get_integrity_warnings
 		if(@period.integrity?)
 			@period.integrity=true
@@ -157,10 +172,11 @@ class KpiCalcPeriodsController < ApplicationController
 			@period.save
 		end
 	end
+=end
 
-	def find_indicators
-		@indicators=@period.kpi_pattern.indicators
-	end
+	#def find_indicators
+	#	@indicators=@period.indicators
+	#end
 
 	def find_period
 		@saved_errors=[]

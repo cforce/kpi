@@ -8,7 +8,8 @@
    		</tr>
    	</thead>
     <tbody>
-    <% last_indicator_id=0 %>
+    <% last_indicator_id=0 
+      i=1 %>
     <% @period.kpi_period_indicators.joins(:indicator).where("indicators.interpretation=?", Indicator::INTERPRETATION_FACT).includes(:indicator => [:kpi_unit]).order("#{Indicator.table_name}.name").each do |e| %>
 
       <tr id="indicator-<%= e.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= e.indicator.kpi_category.color %>">
@@ -19,11 +20,11 @@
         	<% last_indicator_id = e.indicator_id %>
         </td>
         <td class="weight">
-        <input type="text" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" /> <%= e.indicator.kpi_unit.abridgement %>
+        <input type="text" tabindex="<%= i %>" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" /> <%= e.indicator.kpi_unit.abridgement %>
         </td>
 
       </tr>
-
+      <% i+=1%>
     <% end %>
     </tbody>
   </table>

@@ -4,7 +4,7 @@ class AddKpiPeriodUsers < ActiveRecord::Migration
     create_table :kpi_period_users do |t|
       t.integer :kpi_calc_period_id
       t.integer :user_id
-      t.boolean :locked, :default => false
+      t.boolean :locked, :default => false, :null => false
       t.timestamps
     end
   end

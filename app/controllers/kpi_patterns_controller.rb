@@ -3,7 +3,7 @@ class KpiPatternsController < ApplicationController
 
 	before_filter :find_patterns, :only => [:index]
 	before_filter :get_pattern, :except => [:new, :create, :index]
-	before_filter :find_category_weights, :except => [:new, :create, :index]
+	before_filter :find_category_weights, :except => [:new, :create, :index, :add_indicators]
 	#before_filter :get_integrity_warnings, :only => [:update_indicators, :add_indicators, :remove_indicator, :edit]
 
 	def index
@@ -85,8 +85,10 @@ class KpiPatternsController < ApplicationController
 	    indicators = Indicator.find_all_by_id(params[:indicator_ids])
 	    @pattern.indicators << indicators if request.post?
 	    #indicators.map{|c| c.kpi_category}.uniq().each{|c| 
-	    	#KpiPatternCategory.create(:kpi_pattern_id => @pattern.id, :category_id => c.id, :percent => c.percent)
-	    	#}	    
+	    #	KpiPatternCategory.create(:kpi_pattern_id => @pattern.id, :kpi_category_id => c.id, :percent => c.percent)
+	    #	}	
+
+	    find_category_weights    
 	    get_integrity_warnings
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
@@ -186,7 +188,8 @@ class KpiPatternsController < ApplicationController
 	def find_category_weights
 		@category_weights={}
 		@pattern.kpi_pattern_categories.each{|e|
-			@category_weights[e.kpi_category_id]=e.percent
+			@category_weights[e.kpi_category_id.to_s]=e.percent
+			#Rails.logger.debug("ssssssss #{e.kpi_category_id.to_s} #{e.percent}")
 			}
 	end
 

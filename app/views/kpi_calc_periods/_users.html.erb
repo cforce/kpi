@@ -14,18 +14,19 @@
    		</tr>
    	</thead>
     <tbody>
-    <% last_indicator_id=0 %>
-    <% @period.kpi_indicator_inspectors.sort_by{|e| e.indicator.name}.each do |e| %>
-      <tr id="indicator-<%= e.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= e.indicator.kpi_category.color %>">
+    <% last_indicator_id=0
+       i=1 %>
+    <% @period.kpi_indicator_inspectors.includes(:kpi_period_indicator => [:indicator]).sort_by{|e| e.kpi_period_indicator.indicator.name}.each do |e| %>
+      <tr id="indicator-<%= e.kpi_period_indicator.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= e.kpi_period_indicator.indicator.kpi_category.color %>">
         <td class="indicator">
-        	<% if e.indicator_id!=last_indicator_id %>
-        		<%= link_to h(e.indicator.name), edit_indicator_path(e.indicator) %>
+        	<% if e.kpi_period_indicator_id!=last_indicator_id %>
+        		<%= link_to h(e.kpi_period_indicator.indicator.name), edit_indicator_path(e.kpi_period_indicator.indicator) %>
         	<% end %>
-        	<% last_indicator_id = e.indicator_id %>
+        	<% last_indicator_id = e.kpi_period_indicator_id %>
         </td>
         <td class="user"><%= link_to_user e.user %></td>
         <td class="weight">
-        <input type="text" name="percent[<%= h e.id %>]" value="<%= h e.percent %>" />
+        <input type="text" tabindex="<%= i %>" name="percent[<%= h e.id %>]" value="<%= h e.percent %>" />
         </td>
         <td class="buttons">
             <%= link_to_remote(
@@ -36,6 +37,7 @@
                 ) %>
         </td>
       </tr>
+      <% i+=1 %>
     <% end %>
     </tbody>
   </table>
@@ -53,12 +55,12 @@
 
 
 <div class="splitcontentright">
-<% if @indicators.any? %>
+<% if @period.kpi_period_indicators.any? %>
 
 <fieldset><legend><%=l(:label_kpi_indicators)%></legend>
 <%= form_for(:inspector, :remote => true, :url => { :action => 'add_inspectors', :id => @period }) do %>
 <%= label_tag "inspector_indicator_id", l(:description_choose_project), :class => "hidden-for-sighted" %>
-<%= select 'inspector', 'indicator_id', @indicators.collect{|e| [e.name, e.id]} %>
+<%= select 'inspector', 'period_indicator_id', @period.kpi_period_indicators.includes(:indicator).collect{|e| [e.indicator.name, e.id]} %>
 
 <p><%= label_tag "user_search", l(:label_user_search) %><%= text_field_tag 'user_search', nil %></p>
 

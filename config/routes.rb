@@ -3,6 +3,8 @@ RedmineApp::Application.routes.draw do
 	resources :kpi_patterns
 	resources :kpi_calc_periods
 	match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
+	match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]
+
 	match 'indicators/:copy_from/copy', :to => 'indicators#new'
 	match 'kpi_patterns/:id/users', :controller => 'kpi_patterns', :action => 'add_users', :id => /\d+/, :via => :post, :as => 'kpi_patters_users'
 	match 'kpi_patterns/:id/users/:user_id', :controller => 'kpi_patterns', :action => 'remove_user', :id => /\d+/, :via => :delete, :as => 'kpi_pattern_user'
@@ -22,6 +24,7 @@ RedmineApp::Application.routes.draw do
 	    member do
 	      post 'add_inspectors'
 	      get 'autocomplete_for_user'
+	      get 'activate'
 	      delete 'remove_inspector/:indicator_inspector_id', :action => 'remove_inspector', :as => 'remove_inspector'
 	      post 'update_inspectors', :action => 'update_inspectors', :as => 'update_inspectors'
 	      post 'update_plans', :action => 'update_plans', :as => 'update_plans'

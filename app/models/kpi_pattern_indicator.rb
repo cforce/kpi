@@ -11,6 +11,7 @@ class KpiPatternIndicator < ActiveRecord::Base
 	private
 
 	def add_category_in_pattern
+		#Rails.logger.debug("sssssssss #{kpi_pattern_id}--#{indicator.kpi_category.id}--#{indicator.kpi_category.percent}")
 	    KpiPatternCategory.create(:kpi_pattern_id => kpi_pattern_id, :kpi_category_id => indicator.kpi_category.id, :percent => indicator.kpi_category.percent)
 	end 
 

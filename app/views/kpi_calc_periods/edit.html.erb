@@ -3,6 +3,9 @@
 </div>
 
 <div class="contextual">
+
+<%= link_to l(:make_period_active), {:controller => "kpi_calc_periods", :action => "activate", :id => @period}, :class => 'icon icon-test' if not @period.active %>
+
 <%= render :partial => 'kpi/kpi_common_links' %>
 </div>
 

@@ -12,6 +12,7 @@ module Kpi
 		has_many :kpi_pattern_users
 		has_many :kpi_patterns, :through => :kpi_pattern_users
 		has_many :kpi_indicator_inspectors
+		has_many :kpi_marks, :through => :kpi_indicator_inspectors
 
 		scope :not_in_kpi_pattern, lambda {|pattern|
 		    pattern_id = pattern.is_a?(KpiPattern) ? pattern.id : pattern.to_i
@@ -34,7 +35,11 @@ module Kpi
 		end
 
 		def get_my_marks_num
-			kpi_indicator_inspectors.active.joins(:kpi_marks).where('kpi_marks.date <= ?', Date.today).count
+			kpi_marks.active.where('kpi_marks.date <= ?', Date.today).count
+		end
+
+		def superior
+			User.find_by_id(self.parent_id)
 		end
 	end	
   end

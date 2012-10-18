@@ -4,6 +4,8 @@
 
 <h2><%= l(:label_kpi_patterns) %></h2>
 
+<% if @patterns.any? %>
+
 <table class="list patterns">
 <thead>
 	<tr>
@@ -29,5 +31,9 @@
 </tbody>
 
 </table>
+
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
 
 <%= render :partial => 'kpi/sidebar' %>
