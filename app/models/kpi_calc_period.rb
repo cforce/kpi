@@ -16,6 +16,8 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	has_many :kpi_indicator_inspectors, :through => :kpi_period_indicators
 	has_many :inspectors, :through => :kpi_indicator_inspectors
+
+	before_save :deny_save_if_period_active
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
 
 	#after_create :add_inspector_marks
@@ -80,7 +82,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	def assign_immediate_superior
 		kpi_period_indicators.joins("LEFT JOIN #{KpiIndicatorInspector.table_name} kii ON kii.kpi_period_indicator_id=#{KpiPeriodIndicator.table_name}.id")
 							 .where("kii.id IS NULL").each do |e|
-			KpiIndicatorInspector.create(:user_id => User.current.superior.id, :kpi_period_indicator_id => e.id, :percent => 100)
+			KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :percent => 100)
 		end
 	end
 
@@ -100,11 +102,22 @@ class KpiCalcPeriod < ActiveRecord::Base
 				end
 
 				kpi_mark_date=date+(last_day-1).days
-				e.kpi_indicator_inspectors.each do |e2|	
-					KpiMark.create(:date => kpi_mark_date, :kpi_indicator_inspector_id => e2.id)
+				users.each do |user|
+					e.kpi_indicator_inspectors.each do |inspector|	
+							KpiMark.create(:date => kpi_mark_date,
+										   :kpi_indicator_inspector_id => inspector.id,
+										   :user_id => user.id, 
+										   :inspector_id => inspector.user_id.nil? ? user.superior.id : inspector.user_id )
+						end
 					end
 				end
 		end
+	end
+
+	private
+
+	def deny_save_if_period_active
+		false if active
 	end
 
 end

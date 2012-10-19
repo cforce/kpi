@@ -4,17 +4,17 @@
 <div class="box tabular">
 <p>
 	<label for=""><%= l(:calc_period) %> <span class="required"> *</span></label>
-	<%= select_month(@period.new_record? ? Date.today : @period.date, :use_short_month => true) %>
-	<%= select_year(@period.new_record? ? Date.today : @period.date, :start_year => Date.today.year, :end_year => Date.today.year+1) %>
+	<%= select_month(@period.new_record? ? Date.today : @period.date, :use_short_month => true, :disabled => @period.active) %>
+	<%= select_year(@period.new_record? ? Date.today : @period.date, :start_year => Date.today.year, :end_year => Date.today.year+1, :disabled => @period.active) %>
 </p>
 
 <p>
-	<%= f.select :kpi_pattern_id, (@patterns.collect {|p| [p.name, p.id]}), :required => true %>
+	<%= f.select :kpi_pattern_id, (@patterns.collect {|p| [p.name, p.id]}), {}, :disabled => !@period.new_record? %>
 </p>
 
 </div>
 </div>
 
 <div>
-<%= submit_tag l(@period.new_record? ? :button_create : :button_save) %>
+<%= submit_tag l(@period.new_record? ? :button_create : :button_save), :disabled => @period.active %>
 </div>

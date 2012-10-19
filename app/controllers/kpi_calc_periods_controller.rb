@@ -3,8 +3,7 @@ class KpiCalcPeriodsController < ApplicationController
 	before_filter :find_patterns, :only => [:new, :edit]
 	before_filter :find_calc_periods, :only => [:index]
 	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
-	before_filter :find_users, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
-
+	before_filter :find_users, :only => [:edit, :update, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
 
 	def index
 		
@@ -27,6 +26,8 @@ class KpiCalcPeriodsController < ApplicationController
 		if error.empty?
 			@period.assign_immediate_superior
 			@period.create_marks
+			@period.active=true
+			@period.save
 		else
 			flash[:error] = l(:period_integrity_false)+" "+error
 		end
@@ -44,7 +45,8 @@ class KpiCalcPeriodsController < ApplicationController
 	      return
 	    end
 	   	find_patterns
-	    render :action => 'edit', :tab => 'general'
+	   	render :action => 'edit', :id => @period, :tab => 'general'
+	    #render :action => 'edit', :tab => 'general'
 	end
 
 	def create

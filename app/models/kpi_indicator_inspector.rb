@@ -7,30 +7,16 @@ class KpiIndicatorInspector < ActiveRecord::Base
 
 	has_many :kpi_marks, :dependent => :destroy
 
-	#after_create :add_inspector_marks
-
 	scope :active, :conditions => "#{KpiIndicatorInspector.table_name}.locked != 1 OR #{KpiIndicatorInspector.table_name}.locked IS NULL"	
 
+	before_save :deny_save_if_period_active
+	before_destroy :deny_save_if_period_active
+
+
+	private
+
+	def deny_save_if_period_active
+		false if kpi_period_indicator.kpi_period_category.kpi_calc_period.active
+	end
 	
-	def add_inspector_marks
-		num_on_period = kpi_period_indicator.num_on_period
-		period_start_date = kpi_period_indicator.kpi_period_category.kpi_calc_period.date
-
-		last_day_in_month = period_start_date.end_of_month.day
-		interval = last_day_in_month.to_i/num_on_period
-		remainder = last_day_in_month.to_i % num_on_period
-
-		last_day=0
-		(1..num_on_period).each{|e|
-			last_day = last_day+interval
-			if remainder > 0
-				last_day += 1
-				remainder -= 1
-			end
-
-			date=period_start_date+(last_day-1).days
-
-			KpiMark.create(:date => date, :kpi_indicator_inspector_id => id)
-			}
-	end	
 end

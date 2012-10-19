@@ -20,7 +20,7 @@
         	<% last_indicator_id = e.indicator_id %>
         </td>
         <td class="weight">
-        <input type="text" tabindex="<%= i %>" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" /> <%= e.indicator.kpi_unit.abridgement %>
+        <input type="text" tabindex="<%= i %>" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" <%= "disabled" if @period.active %> /> <%= e.indicator.kpi_unit.abridgement %>
         </td>
 
       </tr>
@@ -29,6 +29,6 @@
     </tbody>
   </table>
 
-  <p><%= submit_tag l(:button_save) %></p>
+  <p><%= submit_tag l(:button_save), :disabled => @period.active %></p>
 
    <% end %> 

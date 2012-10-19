@@ -10,7 +10,7 @@
       	<th><%= l(:label_kpi_indicators) %></th>
       	<th><%= l(:label_inspector_list) %></th>
       	<th style="width:5%"><%= l(:weight_label) %></th>
-      	<th style="width:5%"></th>
+      	<%= '<th style="width:5%"></th>'.html_safe if not @period.active %>
    		</tr>
    	</thead>
     <tbody>
@@ -24,25 +24,37 @@
         	<% end %>
         	<% last_indicator_id = e.kpi_period_indicator_id %>
         </td>
-        <td class="user"><%= link_to_user e.user %></td>
+        <td class="user">
+        <%=
+        if e.user.nil?
+          l(:superior)
+        else 
+          link_to_user e.user 
+        end
+        %>
+        </td>
         <td class="weight">
-        <input type="text" tabindex="<%= i %>" name="percent[<%= h e.id %>]" value="<%= h e.percent %>" />
+        <input type="text" tabindex="<%= i %>" name="percent[<%= h e.id %>]" value="<%= h e.percent %>" <%= "disabled" if @period.active %> />
         </td>
-        <td class="buttons">
-            <%= link_to_remote(
-                  l(:button_delete),
-                  { :url => remove_inspector_kpi_calc_period_path(:id => @period.id, :indicator_inspector_id => e.id),
-                    :method => :delete },
-                  :class => 'icon icon-del'
-                ) %>
-        </td>
+        <%=
+        if not @period.active
+          "<td class=\"buttons\">
+              #{link_to_remote(
+                    l(:button_delete),
+                    { :url => remove_inspector_kpi_calc_period_path(:id => @period.id, :indicator_inspector_id => e.id),
+                      :method => :delete },
+                    :class => 'icon icon-del'
+                  )}
+          </td>".html_safe
+        end
+        %>
       </tr>
       <% i+=1 %>
     <% end %>
     </tbody>
   </table>
 
-<p><%= submit_tag l(:button_save) %></p>
+<p><%= submit_tag l(:button_save), :disabled => @period.active %></p>
 <% end %>
 <% else %>
   <p class="nodata"><%= l(:label_no_data) %></p>
