@@ -17,7 +17,10 @@ class KpiCalcPeriod < ActiveRecord::Base
 	has_many :kpi_indicator_inspectors, :through => :kpi_period_indicators
 	has_many :inspectors, :through => :kpi_indicator_inspectors
 
-	before_save :deny_save_if_period_active
+	scope :actual, :conditions => "#{KpiCalcPeriod.table_name}.locked != 1 OR #{KpiCalcPeriod.table_name}.active = 1"	
+
+
+	#before_save :deny_save_if_period_active
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
 
 	#after_create :add_inspector_marks
@@ -50,7 +53,6 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	def copy_indicators_from_pattern
 		kpi_pattern.kpi_pattern_indicators.includes(:indicator).each do |e|
-
 
 			KpiPeriodIndicator.create(:indicator_id => e.indicator_id,
 									  :kpi_period_category_id => @copied_categories[e.indicator.kpi_category_id].id,
@@ -93,18 +95,22 @@ class KpiCalcPeriod < ActiveRecord::Base
 			interval = last_day_in_month.to_i/e.num_on_period.to_i
 			remainder = last_day_in_month.to_i % e.num_on_period.to_i
 
-			last_day=0
+			days=0
 			(1..e.num_on_period).each do |e1|
-				last_day = last_day+interval
+				old_days=days
+				days = days+interval
+
 				if remainder > 0
-					last_day += 1
+					days += 1
 					remainder -= 1
 				end
 
-				kpi_mark_date=date+(last_day-1).days
+				kpi_mark_end_date=date+(days-1).days
+				kpi_mark_start_date=date+old_days.days
 				users.each do |user|
 					e.kpi_indicator_inspectors.each do |inspector|	
-							KpiMark.create(:date => kpi_mark_date,
+							KpiMark.create(:end_date => kpi_mark_end_date,
+										   :start_date => kpi_mark_start_date,
 										   :kpi_indicator_inspector_id => inspector.id,
 										   :user_id => user.id, 
 										   :inspector_id => inspector.user_id.nil? ? user.superior.id : inspector.user_id )

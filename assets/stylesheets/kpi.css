@@ -56,7 +56,7 @@ div#tab-content-indicators fieldset label {
 	display: block;
 	}
 
-table.indicators td.weight input
+table.indicators td.weight input, td.fact_value input
 	{
 	width: 60px;
 	}
@@ -66,3 +66,42 @@ tr.not_integrity
 	background-color: #FFEBC1;
 	}
 
+div.kpi_inspector
+	{
+	margin: 10px 0px 5px 0px;
+	}
+
+input.completed, select.completed
+	{
+	background-color: #E7FAE3
+	}
+
+.kpi_date_links
+	{
+	margin: 5px 0px 5px 0px;
+	overflow: hidden;
+	}
+
+
+.kpi_date_links a
+	{
+	display: block;
+	padding: 3px;
+	float: left;
+	}
+
+.kpi_date_links a.current
+	{
+	padding: 2px;
+	}
+.kpi_date_links span.arr
+	{
+	float: left;
+	display: block;
+	margin: -3px 5px 0px 5px;
+	}
+
+span.arr
+	{
+	font-size: 14pt;
+	}

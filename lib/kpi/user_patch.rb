@@ -11,8 +11,10 @@ module Kpi
       base.class_eval do 
 		has_many :kpi_pattern_users
 		has_many :kpi_patterns, :through => :kpi_pattern_users
-		has_many :kpi_indicator_inspectors
-		has_many :kpi_marks, :through => :kpi_indicator_inspectors
+		has_many :kpi_marks
+		has_many :kpi_inspector_marks, :class_name => 'KpiMark', :foreign_key => 'inspector_id'
+		has_many :kpi_period_users
+		has_many :kpi_calc_periods, :through => :kpi_period_users
 
 		scope :not_in_kpi_pattern, lambda {|pattern|
 		    pattern_id = pattern.is_a?(KpiPattern) ? pattern.id : pattern.to_i
@@ -34,8 +36,12 @@ module Kpi
 			label
 		end
 
+		def get_my_marks
+			kpi_inspector_marks.where('kpi_marks.end_date <= ?', Date.today)
+		end
+
 		def get_my_marks_num
-			kpi_marks.active.where('kpi_marks.date <= ?', Date.today).count
+			get_my_marks.where('fact_value IS NULL').count
 		end
 
 		def superior

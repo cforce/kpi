@@ -1,0 +1,11 @@
+<div class="kpi_date_links">
+<% i=0 %>
+
+<% @period_dates.each do |period| %>
+	<%= '<span class="arr">&rarr;</span>'.html_safe if i!=0 %>
+	<%= link_to "<span>#{I18n.t("date.abbr_month_names")[period.date.month]}</span>".html_safe,
+																 {:controller => controller.controller_name, :action => controller.action_name, :date => period.date},
+																 {:class => "no_line #{'selected' if @date==period.date}  #{'current' if Date.current.at_beginning_of_month==period.date}"} %>
+	<% i+=1 %>
+<% end %>
+</div>

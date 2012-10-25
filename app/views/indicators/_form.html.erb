@@ -5,6 +5,7 @@
 <div class="box tabular">
 
 <p><%= f.text_field :name, :required => true, :label => l(:kpi_indicator_name_label), :style=>'width: 98%;' %></p>
+<p><%= f.select :input_type, (Indicator::INPUT_TYPES.map{|k,v| [l("input_type_#{v}"), k]}), :required => true %></p>
 <p><%= f.select :kpi_category_id, (@kpi_categories.collect {|p| [p.name, p.id]}), :label => l(:kpi_category_label), :required => true %></p>
 <p><%= f.select :kpi_unit_id, (@kpi_units.collect {|p| [p.name, p.id]}), :label => l(:kpi_indicator_unit_label), :required => true %></p>
 <p><%= f.select :num_on_period, [[1, 1], [2, 2], [3, 3], [4, 4]], :required => true %></p>

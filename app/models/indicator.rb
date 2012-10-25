@@ -24,6 +24,9 @@ class Indicator < ActiveRecord::Base
   INTERPRETATION_FACT = 0
   INTERPRETATION_MATRIX = 1
 
+  INPUT_TYPES={'0' => 'direct_input',
+               '1' => 'exact_values'}
+
   def pattern_not_exist 	
     errors.add(:base, l(:you_can_not_destroy_indicator)) if kpi_pattern_indicators.any?
     errors.blank?

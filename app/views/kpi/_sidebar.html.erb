@@ -10,6 +10,18 @@
 	<%= link_to "<span>#{l(:label_kpi_calc_periods)}</span>".html_safe, {:controller => "kpi_calc_periods", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_calc_periods'}" %>
 	</li>
 </ul>
+
+<ul>
+	<li>
+	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi", :action => "marks"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi' and controller.action_name=='marks'}" %>
+	</li>
+
+	<li>
+	<%= link_to "<span>#{l(:label_my_effectiveness)}</span>".html_safe, {:controller => "kpi", :action => "effectiveness"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi' and controller.action_name=='effectiveness'}" %>
+	</li>
+
+</ul>
+
 <% end %>
 
 <% content_for :header_tags do %>

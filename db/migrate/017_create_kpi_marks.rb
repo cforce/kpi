@@ -5,7 +5,8 @@ class CreateKpiMarks < ActiveRecord::Migration
       t.integer :kpi_indicator_inspector_id
       t.integer :user_id
       t.integer :inspector_id
-      t.date :date
+      t.date :start_date
+      t.date :end_date
       t.float :fact_value
       t.boolean :locked, :default => false, :null => false
       t.timestamps

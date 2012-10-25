@@ -2,8 +2,18 @@ RedmineApp::Application.routes.draw do
 	resources :indicators
 	resources :kpi_patterns
 	resources :kpi_calc_periods
-	match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
-	match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]
+	#match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
+	#match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]
+	resources :kpi do
+		collection do
+			#get '/', :action => 'index'
+			get 'marks'
+			get 'marks/:date', :action => 'marks'
+			post 'update_marks'
+			get 'effectiveness'
+			get 'effectiveness/:user', :action => 'effectiveness', :user => /\d+/
+		end
+	end
 
 	match 'indicators/:copy_from/copy', :to => 'indicators#new'
 	match 'kpi_patterns/:id/users', :controller => 'kpi_patterns', :action => 'add_users', :id => /\d+/, :via => :post, :as => 'kpi_patters_users'

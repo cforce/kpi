@@ -45,3 +45,9 @@ ru:
   label_kpi_marks: "Поставить оценки"
   make_period_active: "Активировать расчетный период"
   superior: "Руководитель"
+  label_mark_period: "Период"
+  field_input_type: "Тип ввода факта"
+  input_type_direct_input: "Прямой ввод"
+  input_type_exact_values: "Точные значения из матрицы интерпритации"
+  label_my_effectiveness: "Моя результативность"
+

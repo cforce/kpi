@@ -5,6 +5,8 @@ class KpiPeriodIndicator < ActiveRecord::Base
 
 	before_save :deny_save_if_period_active
 
+	serialize :matrix
+
 	private
 
 	def deny_save_if_period_active

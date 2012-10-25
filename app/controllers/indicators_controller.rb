@@ -2,6 +2,7 @@ class IndicatorsController < ApplicationController
 	before_filter :find_kpi_units, :only => [:new, :edit]
 	before_filter :find_categories, :only => [:new, :edit]
 	before_filter :find_indicators, :only => [:index]
+	before_filter :find_indicator, :only => [:show]
 
 	def index
 		
@@ -59,6 +60,10 @@ class IndicatorsController < ApplicationController
 	
 	end    
 
+	def show
+
+	end
+
 	private
 	def find_kpi_units
 	 @kpi_units=KpiUnit.order(:name)
@@ -70,5 +75,9 @@ class IndicatorsController < ApplicationController
 
 	def find_indicators
 	 @indicators=Indicator.order(:name)
+	end
+
+	def find_indicator
+	@indicator = Indicator.find(params[:id])
 	end
 end

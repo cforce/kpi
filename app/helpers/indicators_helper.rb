@@ -9,4 +9,6 @@ module IndicatorsHelper
 		</td>
 		</tr>".html_safe
 	end	
+
+
 end
