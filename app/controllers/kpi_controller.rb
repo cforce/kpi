@@ -15,7 +15,9 @@ class KpiController < ApplicationController
 	end
 
 	def effectiveness
-
+		find_user
+		find_date
+		@periods = @user.kpi_calc_periods.where("date = ?", @date)
 	end
 
 	def update_marks

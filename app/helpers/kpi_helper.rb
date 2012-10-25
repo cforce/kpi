@@ -18,6 +18,17 @@ module KpiHelper
 
 	end
 
+	def human_name(period)
+		"<big><b>#{I18n.t("date.abbr_month_names")[period.date.month]} #{period.date.year}</b></big>, #{period.kpi_pattern.name}".html_safe
+	end
+
+	def human_month(date)
+		"#{I18n.t("date.abbr_month_names")[date.month]} #{date.year} "
+	end
+
+	def link_to_indicator(indicator)
+		link_to indicator, {:controller => 'indicators', :action => 'show', :id =>indicator}
+	end
 =begin
 	def link_to_indicator(indicator)
 		link_to_remote indicator,

@@ -3,6 +3,7 @@ class KpiMark < ActiveRecord::Base
 
 	belongs_to :kpi_indicator_inspector
 	belongs_to :user
+	belongs_to :inspector, :class_name => 'User', :foreign_key => 'user_id'
 
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"

@@ -33,7 +33,7 @@
 		<%= format_date mark.start_date %> &mdash; <%= format_date mark.end_date %>
 	</td>
 	<td>
-		<%= link_to indicator, {:controller => 'indicators', :action => 'show', :id =>indicator} %>
+		<%= link_to_indicator indicator %>
 	</td>
 	<td class="fact_value">
 	<nobr><%= get_indicator_input(mark, "mark[#{mark.id}]", i)  %> <%= indicator.kpi_unit.abridgement %></nobr>

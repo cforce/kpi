@@ -9,15 +9,15 @@
 	width: 60px;
 	}
 
-table.indicators tr.red td
+table tr.red td
 	{
 	background-color: #FCF7ED; 	
 	}
-table.indicators tr.green td
+table tr.green td
 	{
 	background-color: #f1fbec; 	
 	}
-table.indicators tr.blue td
+table tr.blue td
 	{
 	background-color: #e6f1f9;
 	}
@@ -104,4 +104,19 @@ input.completed, select.completed
 span.arr
 	{
 	font-size: 14pt;
+	}
+
+table.list tbody tr.kpi_cat td
+	{
+	border-bottom: 1px solid #a8a8a8;
+	}
+
+th.narrow
+	{
+	width: 1%;
+	}
+
+table.kpi_calc tr td.inspector
+	{
+	padding-left: 30px;	
 	}

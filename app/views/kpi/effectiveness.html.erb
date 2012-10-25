@@ -2,5 +2,54 @@
 
 <%= render :partial => 'kpi/period_links' %>
 
+<% @periods.each do |period| %>
+
+	<table class="list kpi_calc">
+	<caption><%= human_name(period) %></caption>
+	<thead>
+		<tr>
+		<th><%= l(:label_kpi_indicators) %></th>
+		<th class="narrow"><%= l(:weight_label) %></th>
+		<th class="narrow"><%= l(:label_plan) %></th>
+		<th class="narrow"><%= l(:value_of_fact) %></th>
+		<th class="narrow"><%= l(:percent_of_complete) %></th>
+		</tr>
+	</thead>
+	<tbody>
+
+	<% period.kpi_period_categories.includes(:kpi_category).each do |cat| %>
+		<% color=cat.kpi_category.color %>
+		<tr class="kpi_cat <%= color %>">
+		<td><%= cat.kpi_category.name %></td>
+		<td><nobr><%= cat.percent %> %</nobr></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		</tr>
+
+		<% cat.kpi_period_indicators.joins(:indicator).includes(:indicator).order("#{Indicator.table_name}.name").each do |period_indicator| %>
+			<tr class="<%= color %>">
+			<td><%= link_to_indicator period_indicator.indicator %></td>
+			<td><nobr><%= period_indicator.percent %> %</nobr></td>
+			<td><nobr><%= period_indicator.plan %></nobr></td>
+			<td></td>			
+			<td></td>			
+			</tr>
+
+			<% period_indicator.kpi_marks.joins(:inspector).includes(:kpi_indicator_inspector, :inspector).order("#{User.table_name}.lastname").each do |mark| %>
+				<tr class="<%= color %>">
+				<td class="inspector"><%= link_to_user mark.inspector %></td>
+				<td><nobr><%= mark.kpi_indicator_inspector.percent %> %</nobr></td>
+				<td><nobr><%= period_indicator.plan %></nobr></td>
+				<td><nobr><%= mark.fact_value %></nobr></td>			
+				<td></td>			
+				</tr>
+			<% end %>
+		<% end %>
+	<% end %>		
+
+	</tbody>
+	</table>
+<% end %>
 
 <%= render :partial => 'kpi/sidebar' %>

@@ -11,7 +11,7 @@ RedmineApp::Application.routes.draw do
 			get 'marks/:date', :action => 'marks'
 			post 'update_marks'
 			get 'effectiveness'
-			get 'effectiveness/:user', :action => 'effectiveness', :user => /\d+/
+			get 'effectiveness/:date', :action => 'effectiveness'
 		end
 	end
 
