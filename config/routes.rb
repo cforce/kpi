@@ -12,6 +12,7 @@ RedmineApp::Application.routes.draw do
 			post 'update_marks'
 			get 'effectiveness'
 			get 'effectiveness/:date', :action => 'effectiveness'
+			get 'effectiveness/:date/:user_id', :action => 'effectiveness'
 		end
 	end
 
@@ -22,6 +23,15 @@ RedmineApp::Application.routes.draw do
 	match 'kpi_patterns/:id/update_indicators', :controller => 'kpi_patterns', :action => 'update_indicators', :id => /\d+/, :via => :post, :as => 'kpi_patterns_indicators_edit'
 	match 'kpi_patterns/:id/indicators/:indicator_id', :controller => 'kpi_patterns', :action => 'remove_indicator', :id => /\d+/, :via => :delete, :as => 'kpi_pattern_indicator'
 	match 'kpi_patterns/:copy_from/copy', :to => 'kpi_patterns#edit'
+
+	resources :kpi_patterns do
+	    member do
+	      get 'edit_plan'
+	      get 'update_plan'
+	      get 'edit_fact'
+	      get 'update_fact'
+	    end
+	end
 
 	resources :kpi_patterns do
 	    member do

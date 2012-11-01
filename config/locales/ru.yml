@@ -52,4 +52,13 @@ ru:
   input_type_exact_values: "Точные значения из матрицы интерпритации"
   label_my_effectiveness: "Моя результативность"
   percent_of_complete: "Процент"
+  change_fact: "Изменить факт"
+  permission_manage_kpi_indicators: "Управление индикаторами"
+  permission_manage_kpi_patterns: "Управление шаблонами"
+  permission_manage_kpi_periods: "Управление периодами"
+  project_module_kpi: "KPI"
+  permission_update_plan_values: "Изменять планы показателей в расчете"
+  permission_update_fact_values: "Изменять факты показателей в расчете"
+  label_effectiveness: "Результативность."
+  label_effectiveness_calc: "Расчеты результативности"
 

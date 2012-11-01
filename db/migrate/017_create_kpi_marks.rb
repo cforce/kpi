@@ -8,6 +8,7 @@ class CreateKpiMarks < ActiveRecord::Migration
       t.date :start_date
       t.date :end_date
       t.float :fact_value
+      t.float :plan_value
       t.boolean :locked, :default => false, :null => false
       t.timestamps
     end

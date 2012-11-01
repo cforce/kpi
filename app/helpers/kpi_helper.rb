@@ -29,7 +29,67 @@ module KpiHelper
 	def link_to_indicator(indicator)
 		link_to indicator, {:controller => 'indicators', :action => 'show', :id =>indicator}
 	end
+
+	def kpi_percent(value)
+		case value.class.name
+		when 'Float'
+			"<nobr><span class=\"value\">#{'%0.2f' % value.to_f}</span><span class=\"unit\">%</span></nobr>".html_safe
+		when 'NilClass'
+			"<nobr><span class=\"value\">x</span><span class=\"unit\">%</span></nobr>".html_safe
+		else
+			"<nobr><span class=\"value\">#{value}</span><span class=\"unit\">%</span></nobr>".html_safe
+		end
+	end
+
+	def kpi_value(value, abridgement)
+		value='x' if value.nil?
+		"<nobr><span class=\"value\">#{value}</span><span class=\"unit\">#{abridgement}</span></nobr>".html_safe
+	end
+
+	def weighted_average_value(completion)
+		completion.values.compact!=[] ?  completion.inject(0){|kpi, (k, v)| kpi+=(v*k.percent)/100 unless v.nil?; kpi} : nil
+	end
+
+	def get_avg_completion(marks)
+	
+		if marks!={}
+			single_user_marks=[]
+			weights_and_completions={}
+			inspector_id=nil; percent=nil
+			marks.map{|mark, completion| 
+				if mark.inspector_id!=inspector_id 
+					if not inspector_id.nil?
+					weights_and_completions[inspector_id] = {:percent => percent, :completion => single_user_marks.sum/single_user_marks.size}
+					single_user_marks = []
+					end
+				end
+
+				single_user_marks.push completion
+				percent = mark.kpi_indicator_inspector.percent.to_f
+				inspector_id=mark.inspector_id
+				}
+			weights_and_completions[inspector_id] = {:percent => percent, :completion => single_user_marks.sum/single_user_marks.size} unless inspector_id.nil? or percent.nil?
+
+			#weights_and_completions.inspect
+			weights_and_completions.inject(0){|kpi, (k, v)| kpi+=(v[:percent]*v[:completion])/100; kpi}
+		end
+
+	end
+
+	def sidebar_link_to(name, options = {}, html_options = nil, *parameters_for_method_reference)
+    	link_to(name, options, html_options, *parameters_for_method_reference) if User.current.global_permission_to?(options[:controller] || params[:controller], options[:action])
+	end
+
+	def plan_view(value, mark, period_indicator)
+		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi', 'marks')) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
+			link_to value, {:controller => 'kpi', :action => 'marks'}
+		else
+			value
+		end
+	end
+
 =begin
+
 	def link_to_indicator(indicator)
 		link_to_remote indicator,
 		                   :url => {:controller => 'indicators',

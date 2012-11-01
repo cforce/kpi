@@ -47,6 +47,14 @@ module Kpi
 		def superior
 			User.find_by_id(self.parent_id)
 		end
+
+		def subordinates
+			User.where("#{Setting.plugin_kpi['user_superior_id_field']} = ?", id);
+		end
+
+		def subordinate?
+			eval('self.'+Setting.plugin_kpi['user_superior_id_field']) == User.current.id
+		end
 	end	
   end
 end

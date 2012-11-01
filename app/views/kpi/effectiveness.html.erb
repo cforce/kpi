@@ -1,7 +1,10 @@
-<h2><%=l(:label_my_effectiveness)%></h2>
+<h2><%=l(:label_effectiveness)%> <%= @user.name %></h2>
 
 <%= render :partial => 'kpi/period_links' %>
 
+<% if @periods.any? %>
+
+<% i=0 %>
 <% @periods.each do |period| %>
 
 	<table class="list kpi_calc">
@@ -9,6 +12,7 @@
 	<thead>
 		<tr>
 		<th><%= l(:label_kpi_indicators) %></th>
+		<th><%= l(:label_mark_period) %></th>
 		<th class="narrow"><%= l(:weight_label) %></th>
 		<th class="narrow"><%= l(:label_plan) %></th>
 		<th class="narrow"><%= l(:value_of_fact) %></th>
@@ -17,39 +21,86 @@
 	</thead>
 	<tbody>
 
-	<% period.kpi_period_categories.includes(:kpi_category).each do |cat| %>
+	<% cat_avg_completion = {} %>
+
+	<% j=0 %>
+	<% period.kpi_period_categories.includes(:kpi_category, :kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}).each do |cat| %>
 		<% color=cat.kpi_category.color %>
 		<tr class="kpi_cat <%= color %>">
-		<td><%= cat.kpi_category.name %></td>
-		<td><nobr><%= cat.percent %> %</nobr></td>
+		<td colspan="2"><%= cat.kpi_category.name %></td>
+		<td><%= kpi_percent cat.percent %></td>
 		<td></td>
 		<td></td>
-		<td></td>
+		<td id="cat_completion_<%= i %>_<%= j %>"></td>
 		</tr>
+		<% y=0 %>
+		<% indicator_avg_completion = {} %>
 
-		<% cat.kpi_period_indicators.joins(:indicator).includes(:indicator).order("#{Indicator.table_name}.name").each do |period_indicator| %>
-			<tr class="<%= color %>">
-			<td><%= link_to_indicator period_indicator.indicator %></td>
-			<td><nobr><%= period_indicator.percent %> %</nobr></td>
-			<td><nobr><%= period_indicator.plan %></nobr></td>
-			<td></td>			
-			<td></td>			
+		<% cat.kpi_period_indicators.joins(:indicator).includes(:indicator => :kpi_unit).order("#{Indicator.table_name}.name").each do |period_indicator| %>
+
+			<tr class="<%= color %> kpi_indicator">
+			<td colspan="2"><%= link_to_indicator period_indicator.indicator %></td>
+			<td><%= kpi_percent period_indicator.percent %></td>
+			<td></td>
+			<td></td>				
+			<td id="indicator_completion_<%= i %>_<%= j %>_<%= y %>"></td>				
 			</tr>
-
-			<% period_indicator.kpi_marks.joins(:inspector).includes(:kpi_indicator_inspector, :inspector).order("#{User.table_name}.lastname").each do |mark| %>
+			<% marks = {} %>
+			
+			<% x=0 %>
+			<% period_indicator.kpi_marks.joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).includes(:kpi_indicator_inspector, :inspector).order("#{User.table_name}.lastname").each do |mark| %>
 				<tr class="<%= color %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
-				<td><nobr><%= mark.kpi_indicator_inspector.percent %> %</nobr></td>
-				<td><nobr><%= period_indicator.plan %></nobr></td>
-				<td><nobr><%= mark.fact_value %></nobr></td>			
-				<td></td>			
+				<td><%= mark.mark_period %> <small><%= link_to l(:change_fact), {:controller => 'kpi', :action => 'marks'} if mark.inspector == User.current %></small></td>
+				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
+				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator), 
+								        period_indicator.indicator.kpi_unit.abridgement %></nobr></td>
+				<td><nobr><%= kpi_value mark.fact_value, period_indicator.indicator.kpi_unit.abridgement %></nobr></td>		
+				<% 
+				completion = mark.completion(period_indicator)
+				marks[mark] = completion unless completion.nil?
+				 %>		
+				<td><%= kpi_percent completion %></td>
 				</tr>
+			<% x+=1 %>
 			<% end %>
-		<% end %>
-	<% end %>		
 
-	</tbody>
-	</table>
+			<tr class="I">
+			<td colspan="6">
+			<div class="portable_data" data-target-id="indicator_completion_<%= i %>_<%= j %>_<%= y %>">
+			<% indicator_avg_completion[period_indicator] = get_avg_completion(marks)  %>
+			<%= kpi_percent indicator_avg_completion[period_indicator] %>	
+			</div>
+			</td>
+			</tr>
+
+		<% y+=1 %>
+		<% end %>
+
+
+		<tr class="I">
+		<td colspan="6">
+		<div class="portable_data" data-target-id="cat_completion_<%= i %>_<%= j %>">
+			<% cat_avg_completion[cat] = weighted_average_value(indicator_avg_completion) %>
+			<%= kpi_percent cat_avg_completion[cat] %>
+		</div>
+		</td>
+		</tr>
+	
+	<% j+=1 %>
+	<% end %>	
+	
+	</tbody></table>
+
+<div class="kpi_factor">
+<%= kpi_percent weighted_average_value(cat_avg_completion) %>
+</div>
+
+<% i+=1 %>
+<% end %>
+
+<% else %>
+	 <p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>
 
 <%= render :partial => 'kpi/sidebar' %>

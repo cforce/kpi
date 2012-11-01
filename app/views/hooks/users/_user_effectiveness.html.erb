@@ -1,0 +1,5 @@
+<h3><%= l(:label_effectiveness) %></h3>
+
+<ul>
+<li><%= link_to l(:label_effectiveness_calc), {:controller => 'kpi', :action => 'effectiveness', :date => Date.current.beginning_of_month, :user_id => @user.id} %></li>
+</ul>

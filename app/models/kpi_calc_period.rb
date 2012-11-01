@@ -18,7 +18,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	has_many :inspectors, :through => :kpi_indicator_inspectors
 
 	scope :actual, :conditions => "#{KpiCalcPeriod.table_name}.locked != 1 OR #{KpiCalcPeriod.table_name}.active = 1"	
-
+	scope :active, :conditions => "#{KpiCalcPeriod.table_name}.active = 1"	
 
 	#before_save :deny_save_if_period_active
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
@@ -112,7 +112,8 @@ class KpiCalcPeriod < ActiveRecord::Base
 							KpiMark.create(:end_date => kpi_mark_end_date,
 										   :start_date => kpi_mark_start_date,
 										   :kpi_indicator_inspector_id => inspector.id,
-										   :user_id => user.id, 
+										   :user_id => user.id,
+										   :plan_value => e.plan_value,
 										   :inspector_id => inspector.user_id.nil? ? user.superior.id : inspector.user_id )
 						end
 					end

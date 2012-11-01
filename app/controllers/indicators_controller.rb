@@ -1,4 +1,6 @@
 class IndicatorsController < ApplicationController
+	before_filter :authorized_globaly?, :except => [:show]
+
 	before_filter :find_kpi_units, :only => [:new, :edit]
 	before_filter :find_categories, :only => [:new, :edit]
 	before_filter :find_indicators, :only => [:index]

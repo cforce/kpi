@@ -4,7 +4,7 @@ class KpiController < ApplicationController
 	before_filter :find_marks, :only => [:marks, :update_marks]
 	before_filter :find_actual_period_dates, :only => [:marks]
 	before_filter :find_user_period_dates, :only => [:effectiveness]
-	
+	before_filter :check_user, :only => [:effectiveness]
 
 	def index
 
@@ -17,7 +17,7 @@ class KpiController < ApplicationController
 	def effectiveness
 		find_user
 		find_date
-		@periods = @user.kpi_calc_periods.where("date = ?", @date)
+		@periods = @user.kpi_calc_periods.active.where("date = ?", @date)
 	end
 
 	def update_marks
@@ -59,10 +59,14 @@ class KpiController < ApplicationController
 	def find_user_period_dates
 		find_date
 		find_user
-		@period_dates = @user.kpi_calc_periods.select(:date).group(:date).order(:date)
+		@period_dates = @user.kpi_calc_periods.active.select(:date).group(:date).order(:date)
 	end
 
 	def find_user
-		@user = User.current
+		@user = params[:user_id].nil? ? User.current : User.find(params[:user_id])
+	end
+
+	def check_user
+		render_403 if User.current != @user and not @user.subordinate? and not User.current.admin?
 	end
 end

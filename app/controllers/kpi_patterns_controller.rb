@@ -1,5 +1,6 @@
 
 class KpiPatternsController < ApplicationController
+	before_filter :authorized_globaly?
 
 	before_filter :find_patterns, :only => [:index]
 	before_filter :get_pattern, :except => [:new, :create, :index]

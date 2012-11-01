@@ -1,14 +1,27 @@
 <% content_for :sidebar do %>
 <ul>
-	<li>
-	<%= link_to "<span>#{l(:label_kpi_indicators)}</span>".html_safe, {:controller => "indicators", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='indicators'}" %>
-	</li>
-	<li>
-	<%= link_to "<span>#{l(:label_kpi_patterns)}</span>".html_safe, {:controller => "kpi_patterns", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_patterns'}" %>
-	</li>
-	<li>
-	<%= link_to "<span>#{l(:label_kpi_calc_periods)}</span>".html_safe, {:controller => "kpi_calc_periods", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_calc_periods'}" %>
-	</li>
+	<% if User.current.global_permission_to?('indicators', 'index') %>
+		<li>
+		<%=	link_to "<span>#{l(:label_kpi_indicators)}</span>".html_safe, 
+					{:controller => "indicators", :action => "index"}, 
+					:class=>"no_line #{'selected' if controller.controller_name=='indicators'}" 
+		%>
+		</li>
+	<% end %>
+
+	<% if User.current.global_permission_to?('kpi_patterns', 'index') %>
+		<li>
+		<%= link_to "<span>#{l(:label_kpi_patterns)}</span>".html_safe,
+					{:controller => "kpi_patterns", :action => "index"},
+					:class=>"no_line #{'selected' if controller.controller_name=='kpi_patterns'}" %>
+		</li>
+	<% end %>
+
+	<% if User.current.global_permission_to?('kpi_calc_periods', 'index') %>
+		<li>
+		<%= link_to "<span>#{l(:label_kpi_calc_periods)}</span>".html_safe, {:controller => "kpi_calc_periods", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_calc_periods'}" %>
+		</li>
+	<% end %>
 </ul>
 
 <ul>
@@ -17,12 +30,24 @@
 	</li>
 
 	<li>
-	<%= link_to "<span>#{l(:label_my_effectiveness)}</span>".html_safe, {:controller => "kpi", :action => "effectiveness"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi' and controller.action_name=='effectiveness'}" %>
+	<%= link_to "<span>#{l(:label_my_effectiveness)}</span>".html_safe, 
+				{:controller => "kpi", :action => "effectiveness", :date => params[:date] || Date.current.beginning_of_month, :user_id => User.current.id},
+				:class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}" %>
 	</li>
 
 </ul>
 
+<ul>
+<% User.current.subordinates.each do |user| %>
+	<li><%= link_to "<span>#{user.name}</span>".html_safe, 
+					{:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || Date.current.beginning_of_month, :user_id => user.id},
+					:class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user.id}" %>
+	</li>
 <% end %>
+</ul>
+
+<% end %>
+
 
 <% content_for :header_tags do %>
   <%= javascript_include_tag 'kpi.js', :plugin => 'kpi' %>

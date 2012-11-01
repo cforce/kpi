@@ -108,6 +108,11 @@ span.arr
 
 table.list tbody tr.kpi_cat td
 	{
+	font-weight: bold;
+	background-color: #f7f7f7;
+	}
+table.list tbody tr.kpi_indicator td
+	{
 	border-bottom: 1px solid #a8a8a8;
 	}
 
@@ -119,4 +124,24 @@ th.narrow
 table.kpi_calc tr td.inspector
 	{
 	padding-left: 30px;	
+	}
+
+span.value
+	{
+	margin-right: 20px;
+	}
+
+span.unit
+	{
+	font-weight: normal;
+	font-size: 0.8em;
+	color: #c2c2c2;
+	float: right;
+	margin-left: -20px;
+	}
+
+.kpi_factor
+	{
+	text-align: right;
+	font-size: 2em;
 	}
