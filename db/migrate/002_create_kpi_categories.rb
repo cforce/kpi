@@ -7,9 +7,9 @@ class CreateKpiCategories < ActiveRecord::Migration
       t.timestamps
     end
 
-    KpiCategory.create(:name => "Личный план работ", :color => "red", :percent => 30)
-    KpiCategory.create(:name => "Обратная связь", :color => "green", :percent => 40)
-    KpiCategory.create(:name => "KPI-показатели", :color => "blue", :percent => 30)
+    KpiCategory.create(:name => "Личный план работ", :color => "red")
+    KpiCategory.create(:name => "Обратная связь", :color => "green")
+    KpiCategory.create(:name => "KPI-показатели", :color => "blue")
   end
 
   def self.down
