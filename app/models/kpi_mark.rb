@@ -15,7 +15,7 @@ class KpiMark < ActiveRecord::Base
 	end
 
 	def plan(period_indicator)
-		Indicator::INTERPRETATION_FACT == period_indicator.interpretation ?	period_indicator.plan_value :
+		Indicator::INTERPRETATION_FACT == period_indicator.interpretation ?	plan_value :
 																			((period_indicator.matrix['percent'].index('100').nil?) ? 
 																			1 : 
 																			period_indicator.matrix['value_of_fact'][period_indicator.matrix['percent'].index('100')])

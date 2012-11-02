@@ -24,12 +24,12 @@ RedmineApp::Application.routes.draw do
 	match 'kpi_patterns/:id/indicators/:indicator_id', :controller => 'kpi_patterns', :action => 'remove_indicator', :id => /\d+/, :via => :delete, :as => 'kpi_pattern_indicator'
 	match 'kpi_patterns/:copy_from/copy', :to => 'kpi_patterns#edit'
 
-	resources :kpi_patterns do
+	resources :kpi_marks do
 	    member do
 	      get 'edit_plan'
-	      get 'update_plan'
+	      post 'update_plan'
 	      get 'edit_fact'
-	      get 'update_fact'
+	      post 'update_fact'
 	    end
 	end
 

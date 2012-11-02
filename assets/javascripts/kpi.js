@@ -25,9 +25,13 @@ document.observe('dom:loaded', function(){
 
 		});	
 
+	portable_data_apply();
+	
+	});
+
+function portable_data_apply()
+	{
 	jQuery('div.portable_data').each(function(){
 		jQuery('#'+jQuery(this).attr('data-target-id')).html(jQuery(this).html());
 		});
-	
-
-	});
+	}

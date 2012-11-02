@@ -56,9 +56,9 @@ div#tab-content-indicators fieldset label {
 	display: block;
 	}
 
-table.indicators td.weight input, td.fact_value input
+table.indicators td.weight input, td.fact_value input, input.fact_value
 	{
-	width: 60px;
+	width: 120px;
 	}
 
 tr.not_integrity

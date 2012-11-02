@@ -80,9 +80,9 @@ module KpiHelper
     	link_to(name, options, html_options, *parameters_for_method_reference) if User.current.global_permission_to?(options[:controller] || params[:controller], options[:action])
 	end
 
-	def plan_view(value, mark, period_indicator)
+	def plan_view(value, mark, period_indicator, period)
 		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi', 'marks')) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
-			link_to value, {:controller => 'kpi', :action => 'marks'}
+			link_to_modal_window value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}
 		else
 			value
 		end
