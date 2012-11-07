@@ -1,4 +1,4 @@
-document.observe('dom:loaded', function(){
+jQuery(document).ready(function(){
 	jQuery('#indicator_interpretation').change(function(){
 	    if(jQuery(this).val()==1)
 		    jQuery('#kpi_matrix').show()
@@ -26,6 +26,10 @@ document.observe('dom:loaded', function(){
 		});	
 
 	portable_data_apply();
+
+	jQuery(document.body).on('modal_window_shown', '.modal_window', function(){  
+		jQuery(this).find("form input:text:first").focus();
+		});
 	
 	});
 

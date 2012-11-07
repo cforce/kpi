@@ -61,4 +61,5 @@ ru:
   permission_update_fact_values: "Изменять факты показателей в расчете"
   label_effectiveness: "Результативность."
   label_effectiveness_calc: "Расчеты результативности"
+  label_kpi_mark: "Оценка"
 

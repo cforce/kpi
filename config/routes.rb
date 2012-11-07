@@ -26,8 +26,8 @@ RedmineApp::Application.routes.draw do
 
 	resources :kpi_marks do
 	    member do
-	      get 'edit_plan'
-	      post 'update_plan'
+	      get 'edit_plan/:user_id', :action => 'edit_plan'
+	      post 'update_plan/:user_id', :action => 'update_plan'
 	      get 'edit_fact'
 	      post 'update_fact'
 	    end
