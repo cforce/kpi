@@ -20,10 +20,11 @@
 
 <div class="splitcontentright">
 <div class="box tabular">
+<p><%= f.select :pattern, get_fact_pattern_options, :label => l(:kpi_fact_pattern), :required => false %></p>
+
 <p><%= f.select :interpretation, ([[l("kpi_interpretation_label_#{Indicator::INTERPRETATION_FACT}"), Indicator::INTERPRETATION_FACT],
 								  [l("kpi_interpretation_label_#{Indicator::INTERPRETATION_MATRIX}"), Indicator::INTERPRETATION_MATRIX]]),
 								  :label => l(:kpi_interpretation_label), :required => true %></p>
-
 
 <% if @indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s or @indicator.interpretation.nil? %>
 	<% table_style='style="display:none;"'.html_safe %>
@@ -31,7 +32,8 @@
 	<% table_style='' %>
 <% end %>
 
-<table class="list" id="kpi_matrix" <%= table_style %>>
+<div id="kpi_matrix_div" <%= table_style %>>
+<table class="list" id="kpi_matrix">
 <tr>
 <th><%= l(:value_of_fact) %></th>
 <th><%= l(:percent) %></th>
@@ -40,17 +42,26 @@
 
 <% if !@indicator.matrix.nil? and !@indicator.matrix['value_of_fact'].nil? %>
 	<% style='style="display:none;"'  %>
-	<% style='' if @indicator.matrix['value_of_fact'].size>1 %>
+	<% style='' if @indicator.matrix['value_of_fact'].size>2 %>
 	<% @indicator.matrix['value_of_fact'].each do |v| %>
 		<%= get_matrix_row(v, @indicator.matrix['percent'][@indicator.matrix['value_of_fact'].index(v)], style) %>
 	<% end %>
 <% else %>
 	<%= get_matrix_row %>
+	<%= get_matrix_row %>
 <% end %>
-
-
-
 </table>
+
+<br/>
+<a href="#" id="fill_mark_values"><%= l(:fill_mark) %></a>
+<div class="I" id="kpi_mark_values">
+<span><div>5</div><div>150</div></span>
+<span><div>4</div><div>100</div></span>
+<span><div>3</div><div>50</div></span>
+<span><div>2</div><div>0</div></span>
+<span><div>1</div><div>-50</div></span>
+</div>
+</div>
 
 </div>
 </div>

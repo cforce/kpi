@@ -10,5 +10,7 @@ module IndicatorsHelper
 		</tr>".html_safe
 	end	
 
-
+	def get_fact_pattern_options
+		[['', '']] + Indicator::FACT_PATTERNS.map{|k,v| [l(v), k]}
+	end
 end

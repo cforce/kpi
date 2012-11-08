@@ -7,9 +7,11 @@ class CreateKpiIssueMarks < ActiveRecord::Migration
       t.timestamps
     end
 
-    KpiIssueMark.create(:value => "5", :title => "Отлично")
-    KpiIssueMark.create(:value => "4", :title => "Хорошо")
-    KpiIssueMark.create(:value => "3", :title => "Удовлетворительно")
+    KpiIssueMark.create(:value => "150", :title => "Отлично")
+    KpiIssueMark.create(:value => "100", :title => "Хорошо")
+    KpiIssueMark.create(:value => "50", :title => "Удовлетворительно")
+    KpiIssueMark.create(:value => "0", :title => "Плохо")
+    KpiIssueMark.create(:value => "-50", :title => "Опасно")    
   end
 
   def self.down

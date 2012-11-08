@@ -4,6 +4,8 @@ class ChangeIndicators < ActiveRecord::Migration
     change_table :indicators do |t|
       t.integer :input_type, :null => false, :default => 0
       t.integer :behaviour_type, :null => false, :default => 0
+      t.integer :pattern, :null => false, :default => 0
+      t.text :pattern_settings
     end
   end
 
@@ -11,6 +13,8 @@ class ChangeIndicators < ActiveRecord::Migration
     change_table :indicators do |t|
       t.remove :input_type
       t.remove :behaviour_type
+      t.remove :pattern
+      t.remove :pattern_settings
     end 
   end
 end

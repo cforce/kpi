@@ -2,6 +2,7 @@ class Indicator < ActiveRecord::Base
   validates_presence_of :name, :kpi_category_id, :kpi_unit_id, :interpretation
   validates_uniqueness_of :name
   validates_length_of :name, :maximum => 120
+  validate :matrix_has_more_two_items, :matrix_should_not_have_empty_values
   before_destroy :pattern_not_exist
  
   serialize :matrix
@@ -27,6 +28,8 @@ class Indicator < ActiveRecord::Base
   INPUT_TYPES={'0' => 'direct_input',
                '1' => 'exact_values'}
 
+  FACT_PATTERNS = {'1' => 'avg_custom_field_mark_in_current_period'}               
+
   def pattern_not_exist 	
     errors.add(:base, l(:you_can_not_destroy_indicator)) if kpi_pattern_indicators.any?
     errors.blank?
@@ -34,5 +37,13 @@ class Indicator < ActiveRecord::Base
 
   def to_s
   	name
+  end
+
+  def matrix_has_more_two_items
+    errors.add(:matrix, l(:have_to_have_more_then_one_item)) if interpretation == Indicator::INTERPRETATION_MATRIX and matrix['value_of_fact'].size<2
+  end
+
+  def matrix_should_not_have_empty_values
+    errors.add(:matrix, l(:should_not_have_empty_values)) if matrix['value_of_fact'].include?("") or matrix['percent'].include?("")
   end
 end
