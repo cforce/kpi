@@ -11,6 +11,22 @@ module IndicatorsHelper
 	end	
 
 	def get_fact_pattern_options
-		[['', '']] + Indicator::FACT_PATTERNS.map{|k,v| [l(v), k]}
+		Indicator::FACT_PATTERNS.map{|k,v| [l(v), k]}
+	end
+
+	def options_for_mark_custom_field(indicator)
+		default = nil
+
+		if not indicator.pattern_settings.nil?
+			default = indicator.pattern_settings['mark_custom_field']  if not indicator.pattern_settings['mark_custom_field'].nil?
+		end		
+
+		options_for_select(CustomField.where(:field_format => 'kpi_mark').order(:name).map{ |u| [u.name, u.id]}, default)
+	end
+
+	def get_num_on_period
+		num=[]
+		Indicator::MAX_NUM_IN_PERIOD.times{|i| num[i]=[i+1, i+1]}
+		num
 	end
 end

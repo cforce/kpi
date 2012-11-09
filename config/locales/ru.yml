@@ -64,8 +64,12 @@ ru:
   label_kpi_mark: "Оценка"
   kpi_fact_pattern: "Шаблон расчета"
   avg_custom_field_mark_in_current_period: "Средняя оценка по задачам"
+  issue_hours_in_current_period: "Количество рабочих часов по задачам"
+  issue_lag_in_current_period: "Средняя задержка по задачам"
   field_matrix: "Матрица интерпритации"
   have_to_have_more_then_one_item: "должна иметь больше одной строки"
   should_not_have_empty_values: "не должна иметь пустых значений"
   fill_mark: "Заполнить значения для оценки"
+  mark_custom_field: "Оценка"
+  no_pattern: "Без шаблона"
 

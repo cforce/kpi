@@ -18,6 +18,7 @@ class KpiController < ApplicationController
 		find_user
 		find_date
 		@periods = @user.kpi_calc_periods.active.where("date = ?", @date)
+
 	end
 
 	def update_marks

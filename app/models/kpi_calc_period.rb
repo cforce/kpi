@@ -19,6 +19,8 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	scope :actual, :conditions => "#{KpiCalcPeriod.table_name}.locked != 1 OR #{KpiCalcPeriod.table_name}.active = 1"	
 	scope :active, :conditions => "#{KpiCalcPeriod.table_name}.active = 1"	
+	scope :active_opened, :conditions => "#{KpiCalcPeriod.table_name}.active = 1 AND #{KpiCalcPeriod.table_name}.locked != 1 "	
+
 
 	#before_save :deny_save_if_period_active
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
@@ -62,7 +64,9 @@ class KpiCalcPeriod < ActiveRecord::Base
 									  :num_on_period => e.indicator.num_on_period,
 									  :input_type => e.indicator.input_type,
 									  :behaviour_type => e.indicator.behaviour_type,
-									  :matrix => e.indicator.matrix
+									  :matrix => e.indicator.matrix,
+									  :pattern => e.indicator.pattern,
+									  :pattern_settings => e.indicator.pattern_settings
 									  )
 			end
 	end

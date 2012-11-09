@@ -38,7 +38,12 @@ jQuery(document).ready(function(){
 		jQuery('#kpi_matrix tr:eq(1)').remove();   
 		return false;
 		});
-	
+
+
+	jQuery('#indicator_pattern').change(function(){
+		show_hide_custom_fields()
+		});
+	show_hide_custom_fields()
 	});
 
 function portable_data_apply()
@@ -52,5 +57,14 @@ function make_next_matrix_row(current_link, value, percent)
 	{
 	var tr=current_link.parent().parent();
     current_link.next('a.icon-del').show();
-	tr.after(tr.clone(true).find('input:eq(0)').val(value).end());
+    var tr_clone = tr.clone(true)
+    tr_clone.find('input:eq(0)').val(value)
+    tr_clone.find('input:eq(1)').val(percent)
+	tr.after(tr_clone);
+	}
+
+function show_hide_custom_fields()
+	{
+	jQuery('#kpi_pattern_custom_fields p').hide()
+	jQuery('#kpi_pattern_custom_field_'+jQuery('#indicator_pattern').val()).show()
 	}

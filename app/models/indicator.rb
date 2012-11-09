@@ -6,6 +6,7 @@ class Indicator < ActiveRecord::Base
   before_destroy :pattern_not_exist
  
   serialize :matrix
+  serialize :pattern_settings
 
   belongs_to :kpi_category
   belongs_to :kpi_unit
@@ -28,7 +29,14 @@ class Indicator < ActiveRecord::Base
   INPUT_TYPES={'0' => 'direct_input',
                '1' => 'exact_values'}
 
-  FACT_PATTERNS = {'1' => 'avg_custom_field_mark_in_current_period'}               
+  FACT_PATTERNS = {
+                  '' => 'no_pattern',
+                  '1' => 'avg_custom_field_mark_in_current_period',
+                  '2' => 'issue_hours_in_current_period',
+                  '3' => 'issue_lag_in_current_period'
+                  }     
+
+  MAX_NUM_IN_PERIOD=5          
 
   def pattern_not_exist 	
     errors.add(:base, l(:you_can_not_destroy_indicator)) if kpi_pattern_indicators.any?
@@ -44,6 +52,6 @@ class Indicator < ActiveRecord::Base
   end
 
   def matrix_should_not_have_empty_values
-    errors.add(:matrix, l(:should_not_have_empty_values)) if matrix['value_of_fact'].include?("") or matrix['percent'].include?("")
+    errors.add(:matrix, l(:should_not_have_empty_values)) if interpretation == Indicator::INTERPRETATION_MATRIX and (matrix['value_of_fact'].include?("") or matrix['percent'].include?(""))
   end
 end

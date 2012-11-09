@@ -34,11 +34,11 @@ module Kpi
 		end
 
 		def get_my_marks
-			kpi_inspector_marks.where('kpi_marks.end_date <= ?', Date.today)
+			kpi_inspector_marks.joins(:kpi_period_indicator).where("#{KpiMark.table_name}.end_date <= ? AND #{KpiPeriodIndicator.table_name}.pattern is NULL", Date.today)
 		end
 
 		def get_my_marks_num
-			get_my_marks.where('fact_value IS NULL').count
+			get_my_marks.where("#{KpiMark.table_name}.fact_value IS NULL").count
 		end
 
 		def superior

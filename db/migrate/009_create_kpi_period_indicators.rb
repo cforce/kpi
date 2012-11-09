@@ -13,6 +13,8 @@ class CreateKpiPeriodIndicators < ActiveRecord::Migration
       t.integer :input_type, :null => false, :default => 0
       t.integer :behaviour_type, :null => false, :default => 0
       t.text :matrix
+      t.integer :pattern
+      t.text :pattern_settings      
       t.timestamps
     end
   end

@@ -1,8 +1,11 @@
+
 <div class="contextual">
 <%= render :partial => 'kpi/kpi_common_links' %>
 </div>
 
 <h2><%=l(:label_kpi_indicators)%></h2>
+
+<% if @indicators.any? %>
 
 <table class="list indicators">
 <thead>
@@ -31,5 +34,9 @@
 </tbody>
 
 </table>
+
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
 
 <%= render :partial => 'kpi/sidebar' %>

@@ -4,6 +4,8 @@ class KpiMark < ActiveRecord::Base
 	belongs_to :kpi_indicator_inspector
 	belongs_to :user
 	belongs_to :inspector, :class_name => 'User', :foreign_key => 'inspector_id'
+	has_one :kpi_period_indicator, :through => :kpi_indicator_inspector
+	
 
 	#before_save :check_inspector
 

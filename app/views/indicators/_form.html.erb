@@ -8,7 +8,7 @@
 <p><%= f.select :input_type, (Indicator::INPUT_TYPES.map{|k,v| [l("input_type_#{v}"), k]}), :required => true %></p>
 <p><%= f.select :kpi_category_id, (@kpi_categories.collect {|p| [p.name, p.id]}), :label => l(:kpi_category_label), :required => true %></p>
 <p><%= f.select :kpi_unit_id, (@kpi_units.collect {|p| [p.name, p.id]}), :label => l(:kpi_indicator_unit_label), :required => true %></p>
-<p><%= f.select :num_on_period, [[1, 1], [2, 2], [3, 3], [4, 4]], :required => true %></p>
+<p><%= f.select :num_on_period, get_num_on_period, :required => true %></p>
 <p>   <%= f.text_area :description,
                    :cols => 60,
                    :rows => (@indicator.description.blank? ? 10 : [[10, @indicator.description.length / 50].max, 70].min),
@@ -21,6 +21,13 @@
 <div class="splitcontentright">
 <div class="box tabular">
 <p><%= f.select :pattern, get_fact_pattern_options, :label => l(:kpi_fact_pattern), :required => false %></p>
+
+<div id="kpi_pattern_custom_fields">
+<p class="I" id="kpi_pattern_custom_field_1">
+<%= label_tag 'indicator_pattern_settings_mark_custom_field', l(:mark_custom_field) %>
+<%= select_tag 'indicator[pattern_settings][mark_custom_field]', options_for_mark_custom_field(@indicator) %>
+</p>
+</div>
 
 <p><%= f.select :interpretation, ([[l("kpi_interpretation_label_#{Indicator::INTERPRETATION_FACT}"), Indicator::INTERPRETATION_FACT],
 								  [l("kpi_interpretation_label_#{Indicator::INTERPRETATION_MATRIX}"), Indicator::INTERPRETATION_MATRIX]]),

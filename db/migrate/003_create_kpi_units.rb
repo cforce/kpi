@@ -9,6 +9,9 @@ class CreateKpiUnits < ActiveRecord::Migration
 
     KpiUnit.create(:name => "Дни", :abridgement => "дн.")
     KpiUnit.create(:name => "Часы", :abridgement => "ч.")
+    KpiUnit.create(:name => "Рубли", :abridgement => "р.")
+    KpiUnit.create(:name => "Штуки", :abridgement => "")
+    KpiUnit.create(:name => "Процент", :abridgement => "%")
   end
 
   def self.down
