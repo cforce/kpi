@@ -23,7 +23,8 @@ Redmine::Plugin.register :kpi do
 	settings :partial => 'settings/kpi_settings',
              :default => {
               "user_superior_id_field" => "parent_id",
-              "executor_id_issue_field" => "executor_id"
+              "executor_id_issue_field" => "executor_id",
+              "check_date_issue_field" => "check_date"
              }    
 end
 

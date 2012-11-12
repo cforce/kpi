@@ -19,8 +19,8 @@
         	<% end %>
         	<% last_indicator_id = e.indicator_id %>
         </td>
-        <td class="weight">
-        <input type="text" tabindex="<%= i %>" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" <%= "disabled" if @period.active %> /> <%= e.indicator.kpi_unit.abridgement %>
+        <td class="fact_value">
+        <nobr><input type="text" tabindex="<%= i %>" name="plan_value[<%= h e.id %>]" value="<%= h e.plan_value %>" <%= "disabled" if @period.active %> /> <%= e.indicator.kpi_unit.abridgement %></nobr>
         </td>
 
       </tr>
