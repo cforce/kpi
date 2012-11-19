@@ -1,11 +1,11 @@
 class KpiCalcPeriodsController < ApplicationController
 	before_filter :authorized_globaly?
 	
-	before_filter :find_period, :only => [:edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans, :activate]
+	before_filter :find_period, :only => [:edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
 	before_filter :find_patterns, :only => [:new, :edit]
 	before_filter :find_calc_periods, :only => [:index]
 	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
-	before_filter :find_users, :only => [:edit, :update, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
+	before_filter :find_users, :only => [:edit, :update, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans]
 
 	def index
 		
@@ -87,6 +87,11 @@ class KpiCalcPeriodsController < ApplicationController
 	    render 'groups/autocomplete_for_user', :layout => false
 	end
 
+	def autocomplete_for_applied_user
+	    @users = User.active.not_in_kpi_period(@period).like(params[:q]).all(:limit => 100)
+	    render 'groups/autocomplete_for_user', :layout => false
+	end
+
 	def add_inspectors
 	    if request.post?
 	    indicators=[]
@@ -113,6 +118,33 @@ class KpiCalcPeriodsController < ApplicationController
 	    end		
 	end
 
+	def add_users
+	    if request.post?
+	    period_users=[]
+	    params[:user_ids].each do |user_id|
+	    	period_user=KpiPeriodUser.new
+	    	period_user.user_id=user_id
+	    	period_user.kpi_calc_period_id=@period.id
+	    	period_user.save
+	    	period_users.push(period_user)
+	    	end
+	    end
+
+	    @period.create_marks(User.find(params[:user_ids]))
+
+	    #get_integrity_warnings
+
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'apply_to' }
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "tab-content-apply_to", :partial => 'kpi_calc_periods/apply_to'
+	          period_users.each {|period_user| page.visual_effect(:highlight, "user-#{period_user.id}")}
+	        }
+	      }
+	    end		
+	end
+
 	def remove_inspector
 		@indicator_inspector = KpiIndicatorInspector.find(params[:indicator_inspector_id])
 		@indicator_inspector.destroy
@@ -124,6 +156,18 @@ class KpiCalcPeriodsController < ApplicationController
 	      						}}
 	    end		
 	end
+
+	def remove_user
+		@period_user = KpiPeriodUser.find(params[:period_user_id])
+		@period_user.destroy
+		#get_integrity_warnings
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'apply_to' }
+	      format.js { render(:update) {|page| page.replace_html "tab-content-apply_to", :partial => 'kpi_calc_periods/apply_to'
+	      						}}
+	    end		
+	end	
+
 
 	def update_inspectors
 		params[:percent].each{|k,v|
@@ -163,24 +207,6 @@ class KpiCalcPeriodsController < ApplicationController
 
 	private
 
-
-=begin
-	def get_integrity_warnings
-		if(@period.integrity?)
-			@period.integrity=true
-			@period.save
-		else
-			@kpi_warnings.push('inspectors_weight_sum_not_equal_100') 
-			#Rails.logger.debug('ssssssssss')
-			@period.integrity=false
-			@period.save
-		end
-	end
-=end
-
-	#def find_indicators
-	#	@indicators=@period.indicators
-	#end
 
 	def find_period
 		@saved_errors=[]

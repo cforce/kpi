@@ -92,7 +92,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 		end
 	end
 
-	def create_marks
+	def create_marks(selected_users = nil)
 		last_day_in_month = date.end_of_month.day
 
 		kpi_period_indicators.includes(:kpi_indicator_inspectors).each do |e|
@@ -111,7 +111,10 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 				kpi_mark_end_date=date+(days-1).days
 				kpi_mark_start_date=date+old_days.days
-				users.each do |user|
+
+				selected_users = (selected_users.nil?) ? users : selected_users
+
+				selected_users.each do |user|
 					e.kpi_indicator_inspectors.each do |inspector|	
 							KpiMark.create(:end_date => kpi_mark_end_date,
 										   :start_date => kpi_mark_start_date,

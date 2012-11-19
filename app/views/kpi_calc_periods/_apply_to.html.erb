@@ -1,0 +1,58 @@
+<div class="splitcontentleft">
+<% if @period.users.any? %>
+  <table class="list users">
+    <thead><tr>
+      <th><%= l(:label_user) %></th>
+      <th style="width:15%"></th>
+    </tr></thead>
+    <tbody>
+    <% @period.kpi_period_users.includes(:user).sort.each do |kpi_period_user| %>
+      <tr id="user-<%= kpi_period_user.id %>" class="<%= cycle 'odd', 'even' %>">
+        <td class="user"><%= link_to_user kpi_period_user.user %>
+        </td>
+        <td class="buttons">
+
+            <%= link_to_remote(
+                  l(:button_delete),
+                  { :url => remove_user_kpi_calc_period_path(@period, :period_user_id => kpi_period_user.id),
+                    :method => :delete },
+                  :class => 'icon icon-del'
+                ) %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+</div>
+
+<div class="splitcontentright">
+<% users = User.active.not_in_kpi_period(@period).all(:limit => 100) %>
+<% if users.any? %>
+  <%= form_for(@period, :remote => true, :url => add_users_kpi_calc_period_path(@period),
+               :html => {:method => :post}) do |f| %>
+    <fieldset><legend><%=l(:label_user_new)%></legend>
+    <p><%= label_tag "applied_user_search", l(:label_user_search) %><%= text_field_tag 'applied_user_search', nil, :class => 'user_search' %></p>
+
+    <%= observe_field(:applied_user_search,
+                 :frequency => 0.5,
+                 :update => :applied_users,
+                 :url => autocomplete_for_applied_user_kpi_calc_period_path(@period),
+                 :method => :get,
+                 :before => '$("applied_user_search").addClassName("ajax-loading")',
+                 :complete => '$("applied_user_search").removeClassName("ajax-loading")',
+                 :with => 'q')
+                  %>
+
+    <div id="applied_users">
+      <%= principals_check_box_tags 'user_ids[]', users %>
+    </div>
+
+    <p><%= submit_tag l(:button_add) %></p>
+    </fieldset>
+  <% end %>
+<% end %>
+
+</div>
