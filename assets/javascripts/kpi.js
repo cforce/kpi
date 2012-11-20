@@ -7,7 +7,7 @@ jQuery(document).ready(function(){
 		});
 
 	jQuery('#kpi_matrix a.icon-add').click(function(){
-		make_next_matrix_row(jQuery(this), '', '')
+		make_next_matrix_row(jQuery(this), '', '', '')
 		return false;
 		});
 
@@ -33,7 +33,7 @@ jQuery(document).ready(function(){
 		jQuery('#kpi_matrix tr:gt(1)').remove();
 		jQuery('#kpi_matrix tr input').val('');
 		jQuery('#kpi_mark_values span').each(function(){
-			make_next_matrix_row(jQuery('#kpi_matrix tr:last a.icon-add'), jQuery(this).find('div:eq(0)').html(), jQuery(this).find('div:eq(1)').html())
+			make_next_matrix_row(jQuery('#kpi_matrix tr:last a.icon-add'), jQuery(this).find('div:eq(1)').html(), jQuery(this).find('div:eq(2)').html(), jQuery(this).find('div:eq(0)').html())
 			});	   
 		jQuery('#kpi_matrix tr:eq(1)').remove();   
 		return false;
@@ -53,13 +53,14 @@ function portable_data_apply()
 		});
 	}
 
-function make_next_matrix_row(current_link, value, percent)
+function make_next_matrix_row(current_link, value, percent, title)
 	{
 	var tr=current_link.parent().parent();
     current_link.next('a.icon-del').show();
     var tr_clone = tr.clone(true)
-    tr_clone.find('input:eq(0)').val(value)
-    tr_clone.find('input:eq(1)').val(percent)
+    tr_clone.find('input:eq(1)').val(value)
+    tr_clone.find('input:eq(2)').val(percent)
+    tr_clone.find('input:eq(0)').val(title)
 	tr.after(tr_clone);
 	}
 

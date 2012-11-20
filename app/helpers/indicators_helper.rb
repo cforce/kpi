@@ -1,6 +1,7 @@
 module IndicatorsHelper
-	def get_matrix_row(value_of_fact='', percent='', style='style="display:none;"')
+	def get_matrix_row(value_of_fact='', percent='', style='style="display:none;"', title='')
 		"<tr>
+		<td><input type=\"text\" name=\"indicator[matrix][title][]\" class=\"value_of_fact\" value=\"#{title}\" /></td>
 		<td><input type=\"text\" name=\"indicator[matrix][value_of_fact][]\" class=\"value_of_fact\" value=\"#{value_of_fact}\" /></td>
 		<td><input type=\"text\" name=\"indicator[matrix][percent][]\" class=\"percent\" value=\"#{percent}\" /></td>
 		<td>

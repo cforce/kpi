@@ -72,4 +72,10 @@ ru:
   fill_mark: "Заполнить значения для оценки"
   mark_custom_field: "Оценка"
   no_pattern: "Без шаблона"
+  indicator_title: "Заголовок"
+  great_mark: "Отлично"
+  good_mark: "Хорошо"
+  satisfactory_mark: "Удовлетворительно"
+  bad_mark: "Плохо"
+  terribly_mark: "Опасно"
 

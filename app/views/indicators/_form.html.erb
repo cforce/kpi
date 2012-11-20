@@ -42,6 +42,7 @@
 <div id="kpi_matrix_div" <%= table_style %>>
 <table class="list" id="kpi_matrix">
 <tr>
+<th><%= l(:indicator_title) %></th>
 <th><%= l(:value_of_fact) %></th>
 <th><%= l(:percent) %></th>
 <th></th>
@@ -51,7 +52,9 @@
 	<% style='style="display:none;"'  %>
 	<% style='' if @indicator.matrix['value_of_fact'].size>2 %>
 	<% @indicator.matrix['value_of_fact'].each do |v| %>
-		<%= get_matrix_row(v, @indicator.matrix['percent'][@indicator.matrix['value_of_fact'].index(v)], style) %>
+		<% index = @indicator.matrix['value_of_fact'].index(v)  %>
+		<% title = @indicator.matrix['title'].nil? ? '' : @indicator.matrix['title'][index] %>
+		<%= get_matrix_row(v, @indicator.matrix['percent'][index], style, title) %>
 	<% end %>
 <% else %>
 	<%= get_matrix_row %>
@@ -62,11 +65,11 @@
 <br/>
 <a href="#" id="fill_mark_values"><%= l(:fill_mark) %></a>
 <div class="I" id="kpi_mark_values">
-<span><div>5</div><div>150</div></span>
-<span><div>4</div><div>100</div></span>
-<span><div>3</div><div>50</div></span>
-<span><div>2</div><div>0</div></span>
-<span><div>1</div><div>-50</div></span>
+<span><div><%= l(:great_mark) %></div><div>150</div><div>150</div></span>
+<span><div><%= l(:good_mark) %></div><div>100</div><div>100</div></span>
+<span><div><%= l(:satisfactory_mark) %></div><div>50</div><div>50</div></span>
+<span><div><%= l(:bad_mark) %></div><div>0</div><div>0</div></span>
+<span><div><%= l(:terribly_mark) %></div><div>-50</div><div>-50</div></span>
 </div>
 </div>
 

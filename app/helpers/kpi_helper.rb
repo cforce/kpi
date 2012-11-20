@@ -10,7 +10,12 @@ module KpiHelper
 		case Indicator::INPUT_TYPES[kpi_period_indicator.input_type.to_s]
 		when 'exact_values'
 			options=[['', '']]
-			kpi_period_indicator.matrix['percent'].each_index{|i| options.push([kpi_period_indicator.matrix['percent'][i], kpi_period_indicator.matrix['value_of_fact'][i]])}
+			if not kpi_period_indicator.matrix['title'].nil? and kpi_period_indicator.matrix['title'].uniq.size>1
+				kpi_period_indicator.matrix['title'].each_index{|i| options.push([kpi_period_indicator.matrix['title'][i], kpi_period_indicator.matrix['value_of_fact'][i]])}			
+			else
+				kpi_period_indicator.matrix['percent'].each_index{|i| options.push([kpi_period_indicator.matrix['percent'][i], kpi_period_indicator.matrix['value_of_fact'][i]])}				
+			end
+
 		  	select_tag name, options_for_select(options, mark.fact_value.to_i), :tabindex => tabindex, :class => mark.fact_value.nil? ? '' : 'completed'
 		else
 		  	"<input type=\"text\" name=\"#{name}\" tabindex=\"#{tabindex}\" value=\"#{mark.fact_value}\" class=\"#{'completed' if not mark.fact_value.nil?}\"/> ".html_safe
