@@ -1,12 +1,40 @@
 class KpiMarksController < ApplicationController
-	before_filter :find_mark
+	before_filter :find_mark, :only => [:update_plan, :edit_fact, :edit_plan, :update_fact]
 	before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan]
 
 	helper :kpi
 	include KpiHelper
 
+	def index
+	find_actual_period_dates
+	find_marks
+	end
+
 	def edit_plan
 		render "edit_plan", :layout => false
+	end
+
+	def user_marks
+		
+	end
+
+	def update_user_marks
+		params[:mark].each{|k,v|
+			km=KpiMark.find(k)
+			km.fact_value=v
+			km.explanation=params[:explanation][k]
+			km.save if km.inspector_id == User.current.id		
+			}	
+		find_marks
+
+	    respond_to do |format|
+	      format.html { redirect_to :controller => 'kpi', :action => 'marks'}
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "tab-content-kpi-marks-#{@user.id}", :partial => 'kpi_marks/user_marks', :locals => {:tab => {:user_id => @user.id} } 
+	        }
+	      }
+	    end
 	end
 
 	def update_plan
@@ -35,16 +63,27 @@ class KpiMarksController < ApplicationController
 	end	
 
 	private
+	def find_actual_period_dates
+		@period_dates = KpiCalcPeriod.actual.select(:date).group(:date).order(:date)
+	end
+
+	def find_marks
+		find_date
+		find_user
+		@marks = User.current.get_my_marks.joins(:user).where("start_date >= ? AND end_date <= ?", @date, @date.at_end_of_month).includes(:user, :kpi_indicator_inspector => [{:kpi_period_indicator => [:indicator => :kpi_unit]}]).order("#{User.table_name}.lastname", :end_date)
+		Rails.logger.debug("#{@marks.size} ggggggggg");
+		@estimated_users = @marks.map{|m| m.user}.uniq
+	end
+
+	def find_date
+		@date = params[:date].nil? ? Date.current.at_beginning_of_month : Date.parse(params[:date])
+	end	
+
 	def find_mark
 		@mark = KpiMark.find(params[:id])
 	end
 
 	def find_user
-		# if not params[:kpi_mark].nil?
-			# @user = User.find(params[:kpi_mark][:user_id]) 
-
-		# else
-			@user = params[:user_id].nil? ? User.current : User.find(params[:user_id])
-		# end
+		@user ||= params[:user_id].nil? ? User.current : User.find(params[:user_id])
 	end	
 end

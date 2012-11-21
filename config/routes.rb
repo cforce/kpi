@@ -7,9 +7,8 @@ RedmineApp::Application.routes.draw do
 	resources :kpi do
 		collection do
 			#get '/', :action => 'index'
-			get 'marks'
-			get 'marks/:date', :action => 'marks'
-			post 'update_marks'
+			#get 'marks'
+			#get 'marks/:date', :action => 'marks'
 			get 'effectiveness'
 			get 'effectiveness/:date', :action => 'effectiveness'
 			get 'effectiveness/:date/:user_id', :action => 'effectiveness'
@@ -30,6 +29,13 @@ RedmineApp::Application.routes.draw do
 	      post 'update_plan/:user_id', :action => 'update_plan'
 	      get 'edit_fact'
 	      post 'update_fact'
+	    end
+
+	    collection do
+			get '/:date', :action => 'index'
+	    	get 'user/:user_id', :action => 'user_marks'
+	    	post 'update_user_marks/:user_id', :action => 'update_user_marks'
+	    	#get 'user/:user'
 	    end
 	end
 

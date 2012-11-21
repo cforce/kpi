@@ -1,6 +1,9 @@
-<h2><%=l(:label_effectiveness)%> <%= @user.name %></h2>
-
+<div class="contextual">
 <%= render :partial => 'kpi/period_links' %>
+</div>
+
+
+<h2><%=l(:label_effectiveness)%> <%= @user.name %></h2>
 
 <% if @periods.any? %>
 

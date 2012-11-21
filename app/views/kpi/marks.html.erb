@@ -2,8 +2,6 @@
 
 <%= render :partial => 'kpi/period_links' %>
 
-<div id="kpi_marks">
-<%= render :partial => 'kpi/marks_form' %>
-</div>
+<%= render_tabs user_tabs(@estimated_users) %>
 
 <%= render :partial => 'kpi/sidebar' %>

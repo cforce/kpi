@@ -1,5 +1,5 @@
 	<table class="list kpi_calc">
-	<caption><%= human_name(period) %></caption>
+	<caption><%= period.kpi_pattern.name %></caption>
 	<thead>
 		<tr>
 		<th><%= l(:label_kpi_indicators) %></th>
@@ -42,7 +42,7 @@
 			<% period_indicator.kpi_marks.joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).includes(:kpi_indicator_inspector, :inspector).order("#{User.table_name}.lastname").each do |mark| %>
 				<tr class="<%= color %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
-				<td><%= mark.mark_period %> <small><%= link_to l(:change_fact), {:controller => 'kpi', :action => 'marks'} if mark.inspector == User.current %></small></td>
+				<td><%= mark.mark_period %> <small><%= link_to l(:change_fact), {:controller => 'kpi_marks', :action => 'index'} if mark.inspector == User.current %></small></td>
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
 				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period), 
 								        period_indicator.indicator.kpi_unit.abridgement %></nobr></td>

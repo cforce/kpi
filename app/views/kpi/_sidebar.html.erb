@@ -26,7 +26,7 @@
 
 <ul>
 	<li>
-	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi", :action => "marks"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi' and controller.action_name=='marks'}" %>
+	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi_marks", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_marks' and controller.action_name=='index'}" %>
 	</li>
 
 	<li>

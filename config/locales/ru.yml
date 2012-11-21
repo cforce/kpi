@@ -59,6 +59,7 @@ ru:
   project_module_kpi: "KPI"
   permission_update_plan_values: "Изменять планы показателей в расчете"
   permission_update_fact_values: "Изменять факты показателей в расчете"
+  permission_show_effectiveness: "Просматривать результативность всех"
   label_effectiveness: "Результативность."
   label_effectiveness_calc: "Расчеты результативности"
   label_kpi_mark: "Оценка"
@@ -78,4 +79,5 @@ ru:
   satisfactory_mark: "Удовлетворительно"
   bad_mark: "Плохо"
   terribly_mark: "Опасно"
+  kpi_mark_desc: "Пояснение"
 

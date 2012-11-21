@@ -89,14 +89,14 @@ div.kpi_inspector
 	margin: 10px 0px 5px 0px;
 	}
 
-input.completed, select.completed
+input.completed, select.completed, textarea.completed
 	{
 	background-color: #E7FAE3
 	}
 
 .kpi_date_links
 	{
-	margin: 5px 0px 5px 0px;
+	margin: 0px 0px 5px 0px;
 	overflow: hidden;
 	}
 
@@ -116,7 +116,7 @@ input.completed, select.completed
 	{
 	float: left;
 	display: block;
-	margin: -3px 5px 0px 5px;
+	margin: 1px 5px 0px 5px;
 	}
 
 span.arr

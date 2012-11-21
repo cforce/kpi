@@ -24,10 +24,28 @@ jQuery(document).ready(function(){
 		});	
 
 	portable_data_apply();
+	jQuery(document.body).on("change keyup input", 'input.completed, select.completed, textarea.completed', function(){
+		jQuery(this).removeClass('completed');
+		});
 
 	jQuery(document.body).on('modal_window_shown', '.modal_window', function(){  
 		jQuery(this).find("form input:text:first").focus();
 		});
+
+	jQuery(document.body).on('focus', 'textarea.explanation', function(){  
+		jQuery(this).animate({height: '150px'}, 100);
+		});
+	jQuery(document.body).on('blur', 'textarea.explanation', function(){  
+		if(!jQuery('body').data('mouse_on_submit'))
+			jQuery(this).animate({height: '17px'}, 100);
+		});
+	jQuery('input.kpi_mark_submit_button').mouseenter(function(){  
+		jQuery('body').data('mouse_on_submit', true);
+		});
+	jQuery('input.kpi_mark_submit_button').mouseleave(function(){  
+		jQuery('body').data('mouse_on_submit', false);
+		});
+	
 
 	jQuery('#fill_mark_values').click(function(){
 		jQuery('#kpi_matrix tr:gt(1)').remove();
