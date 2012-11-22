@@ -167,3 +167,8 @@ span.unit
 input#applied_user_search.ajax-loading {
 background-image: url(../images/loading.gif);
 }
+
+textarea.expl_warning
+	{
+	background-color: #FFF0F0;
+	}

@@ -70,10 +70,4 @@ class KpiMark < ActiveRecord::Base
 		end
 	end
 
-=begin
-	private
-	def check_inspector
-		false if (not new_record?) and User.current.id != inspector_id 
-	end
-=end
 end

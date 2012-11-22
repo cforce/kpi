@@ -31,21 +31,28 @@ jQuery(document).ready(function(){
 	jQuery(document.body).on('modal_window_shown', '.modal_window', function(){  
 		jQuery(this).find("form input:text:first").focus();
 		});
+	jQuery(document.body).on('change keyup input', 'textarea.explanation, input.fact_value, select.fact_value', function(){
+		validate_explanation();
+	});
+
 
 	jQuery(document.body).on('focus', 'textarea.explanation', function(){  
 		jQuery(this).animate({height: '150px'}, 100);
+		jQuery('body').data('mouse_on_submit', false);
 		});
 	jQuery(document.body).on('blur', 'textarea.explanation', function(){  
 		if(!jQuery('body').data('mouse_on_submit'))
 			jQuery(this).animate({height: '17px'}, 100);
 		});
-	jQuery('input.kpi_mark_submit_button').mouseenter(function(){  
-		jQuery('body').data('mouse_on_submit', true);
+	jQuery(document.body).on('mouseenter', 'input.kpi_mark_submit_button', function(){  
+			jQuery('body').data('mouse_on_submit', true);
 		});
-	jQuery('input.kpi_mark_submit_button').mouseleave(function(){  
-		jQuery('body').data('mouse_on_submit', false);
+
+	jQuery(document.body).on('submit', 'form.kpi_marks', function(){  
+			if(jQuery(this).find('input:submit:disabled').length>0)
+				return false;
 		});
-	
+
 
 	jQuery('#fill_mark_values').click(function(){
 		jQuery('#kpi_matrix tr:gt(1)').remove();
@@ -61,7 +68,7 @@ jQuery(document).ready(function(){
 	jQuery('#indicator_pattern').change(function(){
 		show_hide_custom_fields()
 		});
-	show_hide_custom_fields()
+	show_hide_custom_fields();
 	});
 
 function portable_data_apply()
@@ -86,4 +93,39 @@ function show_hide_custom_fields()
 	{
 	jQuery('#kpi_pattern_custom_fields p').hide()
 	jQuery('#kpi_pattern_custom_field_'+jQuery('#indicator_pattern').val()).show()
+	}
+
+function validate_explanation()
+	{
+		if(jQuery('textarea.explanation').length>0)	
+			{	
+			var form_id=false;
+			var submit = '';
+			i=0;
+			jQuery('input.fact_value, select.fact_value').each(function(){
+				var form = jQuery(this).parents('form:first');
+				if(form_id!=form.attr('id'))
+					{
+					form_id = form.attr('id');
+					
+					submit = form.find('input[type=submit]');
+
+					submit.removeAttr('disabled');
+					}
+
+				var id=jQuery(this).attr('id').split("_")
+				if(jQuery('#'+jQuery(this).attr('id')+'_fact').find('span.value').html()!=jQuery(this).val() && jQuery('#explanation_'+id[1]).val()=='')
+				    {
+				    jQuery('#explanation_'+id[1]).addClass('expl_warning');
+				    submit.attr('disabled', 'disabled');
+
+				    }
+				else
+				    {
+				    jQuery('#explanation_'+id[1]).removeClass('expl_warning');   
+				    }
+				    i++;
+				});
+			}
+
 	}

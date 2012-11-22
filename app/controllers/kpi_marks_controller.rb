@@ -19,13 +19,16 @@ class KpiMarksController < ApplicationController
 	end
 
 	def update_user_marks
-		params[:mark].each{|k,v|
-			km=KpiMark.find(k)
-			km.fact_value=v
-			km.explanation=params[:explanation][k]
-			km.save if km.inspector_id == User.current.id		
+
+		marks = KpiMark.find(params[:mark].map{|k, v| k})
+
+		marks.each{|mark|
+			mark.fact_value=params[:mark][mark.id.to_s]
+			mark.explanation=params[:explanation][mark.id.to_s]
+			mark.save if mark.inspector_id == User.current.id		
 			}	
 		find_marks
+		#should be optimized
 
 	    respond_to do |format|
 	      format.html { redirect_to :controller => 'kpi', :action => 'marks'}
@@ -71,7 +74,6 @@ class KpiMarksController < ApplicationController
 		find_date
 		find_user
 		@marks = User.current.get_my_marks.joins(:user).where("start_date >= ? AND end_date <= ?", @date, @date.at_end_of_month).includes(:user, :kpi_indicator_inspector => [{:kpi_period_indicator => [:indicator => :kpi_unit]}]).order("#{User.table_name}.lastname", :end_date)
-		Rails.logger.debug("#{@marks.size} ggggggggg");
 		@estimated_users = @marks.map{|m| m.user}.uniq
 	end
 
