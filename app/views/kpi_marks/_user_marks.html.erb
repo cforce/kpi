@@ -1,0 +1,58 @@
+<% marks = @marks.reject{|m| m.user_id!=tab[:user_id]} %>
+
+<% if marks.any? %>
+
+<%= form_tag({:controller => 'kpi_marks', :action => 'update_user_marks', :user_id => tab[:user_id]}, :method => :post, :remote => true, :class => 'kpi_marks',:id => "mark_form_#{tab[:user_id]}") do |f| %>
+	<%= hidden_field_tag 'date', @date %>
+	<table class="list">
+			<thead>
+				<tr>
+				<th><%= l(:label_mark_period) %></th>
+				<th><%= l(:label_kpi_indicators) %></th>
+				<th style="width:5%"><%= l(:label_plan) %></th>
+				<th style="width:10%"><%= l(:my_kpi_mark) %></th>
+				<th><%= l(:kpi_mark_desc) %></th>
+				</tr>
+			</thead>
+			<tbody>
+
+<% i=0 %>
+<% marks.each do |mark| %>
+<% 
+	i+=1
+	indicator=mark.kpi_indicator_inspector.kpi_period_indicator.indicator
+
+%>
+
+	<tr>
+	<td>
+		<%= format_date mark.start_date %> &mdash; <%= format_date mark.end_date %>
+	</td>
+	<td>
+		<%= link_to_indicator indicator %>
+	</td>
+	<td>
+	<span id="mark_<%= mark.id  %>_fact">
+		<%= kpi_value mark.plan(mark.kpi_indicator_inspector.kpi_period_indicator), indicator.kpi_unit.abridgement %>
+	</span>
+	</td>
+	<td class="fact_value">
+	<nobr><%= get_indicator_input(mark, "mark[#{mark.id}]", i)  %> <span class="unit"><%= indicator.kpi_unit.abridgement %></span></nobr>
+	</td>
+	<td>
+	<%= text_area_tag "explanation[#{mark.id}]", mark.explanation, :size => "40x1", :class => 'explanation ' + (mark.explanation.to_s=='' ? '' : 'completed') %>
+	</td>
+	</tr>
+<% end %>
+
+</tbody></table>
+
+<p><%= submit_tag l(:button_save), :class => 'kpi_mark_submit_button' %> </p>
+<% end %>
+
+<% else %>
+<p class="nodata"><%= l(:label_no_data) %></p>
+
+<% end %>
+
+<script>validate_explanation();</script>
