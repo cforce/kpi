@@ -12,7 +12,7 @@ module KpiHelper
 		tabs
 	end
 
-	def get_indicator_input(mark, name, tabindex)
+	def get_indicator_input(mark, name, tabindex=1)
 		kpi_period_indicator=mark.kpi_indicator_inspector.kpi_period_indicator
 
 		case Indicator::INPUT_TYPES[kpi_period_indicator.input_type.to_s]
@@ -24,7 +24,11 @@ module KpiHelper
 				kpi_period_indicator.matrix['percent'].each_index{|i| options.push([kpi_period_indicator.matrix['value_of_fact'][i], kpi_period_indicator.matrix['value_of_fact'][i]])}				
 			end
 
-		  	select_tag name, options_for_select(options, mark.fact_value.to_i), :tabindex => tabindex, :class => 'fact_value ' + (mark.fact_value.nil? ? '' : 'completed')
+		  	select_tag name, 
+		  				options_for_select(options, mark.fact_value.to_i), 
+		  				:tabindex => tabindex, :class => 'fact_value ' + (mark.fact_value.nil? ? '' : 'completed'), 
+		  				'data-explanation' => "explanation_#{mark.id}",
+		  				'data-plan' => "plan_value_#{mark.id}"
 		else
 		  	"<input type=\"text\" name=\"#{name}\" tabindex=\"#{tabindex}\" value=\"#{mark.fact_value}\" class=\"#{'completed' if not mark.fact_value.nil?}\"/> ".html_safe
 		end		
@@ -94,11 +98,20 @@ module KpiHelper
 	end
 
 	def plan_view(value, mark, period_indicator, period)
-		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi', 'marks')) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
+		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
 			link_to_modal_window value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}
 		else
 			value
 		end
+	end
+
+	def fact_view(mark, period)
+		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
+		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?)
+			link_to_modal_window fact_value, {:controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id}
+		else
+			fact_value
+		end		
 	end
 
 =begin

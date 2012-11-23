@@ -27,8 +27,8 @@ RedmineApp::Application.routes.draw do
 	    member do
 	      get 'edit_plan/:user_id', :action => 'edit_plan'
 	      post 'update_plan/:user_id', :action => 'update_plan'
-	      get 'edit_fact'
-	      post 'update_fact'
+	      get 'edit_fact/:user_id', :action => 'edit_fact'
+	      post 'update_fact/:user_id', :action => 'update_fact'
 	    end
 
 	    collection do

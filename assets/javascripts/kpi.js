@@ -113,16 +113,16 @@ function validate_explanation()
 					submit.removeAttr('disabled');
 					}
 
-				var id=jQuery(this).attr('id').split("_")
-				if(jQuery('#'+jQuery(this).attr('id')+'_fact').find('span.value').html()!=jQuery(this).val() && jQuery('#explanation_'+id[1]).val()=='')
+				//var id=jQuery(this).attr('id').split("_")
+				if(jQuery('#'+jQuery(this).attr('data-plan')).find('span.value').html()!=jQuery(this).val() && jQuery('#'+jQuery(this).attr('data-explanation')).val()=='')
 				    {
-				    jQuery('#explanation_'+id[1]).addClass('expl_warning');
+				    jQuery('#'+jQuery(this).attr('data-explanation')).addClass('expl_warning');
 				    submit.attr('disabled', 'disabled');
 
 				    }
 				else
 				    {
-				    jQuery('#explanation_'+id[1]).removeClass('expl_warning');   
+				    jQuery('#'+jQuery(this).attr('data-explanation')).removeClass('expl_warning');   
 				    }
 				    i++;
 				});

@@ -1,6 +1,6 @@
 class KpiMarksController < ApplicationController
 	before_filter :find_mark, :only => [:update_plan, :edit_fact, :edit_plan, :update_fact]
-	before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan]
+	before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan, :edit_fact]
 
 	helper :kpi
 	include KpiHelper
@@ -19,7 +19,6 @@ class KpiMarksController < ApplicationController
 	end
 
 	def update_user_marks
-
 		marks = KpiMark.find(params[:mark].map{|k, v| k})
 
 		marks.each{|mark|
@@ -58,11 +57,24 @@ class KpiMarksController < ApplicationController
 	end
 
 	def edit_fact
-	
+		render "edit_fact", :layout => false
 	end
 
 	def update_fact
-
+		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
+		@mark.fact_value=params[:kpi_mark][:fact_value]
+		@mark.explanation=params[:kpi_mark][:explanation]
+		@mark.save
+	
+	    respond_to do |format|
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "calc_period_#{period.id}", :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => params[:kpi_mark][:i] } 
+	          page.call :portable_data_apply
+	          # users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
+	        }
+	      }
+	    end
 	end	
 
 	private

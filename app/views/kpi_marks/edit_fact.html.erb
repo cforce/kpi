@@ -1,0 +1,24 @@
+<%= form_for @mark, :remote => true, :url => {:controller => 'kpi_marks', :action =>'update_fact', :id => @mark.id, :user_id => @user.id}, :html => {:method => :post} do |f| %>
+
+<%= f.hidden_field :i, :value => params[:i] %>
+
+
+<p id="plan_value_<%= @mark.id %>" class="I">
+<span class="value"><%= @mark.plan(@mark.kpi_indicator_inspector.kpi_period_indicator)  %></span>
+</p>
+<p>
+<%= label_tag 'kpi_mark_fact_value', l(:value_of_fact) %>:<br>
+<%= get_indicator_input(@mark, 'kpi_mark[fact_value]') %>
+</p>
+<p>
+<%= label_tag 'kpi_mark_explanation', l(:kpi_mark_desc) %>:<br>
+<%= text_area_tag "kpi_mark[explanation]", @mark.explanation, :size => "40x1", :id => "explanation_#{@mark.id}", :class => 'explanation ' + (@mark.explanation.to_s=='' ? '' : 'completed') %>
+</p>
+<%= submit_tag l(:button_save), :class => 'kpi_mark_submit_button' %>
+<% end %>
+
+<script>
+    validate_explanation();	
+	jQuery('#kpi_mark_fact_value').focus();
+
+</script>
