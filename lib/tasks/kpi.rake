@@ -71,7 +71,6 @@ namespace :redmine do
                            AND #{User.table_name}.id IN (?) 
                            AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=?
                            AND custom_field_id=? ", i.pattern_settings['role'], users, date, i.pattern_settings['mark_custom_field'])
-                          .order("#{Project.table_name}.name")
                           .group("#{User.table_name}.id")
                           .each do |f|
 
