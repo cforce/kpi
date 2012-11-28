@@ -33,7 +33,9 @@ class Indicator < ActiveRecord::Base
                   '' => 'no_pattern',
                   '1' => 'avg_custom_field_mark_in_current_period',
                   '2' => 'issue_hours_in_current_period',
-                  '3' => 'issue_lag_in_current_period'
+                  '3' => 'issue_lag_in_current_period',
+                  '4' => 'self_and_executors_issues_lag',
+                  '5' => 'self_and_executors_issues_avg_custom_field_mark'
                   }     
 
   MAX_NUM_IN_PERIOD=5          

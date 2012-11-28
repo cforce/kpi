@@ -98,16 +98,16 @@ module KpiHelper
 	end
 
 	def plan_view(value, mark, period_indicator, period)
-		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
+		if mark.check_user_for_plan_update(period_indicator)
 			link_to_modal_window value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}
 		else
 			value
 		end
 	end
 
-	def fact_view(mark, period)
+	def fact_view(mark, period, period_indicator)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
-		if (User.current.id == mark.inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?)
+		if mark.check_user_for_fact_update(period_indicator)
 			link_to_modal_window fact_value, {:controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id}
 		else
 			fact_value

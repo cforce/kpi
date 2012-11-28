@@ -22,10 +22,15 @@
 <div class="box tabular">
 <p><%= f.select :pattern, get_fact_pattern_options, :label => l(:kpi_fact_pattern), :required => false %></p>
 
+
 <div id="kpi_pattern_custom_fields">
-<p class="I" id="kpi_pattern_custom_field_1">
+<p class="I kpi_pattern_custom_field_1 kpi_pattern_custom_field_5">
 <%= label_tag 'indicator_pattern_settings_mark_custom_field', l(:mark_custom_field) %>
 <%= select_tag 'indicator[pattern_settings][mark_custom_field]', options_for_mark_custom_field(@indicator) %>
+</p>
+<p class="I kpi_pattern_custom_field_5 kpi_pattern_custom_field_4">
+<%= label_tag 'indicator_pattern_settings_role', l(:if_has_role) %>
+<%= select_tag 'indicator[pattern_settings][role]', options_for_role(@indicator) %>
 </p>
 </div>
 

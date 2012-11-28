@@ -92,7 +92,7 @@ function make_next_matrix_row(current_link, value, percent, title)
 function show_hide_custom_fields()
 	{
 	jQuery('#kpi_pattern_custom_fields p').hide()
-	jQuery('#kpi_pattern_custom_field_'+jQuery('#indicator_pattern').val()).show()
+	jQuery('p.kpi_pattern_custom_field_'+jQuery('#indicator_pattern').val()).show()
 	}
 
 function validate_explanation()

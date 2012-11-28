@@ -27,13 +27,14 @@ module Kpi
 
           def cast_value_with_kpi(value)
             casted=cast_value_without_kpi(value)
+            value = value.to_i
             if casted.nil?
               unless value.blank?
                 case field_format
                 when 'kpi_mark'
-                  casted=KpiIssueMark.where(:value => value).first.title
+                  casted=KpiIssueMark.where(:value => value.to_i).first.title
                 end                  
-              end             
+              end        
             end
 
           casted

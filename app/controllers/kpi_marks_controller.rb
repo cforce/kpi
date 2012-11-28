@@ -43,7 +43,7 @@ class KpiMarksController < ApplicationController
 		#user_id = params[:kpi_mark][:user_id] || params[:user_id]
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		@mark.plan_value=params[:kpi_mark][:plan_value]
-		@mark.save
+		@mark.save if @mark.check_user_for_plan_update
 	
 	    respond_to do |format|
 	      format.js {
@@ -64,7 +64,7 @@ class KpiMarksController < ApplicationController
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		@mark.fact_value=params[:kpi_mark][:fact_value]
 		@mark.explanation=params[:kpi_mark][:explanation]
-		@mark.save
+		@mark.save if @mark.check_user_for_fact_update
 	
 	    respond_to do |format|
 	      format.js {
@@ -100,4 +100,6 @@ class KpiMarksController < ApplicationController
 	def find_user
 		@user ||= params[:user_id].nil? ? User.current : User.find(params[:user_id])
 	end	
+
+
 end

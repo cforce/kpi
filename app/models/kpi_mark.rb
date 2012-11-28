@@ -23,6 +23,16 @@ class KpiMark < ActiveRecord::Base
 																			period_indicator.matrix['value_of_fact'][period_indicator.matrix['percent'].index('100')])
 	end
 
+	def check_user_for_plan_update(period_indicator = nil)
+		period_indicator = kpi_period_indicator if period_indicator.nil?
+		(User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
+	end
+
+	def check_user_for_fact_update(period_indicator = nil)
+		period_indicator = kpi_period_indicator if period_indicator.nil?
+		(User.current.id == inspector_id and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?)
+	end
+
 	def completion(period_indicator)
 		return nil if fact_value.nil?
 		if period_indicator.interpretation == Indicator::INTERPRETATION_MATRIX

@@ -12,7 +12,17 @@ module IndicatorsHelper
 	end	
 
 	def get_fact_pattern_options
-		Indicator::FACT_PATTERNS.map{|k,v| [l(v), k]}
+		Indicator::FACT_PATTERNS.sort_by{|k, v| l(v)}.map{|k,v| [l(v), k]}
+	end
+
+	def options_for_role(indicator)
+		default = nil
+
+		if not indicator.pattern_settings.nil?
+			default = indicator.pattern_settings['role']  if not indicator.pattern_settings['role'].nil?
+		end		
+
+		options_for_select(Role.where(:builtin => 0).order(:name).map{ |u| [u.name, u.id]}, default)
 	end
 
 	def options_for_mark_custom_field(indicator)

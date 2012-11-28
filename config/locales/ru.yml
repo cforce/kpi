@@ -80,4 +80,7 @@ ru:
   bad_mark: "Плохо"
   terribly_mark: "Опасно"
   kpi_mark_desc: "Пояснение"
+  self_and_executors_issues_lag: "Средняя задержка по собственным задачам и задачам исполнителей"
+  self_and_executors_issues_avg_custom_field_mark: "Средняя оценка по своим задачам и задачам исполнителей"
+  if_has_role: "Если имеет роль"
 

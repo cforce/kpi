@@ -126,7 +126,7 @@ class KpiPatternsController < ApplicationController
 	      format.js {
 	        render(:update) {|page|
 	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	          page.replace_html "tab-content-plan_values", :partial => 'kpi_patterns/indicators'
+	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
 	        }
 	      }
 	    end

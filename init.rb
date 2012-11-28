@@ -33,6 +33,7 @@ Rails.application.config.to_prepare do
 	User.send(:include, Kpi::UserPatch)
   CustomField.send(:include, Kpi::CustomFieldPatch)
   CustomFieldsHelper.send(:include, Kpi::CustomFieldsHelperPatch)
+  Project.send(:include, Kpi::ProjectPatch)
 end
 
 require 'kpi/view_hooks'
