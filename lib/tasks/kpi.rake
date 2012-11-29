@@ -16,8 +16,11 @@ namespace :redmine do
           when "avg_custom_field_mark_in_current_period"
             puts "Pattern is 'avg_custom_field_mark_in_current_period'"
             Issue.joins(:custom_values, {:fixed_version => :milestones})
-                 .select("AVG(custom_values.value) AS 'fact', #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
-                 .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) AND custom_field_id=? AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=?", users, i.pattern_settings['mark_custom_field'], date)
+                 .select("AVG(#{CustomValue.table_name}.value) AS 'fact', #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
+                 .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) 
+                        AND custom_field_id=? 
+                        AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=?
+                        AND (#{CustomValue.table_name}.value!='' AND #{CustomValue.table_name}.value IS NOT NULL) ", users, i.pattern_settings['mark_custom_field'], date)
                  .group("#{Setting.plugin_kpi['executor_id_issue_field']}").map do |f|
 
               puts "Fact is - #{f.fact}"
@@ -70,6 +73,7 @@ namespace :redmine do
                            AND #{MemberRole.table_name}.role_id = ? 
                            AND #{User.table_name}.id IN (?) 
                            AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=?
+                           AND (#{CustomValue.table_name}.value!='' AND #{CustomValue.table_name}.value IS NOT NULL) 
                            AND custom_field_id=? ", i.pattern_settings['role'], users, date, i.pattern_settings['mark_custom_field'])
                           .group("#{User.table_name}.id")
                           .each do |f|
