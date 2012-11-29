@@ -129,9 +129,10 @@ table.list tbody tr.kpi_cat td
 	font-weight: bold;
 	background-color: #f7f7f7;
 	}
-table.list tbody tr.kpi_indicator td
+
+table.list tbody tr.kpi_indicator.green td
 	{
-	border-bottom: 1px solid #a8a8a8;
+	background-color: #DFF0E0;
 	}
 
 th.narrow
