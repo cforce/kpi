@@ -60,13 +60,13 @@ module Kpi
 
 		def find_default_kpi_mark_date
 			date = kpi_calc_periods.active_opened.select("MAX(date) AS 'max_date'").first.max_date
-			Date.current.beginning_of_month if date.nil?
+			date = Date.current.beginning_of_month if date.nil?
 			date
 		end
 
 		def find_default_effectiveness_date
 			date = kpi_calc_periods.active.select("MAX(date) AS 'max_date'").first.max_date
-			Date.current.beginning_of_month if date.nil?
+			date = Date.current.beginning_of_month if date.nil?
 			date
 		end
 	end	
