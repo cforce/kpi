@@ -39,7 +39,7 @@ class KpiController < ApplicationController
 =end
 
 	def find_date
-		@date = params[:date].nil? ? @user.kpi_calc_periods.active.select("MAX(date) AS 'max_date'").first.max_date : Date.parse(params[:date])
+		@date = params[:date].nil? ? @user.find_default_effectiveness_date : Date.parse(params[:date])
 	end
 
 	def find_user_period_dates
