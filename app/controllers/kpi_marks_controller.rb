@@ -79,18 +79,18 @@ class KpiMarksController < ApplicationController
 
 	private
 	def find_actual_period_dates
-		@period_dates = KpiCalcPeriod.actual.select(:date).group(:date).order(:date)
+		@period_dates = KpiCalcPeriod.active_opened.select(:date).group(:date).order(:date)
 	end
 
 	def find_marks
-		find_date
 		find_user
+		find_date
 		@marks = User.current.get_my_marks.joins(:user).where("start_date >= ? AND end_date <= ?", @date, @date.at_end_of_month).includes(:user, :kpi_indicator_inspector => [{:kpi_period_indicator => [:indicator => :kpi_unit]}]).order("#{User.table_name}.lastname", :end_date)
 		@estimated_users = @marks.map{|m| m.user}.uniq
 	end
 
 	def find_date
-		@date = params[:date].nil? ? Date.current.at_beginning_of_month : Date.parse(params[:date])
+		@date = params[:date].nil? ? @user.kpi_calc_periods.active_opened.select("MAX(date) AS 'max_date'").first.max_date : Date.parse(params[:date])
 	end	
 
 	def find_mark
