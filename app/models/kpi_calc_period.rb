@@ -16,6 +16,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	has_many :kpi_indicator_inspectors, :through => :kpi_period_indicators
 	has_many :inspectors, :through => :kpi_indicator_inspectors
+	has_many :kpi_marks, :through => :kpi_indicator_inspectors
 
 	scope :actual, :conditions => "#{KpiCalcPeriod.table_name}.locked != 1 OR #{KpiCalcPeriod.table_name}.active = 1"	
 	scope :active, :conditions => "#{KpiCalcPeriod.table_name}.active = 1"	
@@ -29,6 +30,10 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	def integrity?
 		inspectors_integrity? and indicators_integrity?
+	end
+
+	def for_closing?
+		active and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL").any? and User.current.global_permission_to?('kpi_calc_periods', 'close')
 	end
 
 	def inspectors_integrity?

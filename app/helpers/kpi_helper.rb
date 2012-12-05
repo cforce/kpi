@@ -42,7 +42,7 @@ module KpiHelper
 	end
 
 	def human_name(period)
-		"<big><b>#{I18n.t("date.abbr_month_names")[period.date.month]} #{period.date.year}</b></big>, #{period.kpi_pattern.name}".html_safe
+		"<big><b>#{I18n.t("date.abbr_month_names")[period.date.month]} #{period.date.year}</b></big>, #{pattern_name(period)}".html_safe
 	end
 
 	def human_month(date)
@@ -118,6 +118,14 @@ module KpiHelper
 		else
 			fact_value
 		end		
+	end
+
+	def pattern_link(period)
+		(period.kpi_pattern.nil?) ? l(:pattern_has_been_deleted) : (link_to h(period.kpi_pattern.name), edit_kpi_pattern_path(period.kpi_pattern))
+	end
+
+	def pattern_name(period)
+		(period.kpi_pattern.nil?) ? l(:pattern_has_been_deleted) : h(period.kpi_pattern.name)
 	end
 
 =begin

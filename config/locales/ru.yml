@@ -83,4 +83,6 @@ ru:
   self_and_executors_issues_lag: "Средняя задержка по собственным задачам и задачам исполнителей"
   self_and_executors_issues_avg_custom_field_mark: "Средняя оценка по своим задачам и задачам исполнителей"
   if_has_role: "Если имеет роль"
+  close_period: "Закрыть"
+  pattern_has_been_deleted: "Шаблон расчета был удален"
 

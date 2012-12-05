@@ -20,7 +20,7 @@ class KpiController < ApplicationController
 		find_user
 		find_date
 		@periods = @user.kpi_calc_periods.active.where("date = ?", @date)
-
+		#@periods = @user.kpi_calc_periods.active.includes(:kpi_period_categories => {:kpi_category, :kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}}).where("date = ?", @date)
 	end
 
 

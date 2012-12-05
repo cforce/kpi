@@ -173,3 +173,28 @@ textarea.expl_warning
 	{
 	background-color: #FFF0F0;
 	}
+
+a.add_indicator
+	{
+	background-image: url(../images/add_indicator.png);
+	margin-right: 5px;
+	}
+a.add_pattern
+	{
+	background-image: url(../images/pattern.png);
+	margin-right: 5px;
+	}
+a.add_period
+	{
+	background-image: url(../images/add_period.png);
+	}
+a.activate_period
+	{
+	background-image: url(../images/activate_period.png);
+	margin-right: 5px;
+	}
+a.close_period
+	{
+	background-image: url(../images/close_period.png);
+	margin-right: 5px;
+	}

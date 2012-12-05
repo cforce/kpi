@@ -7,6 +7,9 @@ class KpiCalcPeriodsController < ApplicationController
 	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
 	before_filter :find_users, :only => [:edit, :update, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans]
 
+	helper :kpi
+	include KpiHelper
+
 	def index
 		
 	end
@@ -223,6 +226,6 @@ class KpiCalcPeriodsController < ApplicationController
 	end
 
 	def find_calc_periods
-	 	@periods=KpiCalcPeriod.order(:date)
+	 	@periods=KpiCalcPeriod.order(:date).includes(:kpi_pattern)
 	end
 end
