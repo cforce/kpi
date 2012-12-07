@@ -91,9 +91,9 @@
 		<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
 		<% if period.for_closing_for_user?(@user) %>
 			<% if  period_user.locked %>
-				<%= link_to l(:reopen_period), {:controller => "kpi_calc_periods", :action => "reopen_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon reopen_period' %>
+				<%= link_to l(:reopen_period), {:controller => "kpi_calc_periods", :action => "reopen_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon reopen_period' if User.current.admin? %>
 			<% else  %>
-				<%= link_to l(:close_period), {:controller => "kpi_calc_periods", :action => "close_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon close_period' if User.current.admin? or User.current.global_permission_to?('kpi_calc_periods', 'reopen_for_user') %>
+				<%= link_to l(:close_period), {:controller => "kpi_calc_periods", :action => "close_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon close_period'  %>
 			<% end  %>
 		<% end %>
 	</span>
