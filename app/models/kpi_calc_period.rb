@@ -140,8 +140,10 @@ class KpiCalcPeriod < ActiveRecord::Base
 	private
 
     def check_period
-    	period = KpiCalcPeriod.find(id)
-        false if locked and locked==period.locked
+    	if not new_record?
+    		period = KpiCalcPeriod.find(id)
+       		false if (locked and locked==period.locked)
+    	end
     end 
 
 end
