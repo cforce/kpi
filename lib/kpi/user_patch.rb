@@ -55,7 +55,7 @@ module Kpi
 		end
 
 		def subordinates
-			User.where("#{Setting.plugin_kpi['user_superior_id_field']} = ?", id);
+			User.active.where("#{Setting.plugin_kpi['user_superior_id_field']} = ?", id);
 		end
 
 		def subordinate?
