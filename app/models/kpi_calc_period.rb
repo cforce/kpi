@@ -22,8 +22,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	scope :active, :conditions => "#{KpiCalcPeriod.table_name}.active = 1"	
 	scope :active_opened, :conditions => "#{KpiCalcPeriod.table_name}.active = 1 AND #{KpiCalcPeriod.table_name}.locked != 1 "	
 
-
-	#before_save :deny_save_if_period_active
+	before_save :check_period
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
 
 	#after_create :add_inspector_marks
@@ -33,7 +32,12 @@ class KpiCalcPeriod < ActiveRecord::Base
 	end
 
 	def for_closing?
-		active and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL").any? and User.current.global_permission_to?('kpi_calc_periods', 'close')
+		active and not locked and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL").any? and User.current.global_permission_to?('kpi_calc_periods', 'close_for_user')
+	end
+
+	def for_closing_for_user?(user)
+		#and kpi_period_users.where("user_id = ? AND #{KpiPeriodUser.table_name}.locked = ?", user.id, false).count==1 
+		active and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ?", user.id).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate?)
 	end
 
 	def inspectors_integrity?
@@ -135,8 +139,8 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	private
 
-	def deny_save_if_period_active
-		false if active
-	end
+    def check_period
+        false if (locked or active)  and locked==KpiCalcPeriod.find(id).locked
+    end 
 
 end

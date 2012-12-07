@@ -15,4 +15,10 @@ module KpiCalcPeriodsHelper
     end
     s.html_safe
   end
+
+  def period_css_class(period)
+    return 'locked' if(period.locked)
+    return 'active' if(period.active)
+    return 'not_active'
+  end
 end

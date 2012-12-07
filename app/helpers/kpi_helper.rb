@@ -103,17 +103,17 @@ module KpiHelper
     	link_to(name, options, html_options, *parameters_for_method_reference) if User.current.global_permission_to?(options[:controller] || params[:controller], options[:action])
 	end
 
-	def plan_view(value, mark, period_indicator, period)
-		if mark.check_user_for_plan_update(period_indicator)
+	def plan_view(value, mark, period_indicator, period, period_user)
+		if mark.check_user_for_plan_update(period_indicator, period_user)
 			link_to_modal_window value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}
 		else
 			value
 		end
 	end
 
-	def fact_view(mark, period, period_indicator)
+	def fact_view(mark, period, period_indicator, period_user)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
-		if mark.check_user_for_fact_update(period_indicator)
+		if mark.check_user_for_fact_update(period_indicator, period_user)
 			link_to_modal_window fact_value, {:controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id}
 		else
 			fact_value
@@ -126,6 +126,19 @@ module KpiHelper
 
 	def pattern_name(period)
 		(period.kpi_pattern.nil?) ? l(:pattern_has_been_deleted) : h(period.kpi_pattern.name)
+	end
+
+	def user_period_status(period_user)
+		if period_user.locked
+			return l(:closed)
+		else 
+			if period_user.kpi_calc_period.active
+				return l(:actived)
+			else
+				return l(:not_actived)
+			end
+		end
+
 	end
 
 =begin

@@ -8,6 +8,7 @@
 <% if @periods.any? %>
 
 <% i=0 %>
+
 <% @periods.each do |period| %>
 	<div id="calc_period_<%= period.id %>">
 	<%= render :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => i } %>

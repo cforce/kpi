@@ -6,7 +6,7 @@
 
 <%= link_to l(:make_period_active), {:controller => "kpi_calc_periods", :action => "activate", :id => @period}, :class => 'icon activate_period' if not @period.active %>
 
-<%= link_to l(:close_period), {:controller => "kpi_calc_periods", :action => "close", :id => @period}, :class => 'icon close_period' if @period.for_closing? %>
+<%= link_to l(:close_period_for_all), {:controller => "kpi_calc_periods", :action => "close", :id => @period}, :class => 'icon close_period' if @period.for_closing? %>
 
 <%= render :partial => 'kpi/kpi_common_links' %>
 </div>

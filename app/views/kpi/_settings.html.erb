@@ -1,0 +1,22 @@
+<%-
+defaults = Redmine::Plugin::registered_plugins[:kpi].settings[:default] 
+max_kpi = @settings['max_kpi'] || defaults['max_kpi']
+min_kpi = @settings['min_kpi'] || defaults['min_kpi']
+-%>
+
+<table cellspacing="15">
+<tr>
+<td><%=l(:label_max_kpi)%>: </td>
+<td>
+<%=text_field_tag 'settings[max_kpi]', max_kpi %>
+</td>
+</tr>
+
+<tr>
+<td><%=l(:label_min_kpi)%>: </td>
+<td>
+<%=text_field_tag 'settings[min_kpi]', min_kpi %>
+</td>
+</tr>
+
+</table>

@@ -24,7 +24,7 @@ class KpiMarksController < ApplicationController
 		marks.each{|mark|
 			mark.fact_value=params[:mark][mark.id.to_s]
 			mark.explanation=params[:explanation][mark.id.to_s]
-			mark.save if mark.inspector_id == User.current.id		
+			mark.save if mark.check_user_for_fact_update		
 			}	
 		find_marks
 		#should be optimized

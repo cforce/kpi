@@ -10,7 +10,7 @@
     <tbody>
     <% last_indicator_id=0 
       i=1 %>
-    <% @period.kpi_period_indicators.joins(:indicator).where("indicators.interpretation=?", Indicator::INTERPRETATION_FACT).includes(:indicator => [:kpi_unit]).order("#{Indicator.table_name}.name").each do |e| %>
+    <% @period.kpi_period_indicators.joins(:indicator).where("#{KpiPeriodIndicator.table_name}.interpretation=?", Indicator::INTERPRETATION_FACT).includes(:indicator => [:kpi_unit]).order("#{Indicator.table_name}.name").each do |e| %>
 
       <tr id="indicator-<%= e.indicator.id %>" class="<%= cycle 'odd', 'even' %> <%= e.indicator.kpi_category.color %>">
         <td class="indicator">

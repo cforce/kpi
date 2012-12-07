@@ -7,7 +7,8 @@ class KpiMark < ActiveRecord::Base
 	has_one :kpi_period_indicator, :through => :kpi_indicator_inspector
 	
 
-	#before_save :check_inspector
+	before_save :check_mark
+	before_destroy :check_mark
 
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"
@@ -23,14 +24,18 @@ class KpiMark < ActiveRecord::Base
 																			period_indicator.matrix['value_of_fact'][period_indicator.matrix['percent'].index('100')])
 	end
 
-	def check_user_for_plan_update(period_indicator = nil)
+	def check_user_for_plan_update(period_indicator = nil, period_user = nil)
 		period_indicator = kpi_period_indicator if period_indicator.nil?
-		(User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT)
+		period_user = period_indicator.kpi_calc_period.kpi_period_users.where(:user_id => user_id).first if period_user.nil?
+
+		(User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT) and not period_user.locked
 	end
 
-	def check_user_for_fact_update(period_indicator = nil)
+	def check_user_for_fact_update(period_indicator = nil, period_user = nil)
 		period_indicator = kpi_period_indicator if period_indicator.nil?
-		(User.current.id == inspector_id and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?)
+		period_user = period_indicator.kpi_calc_period.kpi_period_users.where(:user_id => user_id).first if period_user.nil?
+
+		((User.current.id == inspector_id and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?) ) and not period_user.locked
 	end
 
 	def completion(period_indicator)
@@ -78,6 +83,11 @@ class KpiMark < ActiveRecord::Base
 		else
 			fact_value.to_f/plan_value.to_f*100 
 		end
+	end
+
+	private
+	def check_mark
+		false if locked and locked==KpiMark.find(id).locked
 	end
 
 end

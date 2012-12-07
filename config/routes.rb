@@ -1,7 +1,7 @@
 RedmineApp::Application.routes.draw do
 	resources :indicators
 	resources :kpi_patterns
-	resources :kpi_calc_periods
+	#resources :kpi_calc_periods
 	#match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
 	#match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]
 	resources :kpi do
@@ -47,7 +47,13 @@ RedmineApp::Application.routes.draw do
 	end
 
 	resources :kpi_calc_periods do
+		collection do
+			
+	    end
+
 	    member do
+	   	  get 'close_for_user/:user_id', :action => 'close_for_user'
+	   	  get 'reopen_for_user/:user_id', :action => 'reopen_for_user'
 	      post 'add_inspectors'
 	      post 'add_users', :as => 'add_users'
 	      get 'autocomplete_for_user'

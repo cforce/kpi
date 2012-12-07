@@ -15,7 +15,10 @@
 	<% cat_avg_completion = {} %>
 
 	<% j=0 %>
-	<% period.kpi_period_categories.includes(:kpi_category, :kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}).each do |cat| %>
+	<% period_user = period.kpi_period_users.where(:user_id => @user.id).first %>
+	<% period.kpi_period_categories.each do |cat| %>
+	
+
 		<% color=cat.kpi_category.color %>
 		<tr class="kpi_cat <%= color %>">
 		<td colspan="2"><%= cat.kpi_category.name %></td>
@@ -27,7 +30,7 @@
 		<% y=0 %>
 		<% indicator_avg_completion = {} %>
 
-		<% cat.kpi_period_indicators.joins(:indicator).includes(:indicator => :kpi_unit).order("#{Indicator.table_name}.name").each do |period_indicator| %>
+		<% cat.kpi_period_indicators.joins(:indicator).order("#{Indicator.table_name}.name").each do |period_indicator| %>
 
 			<tr class="<%= color %> kpi_indicator">
 			<td colspan="2"><%= link_to_indicator period_indicator.indicator %></td>
@@ -39,14 +42,14 @@
 			<% marks = {} %>
 			
 			<% x=0 %>
-			<% period_indicator.kpi_marks.joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).includes(:kpi_indicator_inspector, :inspector).order("#{User.table_name}.lastname").each do |mark| %>
+			<% period_indicator.kpi_marks.select("kpi_marks.*").joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).order("#{User.table_name}.lastname").each do |mark| %>
 				<tr class="<%= color %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
 				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation if mark.explanation.to_s!='' %></small></td>
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
-				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period), 
+				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period, period_user), 
 								        period_indicator.indicator.kpi_unit.abridgement %></nobr></td>
-				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator), period_indicator.indicator.kpi_unit.abridgement %></nobr></td>		
+				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator, period_user), period_indicator.indicator.kpi_unit.abridgement %></nobr></td>		
 				<% 
 				completion = mark.completion(period_indicator)
 				marks[mark] = completion unless completion.nil?
@@ -83,8 +86,21 @@
 	
 	</tbody></table>
 
-	<div class="kpi_factor">
-	<%= kpi_percent weighted_average_value(cat_avg_completion) %>
+	<div class="R">
+	<span>
+		<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
+		<% if period.for_closing_for_user?(@user) %>
+			<% if  period_user.locked %>
+				<%= link_to l(:reopen_period), {:controller => "kpi_calc_periods", :action => "reopen_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon reopen_period' %>
+			<% else  %>
+				<%= link_to l(:close_period), {:controller => "kpi_calc_periods", :action => "close_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon close_period' if User.current.admin? or User.current.global_permission_to?('kpi_calc_periods', 'reopen_for_user') %>
+			<% end  %>
+		<% end %>
+	</span>
+	<span class="kpi_factor">
+	<% weighted_average_value = weighted_average_value(cat_avg_completion) %>
+	<%= kpi_percent weighted_average_value %>
+	</span>
 	</div>
 
 	<script>

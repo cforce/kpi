@@ -9,15 +9,15 @@
 	width: 60px;
 	}
 
-table tr.red td
+table tr.red
 	{
 	background-color: #FCF7ED; 	
 	}
-table tr.green td
+table tr.green
 	{
 	background-color: #f1fbec; 	
 	}
-table tr.blue td
+table tr.blue
 	{
 	background-color: #e6f1f9;
 	}
@@ -25,6 +25,15 @@ table tr.blue td
 table.indicators td, table.patterns td
 	{
 	padding: 4px;
+	}
+
+table.indicators tr.active
+	{
+	background-color: #F1FBEC;
+	}
+table.indicators tr.locked
+	{
+	background-color: #FCF7ED;
 	}
 
 table.patterns tr.warning
@@ -197,4 +206,23 @@ a.close_period
 	{
 	background-image: url(../images/close_period.png);
 	margin-right: 5px;
+	}
+a.reopen_period
+	{
+	background-image: url(../images/unlock_period.png);
+	margin-right: 5px;
+	}
+
+
+.H, .h
+	{
+	overflow: hidden;
+	}
+.L, .l
+	{
+	float: left;
+	}
+.R, .r
+	{
+	float: right;
 	}

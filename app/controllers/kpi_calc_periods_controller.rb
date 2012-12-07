@@ -1,7 +1,7 @@
 class KpiCalcPeriodsController < ApplicationController
 	before_filter :authorized_globaly?
 	
-	before_filter :find_period, :only => [:edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
+	before_filter :find_period, :only => [:close_for_user, :reopen_for_user, :close, :edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
 	before_filter :find_patterns, :only => [:new, :edit]
 	before_filter :find_calc_periods, :only => [:index]
 	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
@@ -21,6 +21,52 @@ class KpiCalcPeriodsController < ApplicationController
 	def edit
 		#get_integrity_warnings
 	end
+
+	def close
+		if @period.for_closing?
+			@period.kpi_period_users.update_all("#{KpiPeriodUser.table_name}.locked = 1")
+			@period.kpi_marks.update_all("#{KpiMark.table_name}.locked = 1")
+			@period.locked = true
+			@period.save
+		end
+
+		redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period
+	end
+
+	def close_for_user
+		user=User.find(params[:user_id])
+		if @period.for_closing_for_user?(user)
+			user_period = KpiPeriodUser.where("kpi_calc_period_id = ? AND user_id = ?", @period.id, user.id).first
+			user_period.locked = true
+			user_period.save 
+
+			if @period.kpi_period_users.where("#{KpiPeriodUser.table_name}.locked = ? ", false).count == 0
+				@period.locked = true
+				@period.save
+			end
+
+			@period.kpi_marks.where("#{KpiMark.table_name}.user_id = ?", user.id).update_all("#{KpiMark.table_name}.locked=1")
+		end
+
+		redirect_to :controller => 'kpi', :action => 'effectiveness', :user_id => user.id, :date => @period.date
+	end
+
+	def reopen_for_user
+		user=User.find(params[:user_id])
+		if @period.for_closing_for_user?(user)
+			user_period = KpiPeriodUser.where("kpi_calc_period_id = ? AND user_id = ?", @period.id, user.id).first
+			user_period.locked = false
+			user_period.save 
+
+			@period.locked = false
+			@period.save
+
+			@period.kpi_marks.where("#{KpiMark.table_name}.user_id = ?", user.id).update_all("#{KpiMark.table_name}.locked=0")
+		end
+
+		redirect_to :controller => 'kpi', :action => 'effectiveness', :user_id => user.id, :date => @period.date
+	end
+	
 
 	def activate
 		error=''

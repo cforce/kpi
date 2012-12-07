@@ -4,12 +4,13 @@ class KpiPeriodCategory < ActiveRecord::Base
 	has_many :kpi_period_indicators, :dependent => :destroy
 
 
-	before_save :deny_save_if_period_active
+	before_save :check_period
+    before_destroy :check_period
 
 
 	private
 
-	def deny_save_if_period_active
-		false if kpi_calc_period.active
-	end
+    def check_period
+        false if kpi_calc_period.locked or kpi_calc_period.active
+    end 
 end

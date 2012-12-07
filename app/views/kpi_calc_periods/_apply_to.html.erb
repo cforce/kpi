@@ -4,12 +4,14 @@
     <thead><tr>
       <th><%= l(:label_user) %></th>
       <th style="width:15%"></th>
+      <th style="width:15%"></th>
     </tr></thead>
     <tbody>
-    <% @period.kpi_period_users.includes(:user).sort.each do |kpi_period_user| %>
+    <% @period.kpi_period_users.includes(:user, :kpi_calc_period).sort.each do |kpi_period_user| %>
       <tr id="user-<%= kpi_period_user.id %>" class="<%= cycle 'odd', 'even' %>">
         <td class="user"><%= link_to_user kpi_period_user.user %>
         </td>
+        <td><%= user_period_status kpi_period_user %></td>
         <td class="buttons">
 
             <%= link_to_remote(
@@ -17,7 +19,7 @@
                   { :url => remove_user_kpi_calc_period_path(@period, :period_user_id => kpi_period_user.id),
                     :method => :delete },
                   :class => 'icon icon-del'
-                ) %>
+                ) if not kpi_period_user.locked %>
         </td>
       </tr>
     <% end %>
@@ -29,6 +31,7 @@
 </div>
 
 <div class="splitcontentright">
+<% if not @period.locked %>
 <% users = User.active.not_in_kpi_period(@period).all(:limit => 100) %>
 <% if users.any? %>
   <%= form_for(@period, :remote => true, :url => add_users_kpi_calc_period_path(@period),
@@ -53,6 +56,7 @@
     <p><%= submit_tag l(:button_add) %></p>
     </fieldset>
   <% end %>
+<% end %>
 <% end %>
 
 </div>

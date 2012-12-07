@@ -1,10 +1,12 @@
 class KpiPeriodIndicator < ActiveRecord::Base
 	belongs_to :kpi_period_category
 	belongs_to :indicator
+	has_one :kpi_calc_period, :through => :kpi_period_category
 	has_many :kpi_indicator_inspectors, :dependent => :destroy
 	has_many :kpi_marks, :through => :kpi_indicator_inspectors
 
-	before_save :deny_save_if_period_active
+	before_save :check_period
+	before_destroy :check_period
 
 	serialize :matrix
 	serialize :pattern_settings
@@ -15,7 +17,7 @@ class KpiPeriodIndicator < ActiveRecord::Base
 
 	private
 
-	def deny_save_if_period_active
-		false if kpi_period_category.kpi_calc_period.active
-	end
+    def check_period
+        false if kpi_period_category.kpi_calc_period.locked or kpi_period_category.kpi_calc_period.active
+    end	
 end

@@ -84,5 +84,13 @@ ru:
   self_and_executors_issues_avg_custom_field_mark: "Средняя оценка по своим задачам и задачам исполнителей"
   if_has_role: "Если имеет роль"
   close_period: "Закрыть"
+  closed: "Закрыт"
+  actived: "Активирован"
+  not_actived: "Не активирован"
   pattern_has_been_deleted: "Шаблон расчета был удален"
+  cacl_period_is_locked: "Расчетный период закрыт"
+  reopen_period: "Открыть"
+  label_max_kpi: "Максимально возможное значение эффективности"
+  label_min_kpi: "Минимально возможное значение эффективности"
+  close_period_for_all: "Закрыть для всех"
 

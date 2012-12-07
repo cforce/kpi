@@ -18,7 +18,7 @@
 
 <tbody>
 <% @periods.each do |period| %>
-	<tr>
+	<tr class="<%= period_css_class(period) %>">
 		<td>
 
 			<%= link_to "#{format_date period.date} &mdash; #{format_date period.date.end_of_month}".html_safe, edit_kpi_calc_period_path(period) %> 
