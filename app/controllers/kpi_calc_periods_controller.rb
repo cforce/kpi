@@ -1,5 +1,5 @@
 class KpiCalcPeriodsController < ApplicationController
-	before_filter :authorized_globaly?
+	before_filter :authorized_globaly?, :except => [:close_for_user]
 	
 	before_filter :find_period, :only => [:close_for_user, :reopen_for_user, :close, :edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
 	before_filter :find_patterns, :only => [:new, :edit]
