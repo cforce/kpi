@@ -3,6 +3,57 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../../config/environme
 require File.expand_path(File.dirname(__FILE__) + "/../../../../config/application")
 
 namespace :redmine do
+
+  task :copy_calc_periods => :environment do
+    puts "Copy Calc Period task is executing"
+    puts "-----------------------------------" 
+    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month}")
+                 .where("#{KpiCalcPeriod.table_name}.date = ? AND p.id IS NULL AND #{KpiCalcPeriod.table_name}.active = ?", 
+                         Date.today.at_beginning_of_month-1.months,
+                         true)
+                 .each do |original_period|
+      #puts "Original period date - #{original_period.date}"
+      period = KpiCalcPeriod.new
+
+      period.kpi_pattern_id = original_period.kpi_pattern_id
+      period.date = original_period.date+1.months
+      period.parent_id = original_period.id
+
+      if period.save
+        puts "New period has been saved #{period.date}"
+        period.copy_from_pattern
+        new_period_indicators = period.kpi_period_indicators
+        original_period.kpi_indicator_inspectors.select("#{KpiIndicatorInspector.table_name}.*, #{KpiPeriodIndicator.table_name}.indicator_id AS 'indicator_id' ")
+                                                .where("#{KpiPeriodIndicator.table_name}.indicator_id IN (?)", new_period_indicators.map{|i| i.indicator_id}).each do |inspector|
+          
+          attributes = inspector.attributes.dup.except('id', 'created_at', 'updated_at', "kpi_period_indicator_id", "indicator_id")
+          puts "kpi_indicator_inspector id - #{inspector.id}"
+
+          #attributes["kpi_period_indicator_id"] = new_period_indicators.inject(nil){|v, e| e.id if e.indicator_id == inspector.attributes['indicator_id']}
+          #new_period_indicators.inject(nil){|v, e| puts "#{e.indicator_id.inspect} == #{inspector.attributes['indicator_id'].inspect}"}
+          attributes["kpi_period_indicator_id"] = new_period_indicators.find{|v| v.indicator_id == inspector.attributes['indicator_id']}.id
+          puts attributes.inspect
+          new_inspector = KpiIndicatorInspector.new(attributes)
+          new_inspector.save
+        end
+      end
+    end
+
+  
+    if Setting.plugin_kpi['auto_activating_date'].to_s == Date.today.day.to_s
+      puts "Activate Calc Periods task is executing" 
+      puts "---------------------------------------" 
+      KpiCalcPeriod.where("date = ? AND parent_id IS NOT NULL AND active = ?", Date.today.at_beginning_of_month, false).each do |period|
+        if period.for_activating?
+          puts "Period with id #{period.id} has been activated" if period.activate
+        else
+          puts "Period with id #{period.id} is not integral" 
+        end
+      end
+    end
+
+  end
+
   task :make_kpi_mark_fact_calc => :environment do
     KpiCalcPeriod.active_opened.each do |p|
       puts "------------------------------"

@@ -226,3 +226,13 @@ a.reopen_period
 	{
 	float: right;
 	}
+
+#select_period_date {
+	font-size: 1.2em;
+	padding-right: 15px;
+	margin-top: -2px;
+	
+	}
+#select_period_date select{
+	text-transform: capitalize;
+	}

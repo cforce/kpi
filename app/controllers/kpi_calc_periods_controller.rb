@@ -11,7 +11,7 @@ class KpiCalcPeriodsController < ApplicationController
 	include KpiHelper
 
 	def index
-		
+		@period_dates = KpiCalcPeriod.select(:date).group(:date).order("date DESC")
 	end
 
 	def new
@@ -75,10 +75,7 @@ class KpiCalcPeriodsController < ApplicationController
 		error+="<br/>"+l(:indicators_integrity_is_false) if not @period.indicators_integrity?
 
 		if error.empty?
-			@period.assign_immediate_superior
-			@period.create_marks
-			@period.active=true
-			@period.save
+			@period.activate
 		else
 			flash[:error] = l(:period_integrity_false)+" "+error
 		end
@@ -272,6 +269,12 @@ class KpiCalcPeriodsController < ApplicationController
 	end
 
 	def find_calc_periods
-	 	@periods=KpiCalcPeriod.order(:date).includes(:kpi_pattern)
+		@date = params[:period].nil? ? '' : params[:period][:date]
+
+		if @date.empty?
+	 		@periods=KpiCalcPeriod.order(:date).includes(:kpi_pattern)
+	 	else
+	 		@periods=KpiCalcPeriod.order(:date).includes(:kpi_pattern).where(:date => @date)
+	 	end
 	end
 end

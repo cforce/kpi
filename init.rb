@@ -27,7 +27,8 @@ Redmine::Plugin.register :kpi do
               "executor_id_issue_field" => "executor_id",
               "max_kpi" => 120,
               "min_kpi" => 80,
-              "check_date_issue_field" => "check_date"
+              "check_date_issue_field" => "check_date",
+              "auto_activating_date" => 2,
              }, :partial => 'kpi/settings' 
 end
 

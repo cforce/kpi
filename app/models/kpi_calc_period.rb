@@ -62,6 +62,17 @@ class KpiCalcPeriod < ActiveRecord::Base
 		copy_users_from_pattern
 	end
 
+	def for_activating?
+		inspectors_sum_integrity? and inspectors_null_percent_integrity? and indicators_integrity?
+	end	
+
+	def activate
+		assign_immediate_superior
+		create_marks
+		self.active=true
+		self.save
+	end
+
 	def copy_indicators_from_pattern
 		kpi_pattern.kpi_pattern_indicators.includes(:indicator).each do |e|
 

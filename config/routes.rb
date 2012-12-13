@@ -48,7 +48,7 @@ RedmineApp::Application.routes.draw do
 
 	resources :kpi_calc_periods do
 		collection do
-			
+		#get '/:date', :action => 'index'
 	    end
 
 	    member do

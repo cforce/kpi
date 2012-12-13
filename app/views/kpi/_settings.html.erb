@@ -2,6 +2,10 @@
 defaults = Redmine::Plugin::registered_plugins[:kpi].settings[:default] 
 max_kpi = @settings['max_kpi'] || defaults['max_kpi']
 min_kpi = @settings['min_kpi'] || defaults['min_kpi']
+executor_id_issue_field = @settings['executor_id_issue_field'] || defaults['executor_id_issue_field']
+user_superior_id_field = @settings['user_superior_id_field'] || defaults['user_superior_id_field']
+check_date_issue_field = @settings['check_date_issue_field'] || defaults['check_date_issue_field']
+auto_activating_date = @settings['auto_activating_date'] || defaults['auto_activating_date']
 -%>
 
 <table cellspacing="15">
@@ -16,6 +20,38 @@ min_kpi = @settings['min_kpi'] || defaults['min_kpi']
 <td><%=l(:label_min_kpi)%>: </td>
 <td>
 <%=text_field_tag 'settings[min_kpi]', min_kpi %>
+</td>
+</tr>
+
+
+<tr>
+<td><%=l(:label_user_superior_id_field)%>: </td>
+<td>
+<%=text_field_tag 'settings[user_superior_id_field]', user_superior_id_field %>
+</td>
+</tr>
+
+
+<tr>
+<td><%=l(:label_executor_id_issue_field)%>: </td>
+<td>
+<%=text_field_tag 'settings[executor_id_issue_field]', executor_id_issue_field %>
+</td>
+</tr>
+
+
+<tr>
+<td><%=l(:label_check_date_issue_field)%>: </td>
+<td>
+<%=text_field_tag 'settings[check_date_issue_field]', check_date_issue_field %>
+</td>
+</tr>
+
+<tr>
+<td><%=l(:calc_period_avto_activating_date)%>: </td>
+
+<td>
+    <%= select_tag 'settings[auto_activating_date]', options_for_select((1..31).map{|e| [e, e]}, auto_activating_date) %>
 </td>
 </tr>
 

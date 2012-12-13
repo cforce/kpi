@@ -1,5 +1,13 @@
 
 <div class="contextual">
+<div id="select_period_date" class="L">
+<%= form_tag({:controller => "kpi_calc_periods", :action => 'index'}, :method => :get) do %>
+
+	<%= select("period", "date", options_for_select(@period_dates.map {|p| [ human_month(p.date), p.date ]}, @date), { :include_blank => true }) %>
+	<%= submit_tag(l(:show)) %>
+<% end %>
+
+</div>
 <%= render :partial => 'kpi/kpi_common_links' %>
 </div>
 
@@ -12,6 +20,7 @@
 	<tr>
 	<th><%= l(:label_kpi_calc_periods) %></th>
 	<th><%= l(:field_kpi_pattern) %></th>
+	<th><%= l(:source) %></th>
 	<th></th>
 	</tr>
 </thead>
@@ -24,12 +33,15 @@
 			<%= link_to "#{format_date period.date} &mdash; #{format_date period.date.end_of_month}".html_safe, edit_kpi_calc_period_path(period) %> 
 			(<%= I18n.t("date.abbr_month_names")[period.date.month] %>) </td>
 		<td><%= pattern_link(period) %></td>
+		<td>
+			<%= link_to l(:source), {:controller => 'kpi_calc_periods', :action => 'edit', :id => period.parent_id} unless period.parent_id.nil? %>
+		</td>
 		<td class="buttons">
 		    <%= link_to(l(:button_delete), kpi_calc_period_path(period),
 		                                   :method => :delete,
 		                                   :confirm => l(:text_are_you_sure),
 		                                   :class => 'icon icon-del') %>
-		</td>
+		</td>		
 	</tr>
 <% end %>
 </tbody>
@@ -37,7 +49,7 @@
 </table>
 
 <% else %>
-  <p class="nodata"><%= l(:label_no_data) %></p>
+  <p class="nodata"><%= l(:label_no_data)%></p>
 <% end %>
 
 <%= render :partial => 'kpi/sidebar' %>

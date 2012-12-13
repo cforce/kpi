@@ -93,4 +93,10 @@ ru:
   label_max_kpi: "Максимально возможное значение эффективности"
   label_min_kpi: "Минимально возможное значение эффективности"
   close_period_for_all: "Закрыть для всех"
+  show: "Показать"
+  calc_period_avto_activating_date: "Дата автоматической активации периода"
+  label_check_date_issue_field: "Поле таблицы Issues в котором хранится дата проверки"
+  label_executor_id_issue_field: "Поле таблицы Issues в котором хранится идентификатор исполнителя"
+  label_user_superior_id_field: "Поле таблицы Issues в котором хранится идентификатор непосредственного руководителя"
+  source: "Источник"
 
