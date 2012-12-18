@@ -46,6 +46,13 @@ RedmineApp::Application.routes.draw do
 	    end
 	end
 
+	resources :kpi_imported_values do
+	    collection do
+	      post 'update_values'
+	      get 'edit_values'
+	    end
+	end
+
 	resources :kpi_calc_periods do
 		collection do
 		#get '/:date', :action => 'index'

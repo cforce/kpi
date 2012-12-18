@@ -1,0 +1,21 @@
+<%= form_tag({:controller => "kpi_imported_values", :action => 'update_values'}, :remote => true) do %>
+<table class="list patterns">
+    <thead>
+        <tr>
+        <th><%= l(:imported_value_name) %></th>
+        <th><%= l(:imported_value) %></th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+    <% @values.each do |value| %>
+        <tr>
+            <td><%= h value.name %> </td>
+            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}]", value.value , :class => "#{'completed' unless value.value.nil? }" %></td>
+        </tr>
+    <% end %>
+    </tbody>
+</table>
+<%= submit_tag(l(:button_save)) %>
+<% end %>

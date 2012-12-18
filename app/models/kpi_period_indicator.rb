@@ -10,6 +10,7 @@ class KpiPeriodIndicator < ActiveRecord::Base
 
 	serialize :matrix
 	serialize :pattern_settings
+	serialize :pattern_plan_settings
 	
 	def plan
 		Indicator::INTERPRETATION_FACT == interpretation ?	plan_value : ((matrix['percent'].index('100').nil?) ? 1 : matrix['value_of_fact'][matrix['percent'].index('100')])

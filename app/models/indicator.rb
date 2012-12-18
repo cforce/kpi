@@ -7,6 +7,7 @@ class Indicator < ActiveRecord::Base
  
   serialize :matrix
   serialize :pattern_settings
+  serialize :pattern_plan_settings
 
   belongs_to :kpi_category
   belongs_to :kpi_unit
@@ -35,8 +36,14 @@ class Indicator < ActiveRecord::Base
                   '2' => 'issue_hours_in_current_period',
                   '3' => 'issue_lag_in_current_period',
                   '4' => 'self_and_executors_issues_lag',
-                  '5' => 'self_and_executors_issues_avg_custom_field_mark'
+                  '5' => 'self_and_executors_issues_avg_custom_field_mark',
+                  '6' => 'import_from_other_system'
                   }     
+
+  PLAN_PATTERNS = {
+                  '' => 'no_pattern',
+                  '1' => 'import_from_other_system',
+                  } 
 
   MAX_NUM_IN_PERIOD=5          
 

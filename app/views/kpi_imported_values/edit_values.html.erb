@@ -1,0 +1,15 @@
+<div class="contextual">
+<%= render :partial => 'kpi/kpi_common_links' %>
+</div>
+
+<h2><%= l(:imported_values) %></h2>
+
+<% if @values.any? %>
+<div id="imported_values_form">
+<%= render :partial => 'kpi_imported_values/form' %>
+</div>
+<% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<%= render :partial => 'kpi/sidebar' %>

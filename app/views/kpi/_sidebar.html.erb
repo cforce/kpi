@@ -23,6 +23,14 @@
 		</li>
 
 	<% end %>
+
+	<% if User.current.global_permission_to?('kpi_imported_values', 'update_values') %>
+		<li>
+		<%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values'}" %>
+		</li>
+
+	<% end %>
+
 </ul>
 
 <ul>

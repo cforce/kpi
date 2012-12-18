@@ -15,6 +15,10 @@ module IndicatorsHelper
 		Indicator::FACT_PATTERNS.sort_by{|k, v| l(v)}.map{|k,v| [l(v), k]}
 	end
 
+	def get_plan_pattern_options
+		Indicator::PLAN_PATTERNS.sort_by{|k, v| l(v)}.map{|k,v| [l(v), k]}
+	end
+
 	def options_for_role(indicator)
 		default = nil
 
@@ -23,6 +27,19 @@ module IndicatorsHelper
 		end		
 
 		options_for_select(Role.where(:builtin => 0).order(:name).map{ |u| [u.name, u.id]}, default)
+	end
+
+	def options_for_imported_values(indicator, plan = false)
+		default = nil
+
+		pattern_settings = indicator.pattern_settings
+		pattern_settings = indicator.pattern_plan_settings if plan
+
+		if not pattern_settings.nil?
+			default = pattern_settings['imported_value_id']  if not pattern_settings['imported_value_id'].nil?
+		end		
+
+		options_for_select(KpiImportedValue.order(:name).map{ |u| [u.name, u.id]}, default)
 	end
 
 	def options_for_mark_custom_field(indicator)

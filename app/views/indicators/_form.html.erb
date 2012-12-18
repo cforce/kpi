@@ -1,7 +1,7 @@
 <%= error_messages_for 'indicator' %>
 
 <div class="h">
-<div class="splitcontentleft">
+<div class="L left_form_part">
 <div class="box tabular">
 
 <p><%= f.text_field :name, :required => true, :label => l(:kpi_indicator_name_label), :style=>'width: 98%;' %></p>
@@ -18,9 +18,12 @@
 </div>
 </div>
 
-<div class="splitcontentright">
+<div class="L right_form_part">
 <div class="box tabular">
-<p><%= f.select :pattern, get_fact_pattern_options, :label => l(:kpi_fact_pattern), :required => false %></p>
+
+<fieldset>
+<legend><%= l(:editing_fact_pattern) %></legend>
+<p><%= f.select :pattern, get_fact_pattern_options, {:label => l(:kpi_fact_pattern), :required => false}, {'data-cf' => 'kpi_pattern_custom_fields', :class => 'patten_sb'} %></p>
 
 
 <div id="kpi_pattern_custom_fields">
@@ -32,8 +35,34 @@
 <%= label_tag 'indicator_pattern_settings_role', l(:if_has_role) %>
 <%= select_tag 'indicator[pattern_settings][role]', options_for_role(@indicator) %>
 </p>
+<p class="I kpi_pattern_custom_field_6">
+<%= label_tag 'indicator_pattern_settings_imported_value_id', l(:imported_value) %>
+<%= select_tag 'indicator[pattern_settings][imported_value_id]', options_for_imported_values(@indicator) %>
+</p>
 </div>
 
+</fieldset>
+
+<fieldset>
+<legend><%= l(:editing_plan_pattern) %></legend>
+<p><%= f.select :pattern_plan, get_plan_pattern_options, {:label => l(:kpi_fact_pattern), :required => false}, {'data-cf' => 'kpi_pattern_plan_custom_fields', :class => 'patten_sb'} %></p>
+
+
+<div id="kpi_pattern_plan_custom_fields">
+<p class="I kpi_pattern_custom_field_1">
+<%= label_tag 'indicator_pattern_settings_role', l(:imported_value) %>
+<%= select_tag 'indicator[pattern_plan_settings][imported_value_id]', options_for_imported_values(@indicator, true) %>
+</p>
+<p class="I kpi_pattern_custom_field_1">
+<%= label_tag 'indicator_pattern_settings_imported_value_percent', l(:imported_value_percent) %>
+<%= text_field_tag 'indicator[pattern_plan_settings][imported_value_percent]', !@indicator.pattern_plan_settings.nil? && !@indicator.pattern_plan_settings['imported_value_percent'].nil? ? @indicator.pattern_plan_settings['imported_value_percent'] : 100, :class => 'weight', :maxlength => 3 %>
+</p>
+</div>
+
+</fieldset>
+
+<fieldset>
+<legend><%= l(:editing_matrix_of_interpretation) %></legend>
 <p><%= f.select :interpretation, ([[l("kpi_interpretation_label_#{Indicator::INTERPRETATION_FACT}"), Indicator::INTERPRETATION_FACT],
 								  [l("kpi_interpretation_label_#{Indicator::INTERPRETATION_MATRIX}"), Indicator::INTERPRETATION_MATRIX]]),
 								  :label => l(:kpi_interpretation_label), :required => true %></p>
@@ -69,6 +98,7 @@
 
 <br/>
 <a href="#" id="fill_mark_values"><%= l(:fill_mark) %></a>
+
 <div class="I" id="kpi_mark_values">
 <span><div><%= l(:great_mark) %></div><div>150</div><div>150</div></span>
 <span><div><%= l(:good_mark) %></div><div>100</div><div>100</div></span>
@@ -77,6 +107,8 @@
 <span><div><%= l(:terribly_mark) %></div><div>-50</div><div>-50</div></span>
 </div>
 </div>
+
+</fieldset>
 
 </div>
 </div>

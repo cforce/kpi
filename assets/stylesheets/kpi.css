@@ -78,7 +78,7 @@ input#principal_search, input.user_search {
 	}
 
 
-table.indicators td.weight input
+table.indicators td.weight input, input.weight
 	{
 	width: 25px;
 	}
@@ -235,4 +235,17 @@ a.reopen_period
 	}
 #select_period_date select{
 	text-transform: capitalize;
+	}
+
+div.left_form_part
+	{
+	width: 49%;
+	min-width: 450px;
+	margin: 0px 5px 0px 0px;
+	}
+div.right_form_part
+	{
+	width: 49%;
+	min-width: 680px;
+	margin: 0px 0px 0px 5px;
 	}

@@ -65,10 +65,13 @@ jQuery(document).ready(function(){
 		});
 
 
-	jQuery('#indicator_pattern').change(function(){
-		show_hide_custom_fields()
+	jQuery('select.patten_sb').change(function(){
+		show_hide_custom_fields(jQuery(this))
 		});
-	show_hide_custom_fields();
+
+	jQuery('select.patten_sb').each(function(){
+		show_hide_custom_fields(jQuery(this));
+		});
 	});
 
 function portable_data_apply()
@@ -89,10 +92,10 @@ function make_next_matrix_row(current_link, value, percent, title)
 	tr.after(tr_clone);
 	}
 
-function show_hide_custom_fields()
+function show_hide_custom_fields(pattern_sb)
 	{
-	jQuery('#kpi_pattern_custom_fields p').hide()
-	jQuery('p.kpi_pattern_custom_field_'+jQuery('#indicator_pattern').val()).show()
+	jQuery('#'+pattern_sb.attr('data-cf')+' p').hide()
+	jQuery('#'+pattern_sb.attr('data-cf')+' p.kpi_pattern_custom_field_'+pattern_sb.val()).show()
 	}
 
 function validate_explanation()
