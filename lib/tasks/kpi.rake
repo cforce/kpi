@@ -62,7 +62,7 @@ namespace :redmine do
       p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern_plan IS NOT NULL").each do |i|
         puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}. Period pattern name is #{Indicator::FACT_PATTERNS[i.pattern_plan.to_s]}"
 
-        case Indicator::FACT_PATTERNS[i.pattern_plan.to_s]
+        case Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]
         when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
             imported_value = KpiImportedValue.find(i.pattern_plan_settings['imported_value_id'])
