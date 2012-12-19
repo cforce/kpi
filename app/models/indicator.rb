@@ -42,7 +42,7 @@ class Indicator < ActiveRecord::Base
 
   PLAN_PATTERNS = {
                   '' => 'no_pattern',
-                  '1' => 'import_from_other_system',
+                  '1' => 'import_from_other_system'
                   } 
 
   MAX_NUM_IN_PERIOD=5          
