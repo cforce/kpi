@@ -15,7 +15,8 @@ class CreateKpiImportedValues < ActiveRecord::Migration
     KpiImportedValue.create(:name => "Розничная прибыль компании(план) за текущий месяц", :pseudonym => "retail_profit_plan")
     KpiImportedValue.create(:name => "Оптовая прибыль компании(факт) за текущий месяц", :pseudonym => "wholesale_profit_fact")
     KpiImportedValue.create(:name => "Оптовая прибыль компании(план) за текущий месяц", :pseudonym => "wholesale_profit_plan")
-
+    KpiImportedValue.create(:name => "Норма средней оценки заказчика", :pseudonym => "client_avg_mark", :value => 100)
+    KpiImportedValue.create(:name => "Норма средней оценки исполнителя", :pseudonym => "executor_avg_mark", :value => 100)
   end
 
   def self.down
