@@ -58,8 +58,9 @@ namespace :redmine do
     KpiCalcPeriod.novel.each do |p|
       puts "------------------------------"
       date = "#{p.date.month}.#{p.date.year}"
-      puts "Period date is - #{date}"
+      puts "Period date is - #{date} Period id is - #{p.id} "
       p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern_plan IS NOT NULL").each do |i|
+        puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}"
 
         case Indicator::FACT_PATTERNS[i.pattern_plan.to_s]
         when "import_from_other_system"
