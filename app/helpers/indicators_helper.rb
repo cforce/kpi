@@ -39,7 +39,11 @@ module IndicatorsHelper
 			default = pattern_settings['imported_value_id']  if not pattern_settings['imported_value_id'].nil?
 		end		
 
-		options_for_select(KpiImportedValue.order(:name).map{ |u| [u.name, u.id]}, default)
+		if plan
+			options_for_select(KpiImportedValue.order(:name).where("plan_value_enable", true).map{ |u| [u.name, u.id]}, default)
+		else
+			options_for_select(KpiImportedValue.order(:name).where("fact_value_enable", true).map{ |u| [u.name, u.id]}, default)
+		end
 	end
 
 	def options_for_mark_custom_field(indicator)

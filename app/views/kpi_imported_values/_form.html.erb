@@ -3,7 +3,9 @@
     <thead>
         <tr>
         <th><%= l(:imported_value_name) %></th>
-        <th><%= l(:imported_value) %></th>
+        <th><%= l(:label_plan) %></th>
+        <th><%= l(:value_of_fact) %></th>
+        <th></th>
         </tr>
     </thead>
 
@@ -12,10 +14,23 @@
     <% @values.each do |value| %>
         <tr>
             <td><%= h value.name %> </td>
-            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}]", value.value , :class => "#{'completed' unless value.value.nil? }" %></td>
+            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}][plan_value]", value.plan_value , :class => "#{'completed' unless value.plan_value.nil? }" if value.plan_value_enable %></td>
+            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}][fact_value]", value.fact_value , :class => "#{'completed' unless value.fact_value.nil? }" if value.fact_value_enable %></td>
+            <td>
+            <%= link_to(l(:button_delete), kpi_imported_value_path(value),
+                                           :method => :delete,
+                                           :confirm => l(:text_are_you_sure),
+                                           :class => 'icon icon-del') %>         
+            </td>   
         </tr>
     <% end %>
     </tbody>
 </table>
 <%= submit_tag(l(:button_save)) %>
 <% end %>
+
+<script>
+jQuery('a.refreshable').each(function(){
+    jQuery('modal-'+jQuery(this).attr('id')).hide()
+    })
+</script>

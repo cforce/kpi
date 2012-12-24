@@ -60,14 +60,14 @@ namespace :redmine do
       date = "#{p.date.month}.#{p.date.year}"
       puts "Period date is - #{date} Period id is - #{p.id} "
       p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern_plan IS NOT NULL").each do |i|
-        puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}. Period pattern name is #{Indicator::FACT_PATTERNS[i.pattern_plan.to_s]}"
+        puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}. Period pattern name is #{Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]}"
 
         case Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]
         when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
             imported_value = KpiImportedValue.find(i.pattern_plan_settings['imported_value_id'])
             if ! imported_value.nil?
-              i.plan_value = (imported_value.value.to_f * i.pattern_plan_settings['imported_value_percent'].to_f) / 100
+              i.plan_value = (imported_value.plan_value.to_f * i.pattern_plan_settings['imported_value_percent'].to_f) / 100
               i.save 
             end
         end
@@ -80,7 +80,7 @@ namespace :redmine do
     KpiCalcPeriod.active_opened.each do |p|
       puts "------------------------------"
       date = "#{p.date.month}.#{p.date.year}"
-      puts "Period date is - #{date}"
+      puts "Period date is - #{date}. Period id is - #{p.id}"
       users = p.users.includes(:memberships)
 
       p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern IS NOT NULL").each do |i|
@@ -90,7 +90,7 @@ namespace :redmine do
           when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
             kpi_marks.each{|m|
-              m.fact_value=KpiImportedValue.find(i.pattern_settings['imported_value_id']).try(:value)
+              m.fact_value=KpiImportedValue.find(i.pattern_settings['imported_value_id']).try(:fact_value)
               m.save unless m.fact_value.nil?
             }
           when "avg_custom_field_mark_in_current_period"

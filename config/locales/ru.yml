@@ -108,4 +108,7 @@ ru:
   editing_fact_pattern: "Редактирование шаблона расчета факта"
   editing_plan_pattern: "Редактирование шаблона расчета плана"
   imported_value_percent: "Взять процент"
+  add_new_imported_value: "Добавить вычисляемое значение"
+  plan_value_enable: "Доступен импорт значения плана"
+  fact_value_enable: "Доступен импорт значения факта"
 
