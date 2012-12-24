@@ -1,0 +1,15 @@
+<%= form_for @value, :remote => true do |f| %>
+<p>
+    <%= f.label :name, l(:imported_value_name) %><br/>
+    <%= f.text_field :name, :required => true, :label => "sadasdsad", :style => "width: 400px;" %>
+</p>
+
+<p>
+    <nobr><%= f.check_box :plan_value_enable, :label => l(:kpi_indicator_name_label) %> &mdash; <%= f.label :plan_value_enable, l(:plan_value_enable) %></nobr>
+</p>
+<p>
+    <nobr><%= f.check_box :fact_value_enable, :label => l(:kpi_indicator_name_label) %> &mdash; <%= f.label :fact_value_enable, l(:fact_value_enable) %></nobr>
+</p>
+
+<%= submit_tag l(:button_save) %>
+<% end %>
