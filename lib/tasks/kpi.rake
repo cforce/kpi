@@ -7,7 +7,8 @@ namespace :redmine do
   task :copy_calc_periods => :environment do
     puts "Copy Calc Period task is executing"
     puts "-----------------------------------" 
-    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month}")
+    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month} 
+                         INNER JOIN #{KpiPattern.table_name} ON #{KpiPattern.table_name}.id = #{KpiCalcPeriod.table_name}.kpi_pattern_id ")
                  .where("#{KpiCalcPeriod.table_name}.date = ? AND p.id IS NULL AND #{KpiCalcPeriod.table_name}.active = ?", 
                          Date.today.at_beginning_of_month-1.months,
                          true)

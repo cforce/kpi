@@ -3,6 +3,8 @@
 <div class="h">
 <div class="box tabular">
 
+<%= hidden_field_tag 'copy_from', params[:copy_from] unless params[:copy_from].nil? %>
+
 <p><%= f.text_field :name, :required => true, :label => l(:kpi_pattern_name_label), :style=>'width: 80%;' %></p>
 <p>   <%= f.text_area :description,
                    :cols => 60,

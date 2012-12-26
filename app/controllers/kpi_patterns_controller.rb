@@ -40,6 +40,12 @@ class KpiPatternsController < ApplicationController
 	@pattern = KpiPattern.new(params[:kpi_pattern])
 	    if request.post? and @pattern.save
 		   	flash[:notice] = l(:notice_successful_create)
+
+		   	if not params[:copy_from].nil?
+		   		source_pattern = KpiPattern.find(params[:copy_from])
+		   		source_pattern.copy_to @pattern
+		   	end
+
 		    redirect_to(edit_kpi_pattern_path(@pattern))
 		else
 		    render :action => 'new'
