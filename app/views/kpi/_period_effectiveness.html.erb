@@ -54,7 +54,7 @@
 				completion = mark.completion(period_indicator)
 				marks[mark] = completion unless completion.nil?
 				 %>		
-				<td><%= kpi_percent completion %></td>
+				<td><%= kpi_percent completion_view(mark, completion) %></td>
 				</tr>
 			<% x+=1 %>
 			<% end %>

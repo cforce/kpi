@@ -1,5 +1,15 @@
 <div class="contextual">
-<%= link_to_modal_window l(:add_new_imported_value), {:controller => 'kpi_imported_values', :action=> 'new'}, {:class => "refreshable"} %>
+
+<div id="select_period_date" class="L">
+<%= form_tag({:controller => "kpi_imported_values", :action => 'edit_values'}, :method => :get) do %>
+    <%= select_month(@date, :use_short_month => true) %>
+    <%= select_year(@date, :start_year => Date.today.year-1, :end_year => Date.today.year+1) %>
+    <%= submit_tag(l(:show)) %>
+<% end %>
+
+</div>
+
+<%= link_to_modal_window l(:add_new_imported_value), {:controller => 'kpi_imported_values', :action=> 'new', :full_date => @date}, {:class => "refreshable"} %>
 </div>
 
 <h2><%= l(:imported_values) %></h2>

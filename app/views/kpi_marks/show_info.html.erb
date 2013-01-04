@@ -1,0 +1,54 @@
+<script>
+build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>');
+</script>
+
+<div id="mark_data_<%= @mark.id %>">
+<% completion = @mark.completion(@period_indicator) %>
+<% if @period_indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s %>
+    <div class="values_of_matrix">
+        <span data-x="<%= @mark.plan_value %>" data-y="100"></span>
+        <span data-x="<%= @mark.fact_value %>" data-y="<%= completion %>"></span>
+    </div>
+    <div class="values_of_calc">
+        <span data-x="<%= @mark.plan_value %>" data-y="100"></span>
+        <span data-x="<%= @mark.fact_value %>" data-y="<%= completion %>"></span>        
+    </div>
+    <div class="values_of_fact">
+        <span data-x="<%= @mark.fact_value %>" data-y="<%= completion %>"></span>     
+    </div>
+<% else %>
+    <% get_matrix_calc_values = @mark.get_matrix_calc_values(@period_indicator) %>
+    <div class="values_of_matrix">
+        <% @period_indicator.matrix['value_of_fact'].each_index do |k| %>
+            <span data-x="<%= @period_indicator.matrix['value_of_fact'][k] %>" data-y="<%= @period_indicator.matrix['percent'][k] %>"></span>
+        <% end %>
+        <% if get_matrix_calc_values[:equivalence_type]=='out_of_range' %>
+            <span data-x="<%= @mark.fact_value %>" data-y="<%= get_matrix_calc_values[:y] %>"></span>   
+        <% end %>
+    </div>
+    <div class="values_of_calc">
+        <% get_matrix_calc_values[:calc_values].each do |calc_value| %>
+        <span data-x="<%= calc_value[0] %>" data-y="<%= calc_value[1] %>"></span>  
+        <% end %>
+    </div>
+    <div class="values_of_fact">
+        <span data-x="<%= @mark.fact_value %>" data-y="<%= get_matrix_calc_values[:y] %>"></span>     
+    </div>
+
+<% end %>
+
+</div>
+
+<div class="mark_chart" id="mark_chart_<%= @mark.id %>"></div>
+
+<div class="indicator_percent_desc L">
+<% if not @mark.fact_date.nil? %>
+    <div class="description"> 
+
+        <%= l(:the_last_cakculation_was_made_on_this_indicator) %>  &mdash; <%= time_tag @mark.fact_date %> <%= l(:ago) %>
+
+    </div>
+<% end %>
+
+<div class="caption"><%= l(:what_issues_are_involved_in_the_calculation) %>:</div>
+</div>

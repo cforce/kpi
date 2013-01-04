@@ -1,5 +1,5 @@
 class KpiMarksController < ApplicationController
-	before_filter :find_mark, :only => [:update_plan, :edit_fact, :edit_plan, :update_fact]
+	before_filter :find_mark, :only => [:update_plan, :edit_fact, :edit_plan, :update_fact, :show_info]
 	before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan, :edit_fact]
 
 	helper :kpi
@@ -16,6 +16,12 @@ class KpiMarksController < ApplicationController
 
 	def user_marks
 		
+	end
+
+	def show_info
+		@period_indicator = @mark.kpi_period_indicator
+		render_403 unless @mark.check_user_for_info_showing?
+		render "show_info", :layout => false
 	end
 
 	def update_user_marks

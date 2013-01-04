@@ -132,3 +132,103 @@ function validate_explanation()
 			}
 
 	}
+
+function get_kpi_arrays(array_name, data_id)
+	{
+	var arr = []
+	jQuery('#'+data_id+' div.'+array_name+' span').each(function(){
+		arr.push([Number(jQuery(this).attr("data-x")), Number(jQuery(this).attr("data-y"))])
+		});
+	return arr
+	}
+
+
+function build_chart(container, data_id)
+	{
+	var data = jQuery('#'+data_id)
+	var values_of_matrix = get_kpi_arrays('values_of_matrix', data_id)
+	var values_of_calc = get_kpi_arrays('values_of_calc', data_id)
+	var values_of_fact = get_kpi_arrays('values_of_fact', data_id)
+
+
+    var chart;
+
+        chart = new Highcharts.Chart({
+        	credits: {
+        			enabled: false
+        			},
+            chart: {
+                renderTo: container,
+                inverted: false,
+                width: 400,
+                style: {
+                    margin: '0 auto'
+                }
+            },
+            title: {
+                text: 'Матрица интерпритации и ваше значение на ней'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                gridLineWidth: 1,
+                gridLineDashStyle: 'dot',
+                /*tickInterval: 3,*/
+                reversed: false,
+                title: {
+                    text: null
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value +' дн.';
+                    }
+                },
+                maxPadding: 0.05,
+                minPadding: 0.0,
+                showLastLabel: true
+
+            },
+            yAxis: {
+                /*maxPadding: 0.1,*/
+                gridLineDashStyle: 'dot',
+                title: {
+                    text: null 
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value + ' %';
+                    }
+                },
+                lineWidth: 2
+            },
+            legend: {
+                enabled: true
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                        'Факт: '+this.x +' дн. Процент: '+ this.y +' %';
+                }
+            },
+            plotOptions: {
+                spline: {
+                    marker: {
+                        enable: false
+                    }
+                }
+            },
+            series: [{
+                name: 'Матрица',
+                data: values_of_matrix
+            },{
+                type: 'scatter',
+                name: 'Расчетные значения',
+                data: values_of_calc, marker: { symbol: 'circle', fillColor: '#2e8518', radius: 6, lineWidth: 2, lineColor: '#fff' }
+            }, {
+                name: 'Факт',
+                data: values_of_fact, marker: { symbol: 'circle', fillColor: '#ff0000', radius: 6, lineWidth: 2, lineColor: '#fff' }
+            }]
+        });
+
+	}

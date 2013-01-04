@@ -66,8 +66,8 @@ namespace :redmine do
         case Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]
         when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
-            imported_value = KpiImportedValue.find(i.pattern_plan_settings['imported_value_id'])
-            if ! imported_value.nil?
+            imported_value = KpiImportedMonthValue.joins(:kpi_imported_value).where("#{KpiImportedValue.table_name}.id=? AND #{KpiImportedMonthValue.table_name}.date=?", i.pattern_plan_settings['imported_value_id'], p.date).first
+            if ! imported_value.nil? && ! imported_value.plan_value.nil?
               i.plan_value = (imported_value.plan_value.to_f * i.pattern_plan_settings['imported_value_percent'].to_f) / 100
               i.save 
             end
@@ -91,13 +91,16 @@ namespace :redmine do
           when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
             kpi_marks.each{|m|
-              m.fact_value=KpiImportedValue.find(i.pattern_settings['imported_value_id']).try(:fact_value)
+              m.fact_value=KpiImportedMonthValue.joins(:kpi_imported_value).where("#{KpiImportedValue.table_name}.id=? AND #{KpiImportedMonthValue.table_name}.date=?", i.pattern_settings['imported_value_id'], p.date).first.try(:fact_value)
+              m.fact_date = Time.now
               m.save unless m.fact_value.nil?
             }
           when "avg_custom_field_mark_in_current_period"
             puts "Pattern is 'avg_custom_field_mark_in_current_period'"
             Issue.joins(:custom_values, {:fixed_version => :milestones})
-                 .select("AVG(#{CustomValue.table_name}.value) AS 'fact', #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
+                 .select("AVG(#{CustomValue.table_name}.value) AS 'fact',
+                         GROUP_CONCAT(#{Issue.table_name}.id ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'issues',
+                         #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
                  .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) 
                         AND custom_field_id=? 
                         AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=?
@@ -109,6 +112,7 @@ namespace :redmine do
 
               mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.executor_id).first
               mark.fact_value = f.fact
+              mark.fact_date = Time.now
               mark.save
             end
 
@@ -125,6 +129,7 @@ namespace :redmine do
 
                 mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.executor_id).first
                 mark.fact_value = f.fact
+                mark.fact_date = Time.now
                 mark.save
               end
           when 'issue_lag_in_current_period'
@@ -132,6 +137,7 @@ namespace :redmine do
 
             Issue.joins(:status, {:fixed_version => :milestones})
                  .select("AVG(CASE WHEN DATEDIFF(#{Setting.plugin_kpi['check_date_issue_field']}, due_date) < 0 THEN 0 ELSE DATEDIFF(#{Setting.plugin_kpi['check_date_issue_field']}, due_date) END) AS 'fact',
+                         GROUP_CONCAT(#{Issue.table_name}.id ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'involved_issues',
                          #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
                  .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=? AND #{IssueStatus.table_name}.is_closed = ?", users, date, true)
                  .group("#{Setting.plugin_kpi['executor_id_issue_field']}").map do |f|
@@ -142,13 +148,16 @@ namespace :redmine do
 
                 mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.executor_id).first
                 mark.fact_value = f.fact
+                mark.fact_date = Time.now
                 mark.save
               end
           when 'self_and_executors_issues_avg_custom_field_mark'
             puts "Pattern is 'self_and_executors_issues_avg_custom_field_mark'"
-            #Rails.logger.debug("sssssssssssssssssssssssssssssssssssssssssssssssssss")
+            Rails.logger.debug("sssssssssssssssssssssssssssssssssssssssssssssssssss")
             Project.joins({:all_members => [:member_roles, :user]}, {:issues => [:custom_values, {:fixed_version => :milestones}]})
-                   .select("AVG(#{CustomValue.table_name}.value) AS 'fact', #{User.table_name}.id AS 'user_id'")
+                   .select("AVG(#{CustomValue.table_name}.value) AS 'fact',
+                           GROUP_CONCAT(#{Issue.table_name}.id ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'involved_issues',
+                           #{User.table_name}.id AS 'user_id'")
                    .where("#{User.table_name}.type='User' 
                            AND #{User.table_name}.status=#{User::STATUS_ACTIVE} 
                            AND #{MemberRole.table_name}.role_id = ? 
@@ -161,9 +170,12 @@ namespace :redmine do
 
               puts "Fact is - #{f.fact}"
               puts "User ID is - #{f.user_id}"
+              puts "Issues ids is - #{f.involved_issues.to_s.split("|").inspect}"
 
               mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.user_id).first
               mark.fact_value = f.fact
+              mark.issues = f.involved_issues.to_s.split("|")
+              mark.fact_date = Time.now
               mark.save              
               end
 
@@ -187,6 +199,7 @@ namespace :redmine do
 
               mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.user_id).first
               mark.fact_value = f.fact
+              mark.fact_date = Time.now
               mark.save              
               end              
           end    

@@ -111,4 +111,7 @@ ru:
   add_new_imported_value: "Добавить вычисляемое значение"
   plan_value_enable: "Доступен импорт значения плана"
   fact_value_enable: "Доступен импорт значения факта"
+  what_issues_are_involved_in_the_calculation: "Какие задачи учасвовали в расчете"
+  the_last_cakculation_was_made_on_this_indicator: "Последний расчет данного показателя производился"
+  ago: "назад"
 

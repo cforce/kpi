@@ -249,3 +249,34 @@ div.right_form_part
 	min-width: 680px;
 	margin: 0px 0px 0px 5px;
 	}
+
+div.mark_chart
+	{
+    min-width: 400px; 
+    height: 400px;
+    float: left;
+    border-right: 1px solid #ccc;
+    padding: 0px 10px 0px 0px;
+    margin: 10px;	
+	}
+
+div.indicator_percent_desc
+    {
+    min-width: 300px;
+    padding: 10px 0px 0px 0px;
+    font-size: 10pt;
+    font-family: 'Lucida Grande', Verdana;
+    }   
+div.indicator_percent_desc div.caption
+    {
+    font-size: 12pt;
+    font-family: Arial;
+    color: #575757;
+    padding: 10px 0px 0px 0px;
+    }
+
+div.indicator_percent_desc ul
+    {
+    margin: 10px 0px 0px 0px;
+    padding-left: 15px;
+    }

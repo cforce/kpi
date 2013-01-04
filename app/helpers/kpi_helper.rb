@@ -111,6 +111,19 @@ module KpiHelper
 		end
 	end
 
+	def kpi_val_round(value)
+		case value.class.name
+		when 'Float'
+			'%0.2f' % value
+		else
+			value
+		end
+	end
+
+	def completion_view(mark, completion)
+		link_to_modal_window kpi_val_round(completion), {:controller => 'kpi_marks', :action=> 'show_info', :id => mark.id} unless completion.nil?
+	end
+
 	def fact_view(mark, period, period_indicator, period_user)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
 		if mark.check_user_for_fact_update(period_indicator, period_user)
