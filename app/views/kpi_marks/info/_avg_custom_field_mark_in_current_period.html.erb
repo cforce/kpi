@@ -4,7 +4,7 @@
     <tr>
         <th>#</th>
         <th width="82%"><%= l(:field_issue) %></th>
-        <th><%= l(:field_estimated_hours) %></th>
+        <th><%= l(:my_kpi_mark) %></th>
     </tr>
     </thead>
     <tbody>
@@ -13,14 +13,14 @@
         <tr>
             <td><%= link_to issue.id, issue_path(issue), {:class => 'issue'} %></td>
             <td><%= link_to "<div class=\"text\"><span>#{issue.subject}</span></div><div class=\"end\"></div>".html_safe, issue_path(issue), {:class => 'unexpected_end no_line issue'} %></td>
-            <td><nobr><span class="value <%= css_class %>"><%= @mark.issues[issue.id.to_s] %></span><span class="unit"></span></nobr></td>
+            <td><nobr><span class="value <%= css_class %>"><%= @mark.issues[issue.id.to_s] %></span><span class="unit">%</span></nobr></td>
         </tr>
     <% end %>
     </tbody>
     </table>
 </div>
     
-    <div class="info"><%= l(:issue_hours_in_current_period_explanation, 
+    <div class="info"><%= l(:avg_custom_field_mark_in_current_period_explanation, 
                             :valued_employee => link_to_user(@mark.user), 
                             :fact => "<nobr><span class=\"fact_on_chart\">#{@mark.fact_value}</span> #{kpi_unit}</nobr>",
                             :plan => "<nobr><span class=\"plan_on_chart\">#{@mark.plan_value}</span> #{kpi_unit}</nobr>",

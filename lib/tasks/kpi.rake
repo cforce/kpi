@@ -99,7 +99,7 @@ namespace :redmine do
             puts "Pattern is 'avg_custom_field_mark_in_current_period'"
             Issue.joins(:custom_values, {:fixed_version => :milestones})
                  .select("AVG(#{CustomValue.table_name}.value) AS 'fact',
-                         GROUP_CONCAT(#{Issue.table_name}.id ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'issues',
+                        GROUP_CONCAT(CONCAT(#{Issue.table_name}.id, '&', #{CustomValue.table_name}.value, '&', 'true') ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'involved_issues',
                          #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
                  .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) 
                         AND custom_field_id=? 
@@ -109,9 +109,20 @@ namespace :redmine do
 
               puts "Fact is - #{f.fact}"
               puts "Executor ID is - #{f.executor_id}"
+              puts "Issues - #{f.involved_issues.to_s.split("|").inspect}"
+
+              description = {}
+
+              f.involved_issues.to_s.split("|").each do |e|
+                data = e.split('&')                
+                if data[2] == 'true'
+                  description[data[0]] = data[1]
+                end
+              end
 
               mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.executor_id).first
               mark.fact_value = f.fact
+              mark.issues = description
               mark.fact_date = Time.now
               mark.save
             end
@@ -152,7 +163,7 @@ namespace :redmine do
 
             Issue.joins(:status, {:fixed_version => :milestones})
                  .select("AVG(CASE WHEN DATEDIFF(#{Setting.plugin_kpi['check_date_issue_field']}, due_date) < 0 THEN 0 ELSE DATEDIFF(#{Setting.plugin_kpi['check_date_issue_field']}, due_date) END) AS 'fact',
-                         GROUP_CONCAT(#{Issue.table_name}.id ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'involved_issues',
+                          GROUP_CONCAT(CONCAT(#{Issue.table_name}.id, '&', #{Setting.plugin_kpi['check_date_issue_field']}, '&', due_date, '&', 'true') ORDER BY #{Issue.table_name}.id SEPARATOR '|') AS 'involved_issues',
                          #{Setting.plugin_kpi['executor_id_issue_field']} AS 'executor_id'")
                  .where("#{Setting.plugin_kpi['executor_id_issue_field']} IN (?) AND DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y')=? AND #{IssueStatus.table_name}.is_closed = ?", users, date, true)
                  .group("#{Setting.plugin_kpi['executor_id_issue_field']}").map do |f|
@@ -160,9 +171,21 @@ namespace :redmine do
 
                 puts "Lag is - #{f.fact}"
                 puts "Executor ID is - #{f.executor_id}"
+                puts "Issues - #{f.involved_issues.to_s.split("|").inspect}"
+
+                description = {}
+                f.involved_issues.to_s.split("|").each do |e|
+                  data = e.split('&')
+                  if data[3] == 'true'
+                    description[data[0]] = {}
+                    description[data[0]]['check_date'] = data[1]
+                    description[data[0]]['due_date'] = data[2]
+                  end
+                end
 
                 mark = kpi_marks.where("#{KpiMark.table_name}.user_id = ? ", f.executor_id).first
                 mark.fact_value = f.fact
+                mark.issues = description
                 mark.fact_date = Time.now
                 mark.save
               end

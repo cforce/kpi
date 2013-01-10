@@ -1,0 +1,32 @@
+<div class="issues_in_calc">
+<table class="list issues">
+<thead>
+<tr>
+    <th>#</th>
+    <th width="82%"><%= l(:field_issue) %></th>
+    <th><%= l(:field_due_date) %></th>
+    <th><%= l(:check_date) %></th>
+    <th><%= l(:lag) %></th>    
+</tr>
+</thead>
+<tbody>
+<% @issues.each do |issue| %>
+    <% check_date = Date.parse @mark.issues[issue.id.to_s]['check_date'] %>
+    <% due_date = Date.parse @mark.issues[issue.id.to_s]['due_date'] %>
+    <tr>
+        <td><%= link_to issue.id, issue_path(issue), {:class => 'issue'} %></td>
+        <td><%= link_to "<div class=\"text\"><span>#{issue.subject}</span></div><div class=\"end\"></div>".html_safe, issue_path(issue), {:class => 'unexpected_end no_line issue'} %></td>
+        <td><nobr><%=  format_date due_date %></nobr></td>
+        <td><nobr><%=  format_date check_date %></nobr></td>
+        <td><nobr><span class="value"><%= lag(check_date, due_date) %></span><span class="unit"><%= kpi_unit %></span></nobr></td>
+    </tr>
+<% end %>
+</tbody>
+</table>
+</div>
+    
+<div class="info"><%= l(:issue_lag_in_current_period_explanation, 
+                            :valued_employee => link_to_user(@mark.user), 
+                            :fact => "<nobr><span class=\"fact_on_chart\">#{@mark.fact_value}</span> #{kpi_unit}</nobr>",
+                            :plan => "<nobr><span class=\"plan_on_chart\">#{@mark.plan_value}</span> #{kpi_unit}</nobr>",
+                            :completion => "<nobr><span class=\"fact_on_chart\">#{completion}<span> %</nobr>").html_safe %></div>
