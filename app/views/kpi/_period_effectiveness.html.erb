@@ -48,8 +48,8 @@
 				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation if mark.explanation.to_s!='' %></small></td>
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
 				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period, period_user), 
-								        period_indicator.indicator.kpi_unit.abridgement %></nobr></td>
-				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator, period_user), period_indicator.indicator.kpi_unit.abridgement %></nobr></td>		
+								        period_indicator.kpi_unit.abridgement %></nobr></td>
+				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator, period_user), period_indicator.kpi_unit.abridgement %></nobr></td>		
 				<% 
 				completion = mark.completion(period_indicator)
 				marks[mark] = completion unless completion.nil?

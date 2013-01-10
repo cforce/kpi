@@ -156,7 +156,13 @@ table.kpi_calc tr td.inspector
 
 span.value
 	{
+	padding-left: 6px;
 	margin-right: 20px;
+	}
+
+span.value.minus
+	{
+	padding-left: 0px;	
 	}
 
 span.unit
@@ -263,6 +269,7 @@ div.mark_chart
 div.indicator_percent_desc
     {
     min-width: 300px;
+    max-width: 550px;
     padding: 10px 0px 0px 0px;
     font-size: 10pt;
     font-family: 'Lucida Grande', Verdana;
@@ -280,3 +287,25 @@ div.indicator_percent_desc ul
     margin: 10px 0px 0px 0px;
     padding-left: 15px;
     }
+.plan_on_chart
+	{
+	background-color: #2e8518;
+	padding: 1px;
+	color: white;
+	font-weight: bold;
+	font-size: 8pt;
+	}
+.fact_on_chart
+	{
+	background-color: #ff0000;
+	padding: 1px;
+	color: white;
+	font-weight: bold;
+	font-size: 8pt;
+	}
+div.issues_in_calc
+	{
+	overflow: auto;
+	height: 161px;
+	}
+

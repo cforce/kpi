@@ -19,6 +19,7 @@ class KpiMarksController < ApplicationController
 	end
 
 	def show_info
+		@issues = Issue.where("id IN (?)", @mark.issues.map{|k,v| k}) unless @mark.issues.nil?
 		@period_indicator = @mark.kpi_period_indicator
 		render_403 unless @mark.check_user_for_info_showing?
 		render "show_info", :layout => false

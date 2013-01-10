@@ -154,6 +154,11 @@ module KpiHelper
 
 	end
 
+	def lag(check_date, due_date)
+		lag = (check_date.day - due_date.day)
+		(lag>0) ? (lag) : 0
+	end
+
 =begin
 
 	def link_to_indicator(indicator)

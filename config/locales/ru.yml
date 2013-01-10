@@ -10,6 +10,7 @@ ru:
   kpi_interpretation_label: "Интерпретация"
   kpi_interpretation_label_0: "Фактическая"
   kpi_interpretation_label_1: "Матрица интерпретации"
+  matrix: "Матрица"
   percent: "Процент"
   value_of_fact: "Факт"
   label_matrix_row_add: "Добавить"
@@ -33,6 +34,7 @@ ru:
   label_inspector_list: "Кто будет вносить факт"
   uniq_date_and_pattern_message: " не может быть применен, если уже существует такой же расчетный период, с таким же шаблоном"
   label_inspectors: "Кто ставит значение факта"
+  label_plan_values: "Значения плана"
   label_plan_values: "Значения плана"
   label_plan: "План"
   period_integrity_false: "Расчетный период не применен."
@@ -114,4 +116,14 @@ ru:
   what_issues_are_involved_in_the_calculation: "Какие задачи учасвовали в расчете"
   the_last_cakculation_was_made_on_this_indicator: "Последний расчет данного показателя производился"
   ago: "назад"
+  calc_values_and_execution_of_plan: "Расчетные значения и выполнение плана"
+  self_and_executors_issues_avg_custom_field_mark_explanation: "Была посчитана средняя оценка по всем задачам из текущего плана, у которых исполнителем является любой сотрудник, в тех проектах где оцениваемый сотрудник (%{valued_employee}) является руководителем.<br/> 
+                         Задачи без оценок не брались в расчет.<br/>
+                         На основе средней оценки (%{fact}) и планового значения (%{plan}) было вычисленно выполнение данного показателя (%{completion})"
+  chart_calc_values: "Расчетные значения"
+  check_date: "Дата проверки"
+  lag: "Задержка"
+  self_and_executors_issues_lag_explanation: "Была посчитана средняя задержка по всем задачам из текущего плана, у которых исполнителем является любой сотрудник, в тех проектах где оцениваемый сотрудник (%{valued_employee}) является руководителем.<br/> 
+                         Задачи без даты проверки или выполнения не брались в расчет.<br/>
+                         На основе средней задержки (%{fact}) и планового значения (%{plan}) было вычисленно выполнение данного показателя (%{completion})"
 

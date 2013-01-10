@@ -1,5 +1,6 @@
 class KpiPeriodIndicator < ActiveRecord::Base
 	belongs_to :kpi_period_category
+	belongs_to :kpi_unit
 	belongs_to :indicator
 	has_one :kpi_calc_period, :through => :kpi_period_category
 	has_many :kpi_indicator_inspectors, :dependent => :destroy

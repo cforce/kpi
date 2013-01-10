@@ -166,7 +166,7 @@ function build_chart(container, data_id)
                 }
             },
             title: {
-                text: 'Матрица интерпритации и ваше значение на ней'
+                text: jQuery('#chart_title').html()
             },
             subtitle: {
                 text: ''
@@ -181,7 +181,7 @@ function build_chart(container, data_id)
                 },
                 labels: {
                     formatter: function() {
-                        return this.value +' дн.';
+                        return this.value +' '+jQuery('#x_axis_unit').html()+'';
                     }
                 },
                 maxPadding: 0.05,
@@ -208,7 +208,7 @@ function build_chart(container, data_id)
             tooltip: {
                 formatter: function() {
                     return ''+
-                        'Факт: '+this.x +' дн. Процент: '+ this.y +' %';
+                        ''+jQuery('#chart_fact').html()+': '+this.x +' '+jQuery('#x_axis_unit').html()+' '+jQuery('#chart_percent').html()+': '+ this.y +' %';
                 }
             },
             plotOptions: {
@@ -219,14 +219,14 @@ function build_chart(container, data_id)
                 }
             },
             series: [{
-                name: 'Матрица',
+                name: jQuery('#chart_matrix').html(),
                 data: values_of_matrix
             },{
                 type: 'scatter',
-                name: 'Расчетные значения',
+                name: jQuery('#chart_calc_values').html(),
                 data: values_of_calc, marker: { symbol: 'circle', fillColor: '#2e8518', radius: 6, lineWidth: 2, lineColor: '#fff' }
             }, {
-                name: 'Факт',
+                name: jQuery('#chart_fact').html(),
                 data: values_of_fact, marker: { symbol: 'circle', fillColor: '#ff0000', radius: 6, lineWidth: 2, lineColor: '#fff' }
             }]
         });
