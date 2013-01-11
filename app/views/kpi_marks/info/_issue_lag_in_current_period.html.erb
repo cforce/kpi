@@ -28,5 +28,5 @@
 <div class="info"><%= l(:issue_lag_in_current_period_explanation, 
                             :valued_employee => link_to_user(@mark.user), 
                             :fact => "<nobr><span class=\"fact_on_chart\">#{@mark.fact_value}</span> #{kpi_unit}</nobr>",
-                            :plan => "<nobr><span class=\"plan_on_chart\">#{@mark.plan_value}</span> #{kpi_unit}</nobr>",
+                            :calc_values => "<nobr><span class=\"plan_on_chart\">"+calc_values.join("</span> #{kpi_unit}</nobr>, <nobr><span class=\"plan_on_chart\">")+"</span> #{kpi_unit}</nobr>",
                             :completion => "<nobr><span class=\"fact_on_chart\">#{completion}<span> %</nobr>").html_safe %></div>

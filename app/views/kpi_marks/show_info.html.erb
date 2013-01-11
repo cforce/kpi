@@ -16,6 +16,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
 </div>
 
 <% completion = @mark.completion(@period_indicator) %>
+<% calc_values = [] %>
 <% if @period_indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s %>
     <div class="values_of_matrix">
         <span data-x="<%= @mark.plan_value %>" data-y="100"></span>
@@ -28,6 +29,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
     <div class="values_of_fact">
         <span data-x="<%= @mark.fact_value %>" data-y="<%= completion %>"></span>     
     </div>
+    <% calc_values.push(@mark.plan_value) %>
 <% else %>
     <% get_matrix_calc_values = @mark.get_matrix_calc_values(@period_indicator) %>
     <div class="values_of_matrix">
@@ -41,6 +43,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
     <div class="values_of_calc">
         <% get_matrix_calc_values[:calc_values].each do |calc_value| %>
         <span data-x="<%= calc_value[0] %>" data-y="<%= calc_value[1] %>"></span>  
+        <% calc_values.push(calc_value[0]) %>
         <% end %>
     </div>
     <div class="values_of_fact">
@@ -66,7 +69,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
 <% end %>
 
 <div class="caption"><%= l(:what_issues_are_involved_in_the_calculation) %>:</div>
-<%= render :partial => "kpi_marks/info/#{Indicator::FACT_PATTERNS[@period_indicator.pattern.to_s]}", :locals => { :completion => completion, :kpi_unit => kpi_unit} %>
+<%= render :partial => "kpi_marks/info/#{Indicator::FACT_PATTERNS[@period_indicator.pattern.to_s]}", :locals => { :completion => completion, :kpi_unit => kpi_unit, :calc_values => calc_values} %>
 
 </div>
 
