@@ -1,9 +1,19 @@
+<% 
+period_user = period.kpi_period_users.where(:user_id => @user.id).first
+colspan = 2
+colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : colspan 
+
+%> 
+
 	<table class="list kpi_calc">
 	<caption><%= pattern_name(period) %></caption>
 	<thead>
 		<tr>
 		<th><%= l(:label_kpi_indicators) %></th>
 		<th><%= l(:label_mark_period) %></th>
+		<% if @user.user_kpi_marks_can_be_disabled?(period_user) %>
+			<th  class="narrow"></th> 
+		<% end %>
 		<th class="narrow"><%= l(:weight_label) %></th>
 		<th class="narrow"><%= l(:label_plan) %></th>
 		<th class="narrow"><%= l(:value_of_fact) %></th>
@@ -15,13 +25,13 @@
 	<% cat_avg_completion = {} %>
 
 	<% j=0 %>
-	<% period_user = period.kpi_period_users.where(:user_id => @user.id).first %>
+
 	<% period.kpi_period_categories.each do |cat| %>
 	
 
 		<% color=cat.kpi_category.color %>
 		<tr class="kpi_cat <%= color %>">
-		<td colspan="2"><%= cat.kpi_category.name %></td>
+		<td colspan="<%= colspan %>"><%= cat.kpi_category.name %></td>
 		<td><%= kpi_percent cat.percent %></td>
 		<td></td>
 		<td></td>
@@ -33,26 +43,33 @@
 		<% cat.kpi_period_indicators.joins(:indicator).order("#{Indicator.table_name}.name").each do |period_indicator| %>
 
 			<tr class="<%= color %> kpi_indicator">
-			<td colspan="2"><%= link_to_indicator period_indicator.indicator %></td>
+			<td colspan="<%= colspan %>"><%= link_to_indicator period_indicator.indicator %></td>
 			<td><%= kpi_percent period_indicator.percent %></td>
 			<td></td>
 			<td></td>				
 			<td id="indicator_completion_<%= i %>_<%= j %>_<%= y %>"></td>				
 			</tr>
-			<% marks = {} %>
+			<%
+			marks = {} 
+			have_enabled_marks = false
+			%>
 			
 			<% x=0 %>
 			<% period_indicator.kpi_marks.select("kpi_marks.*").joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).order("#{User.table_name}.lastname").each do |mark| %>
-				<tr class="<%= color %>">
+				<tr class="<%= color %> <%= "disabled" if mark.disabled %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
 				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation if mark.explanation.to_s!='' %></small></td>
+				<% if @user.user_kpi_marks_can_be_disabled?(period_user) %>
+					<td><%= link_to_mark_state(mark) %></td> 
+				<% end %>
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
 				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period, period_user), 
 								        period_indicator.kpi_unit.abridgement %></nobr></td>
 				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator, period_user), period_indicator.kpi_unit.abridgement %></nobr></td>		
 				<% 
 				completion = mark.completion(period_indicator)
-				marks[mark] = completion unless completion.nil?
+				marks[mark] = completion unless completion.nil? or mark.disabled
+				have_enabled_marks = true unless mark.disabled
 				 %>		
 				<td><%= kpi_percent completion_view(mark, completion) %></td>
 				</tr>
@@ -62,7 +79,7 @@
 			<tr class="I">
 			<td colspan="6">
 			<div class="portable_data" data-target-id="indicator_completion_<%= i %>_<%= j %>_<%= y %>">
-			<% indicator_avg_completion[period_indicator] = get_avg_completion(marks)  %>
+			<% indicator_avg_completion[period_indicator] = get_avg_completion(marks) if have_enabled_marks %>
 			<%= kpi_percent indicator_avg_completion[period_indicator] %>	
 			</div>
 			</td>

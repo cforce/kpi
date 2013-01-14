@@ -30,6 +30,8 @@ RedmineApp::Application.routes.draw do
 	      get 'edit_fact/:user_id', :action => 'edit_fact'
 	      post 'update_fact/:user_id', :action => 'update_fact'
 	      get 'show_info', :action => 'show_info'
+	      get 'disable/:user_id', :action => 'disable'
+	      get 'enable/:user_id', :action => 'enable'
 	    end
 
 	    collection do

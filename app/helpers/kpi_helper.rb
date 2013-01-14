@@ -105,7 +105,8 @@ module KpiHelper
 
 	def plan_view(value, mark, period_indicator, period, period_user)
 		if mark.check_user_for_plan_update(period_indicator, period_user)
-			link_to_modal_window value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}
+			Rails.logger.debug "ffffffffff #{{:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}.inspect}"
+			link_to_modal_window value, :controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id
 		else
 			value
 		end
@@ -127,7 +128,7 @@ module KpiHelper
 	def fact_view(mark, period, period_indicator, period_user)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
 		if mark.check_user_for_fact_update(period_indicator, period_user)
-			link_to_modal_window fact_value, {:controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id}
+			link_to_modal_window fact_value, :controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id
 		else
 			fact_value
 		end		
@@ -159,6 +160,13 @@ module KpiHelper
 		(lag>0) ? (lag) : 0
 	end
 
+	def link_to_mark_state(mark)
+		if mark.disabled
+			link_to image_tag("show_table_row.png", :plugin => :kpi, :title => l(:consider)), {:controller => 'kpi_marks', :action => 'enable', :id => mark.id}, {:class => 'no_line', :remote => true} 
+		else
+			link_to image_tag("hide_table_row.png", :plugin => :kpi, :title => l(:ignore)), {:controller => 'kpi_marks', :action => 'disable', :id => mark.id}, {:class => 'no_line', :remote => true} 			
+		end
+	end
 =begin
 
 	def link_to_indicator(indicator)

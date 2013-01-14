@@ -17,6 +17,10 @@ table tr.green
 	{
 	background-color: #f1fbec; 	
 	}
+table tr.disabled
+	{
+	background-color: #EBEBEB; 	
+	}
 table tr.blue
 	{
 	background-color: #e6f1f9;

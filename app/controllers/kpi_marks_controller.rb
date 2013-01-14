@@ -1,6 +1,6 @@
 class KpiMarksController < ApplicationController
-	before_filter :find_mark, :only => [:update_plan, :edit_fact, :edit_plan, :update_fact, :show_info]
-	before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan, :edit_fact]
+	before_filter :find_mark, :only => [:disable, :enable, :update_plan, :edit_fact, :edit_plan, :update_fact, :show_info]
+	before_filter :find_user, :only => [:disable, :enable, :update_plan, :update_fact, :edit_plan, :edit_fact]
 
 	helper :kpi
 	include KpiHelper
@@ -16,6 +16,41 @@ class KpiMarksController < ApplicationController
 
 	def user_marks
 		
+	end
+
+	def disable
+		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
+		period_user = period.kpi_period_users.where(:user_id => @user.id).first
+		@mark.disabled=true
+		@mark.save if @user.user_kpi_marks_can_be_disabled?(period_user)
+	
+	    respond_to do |format|
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "calc_period_#{period.id}", :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => period.id } 
+	          page.call :portable_data_apply
+	          # users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
+	        }
+	      }
+	    end
+	end
+
+
+	def enable
+		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
+		period_user = period.kpi_period_users.where(:user_id => @user.id).first
+		@mark.disabled=false
+		@mark.save if @user.user_kpi_marks_can_be_disabled?(period_user)
+	
+	    respond_to do |format|
+	      format.js {
+	        render(:update) {|page|
+	          page.replace_html "calc_period_#{period.id}", :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => period.id } 
+	          page.call :portable_data_apply
+	          # users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
+	        }
+	      }
+	    end
 	end
 
 	def show_info

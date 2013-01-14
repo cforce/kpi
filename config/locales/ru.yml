@@ -113,9 +113,11 @@ ru:
   add_new_imported_value: "Добавить вычисляемое значение"
   plan_value_enable: "Доступен импорт значения плана"
   fact_value_enable: "Доступен импорт значения факта"
-  what_issues_are_involved_in_the_calculation: "Какие задачи учасвовали в расчете"
+  what_issues_are_involved_in_the_calculation: "Какие задачи участвовали в расчете"
   the_last_cakculation_was_made_on_this_indicator: "Последний расчет данного показателя производился"
   ago: "назад"
+  ignore: "Не учитывать"
+  consider: "Учитывать"
   calc_values_and_execution_of_plan: "Расчетные значения и выполнение плана"
   self_and_executors_issues_avg_custom_field_mark_explanation: "Была посчитана средняя оценка по всем задачам из текущего плана, у которых исполнителем является любой сотрудник, в тех проектах где оцениваемый сотрудник (%{valued_employee}) является руководителем.<br/> 
                          Задачи без оценок не брались в расчет.<br/>

@@ -31,6 +31,10 @@ module Kpi
 	
 	module InstanceMethods
 
+		def user_kpi_marks_can_be_disabled?(period_user)
+			(User.current.admin? or subordinate?) and not period_user.locked
+		end
+
 		def my_kpi_marks_caption
 			label=l(:my_kpi_marks)
 			num=get_my_marks_num
