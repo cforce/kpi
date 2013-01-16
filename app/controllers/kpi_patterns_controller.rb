@@ -7,6 +7,9 @@ class KpiPatternsController < ApplicationController
 	before_filter :find_category_weights, :except => [:new, :create, :index, :add_indicators]
 	#before_filter :get_integrity_warnings, :only => [:update_indicators, :add_indicators, :remove_indicator, :edit]
 
+	helper :kpi
+	include KpiHelper
+
 	def index
 		
 	end

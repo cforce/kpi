@@ -1,6 +1,9 @@
 class KpiImportedValuesController < ApplicationController
     before_filter :authorized_globaly?
 
+    helper :kpi
+    include KpiHelper
+
     def new
         find_date
         @value = KpiImportedValue.new

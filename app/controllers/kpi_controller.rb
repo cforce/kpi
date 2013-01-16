@@ -6,6 +6,9 @@ class KpiController < ApplicationController
 	before_filter :find_user_period_dates, :only => [:effectiveness]
 	before_filter :check_user, :only => [:effectiveness]
 
+	helper :kpi
+	include KpiHelper
+
 	def index
 
 	end

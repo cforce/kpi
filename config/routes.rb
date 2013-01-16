@@ -10,8 +10,10 @@ RedmineApp::Application.routes.draw do
 			#get 'marks'
 			#get 'marks/:date', :action => 'marks'
 			get 'effectiveness'
-			get 'effectiveness/:date', :action => 'effectiveness'
+			#get 'effectiveness/:date', :action => 'effectiveness'
+			get 'effectiveness/:user_id', :action => 'effectiveness'
 			get 'effectiveness/:date/:user_id', :action => 'effectiveness'
+
 		end
 	end
 

@@ -6,6 +6,9 @@ class IndicatorsController < ApplicationController
 	before_filter :find_indicators, :only => [:index]
 	before_filter :find_indicator, :only => [:show]
 
+	helper :kpi
+	include KpiHelper
+
 	def index
 		
 	end
