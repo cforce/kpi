@@ -31,7 +31,7 @@ module KpiHelper
 					}				
 			end
 		  	select_tag name, 
-		  				options_for_select(options, mark.fact_value.nil? ? default.to_i : mark.fact_value.to_i), 
+		  				options_for_select(options, mark.fact_value.nil? ? default.to_f : mark.fact_value.to_f), 
 		  				:tabindex => tabindex, :class => 'fact_value ' + (mark.fact_value.nil? ? '' : 'completed'), 
 		  				'data-explanation' => "explanation_#{mark.id}",
 		  				'data-plan' => "plan_value_#{mark.id}"

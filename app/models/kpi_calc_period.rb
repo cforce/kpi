@@ -54,7 +54,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	end
 
 	def indicators_integrity?
-		not kpi_period_indicators.joins(:indicator).where("indicators.interpretation=? AND plan_value IS NULL", Indicator::INTERPRETATION_FACT).any?
+		not kpi_period_indicators.where("interpretation=? AND plan_value IS NULL", Indicator::INTERPRETATION_FACT).any?
 	end	
 
 	def copy_from_pattern
