@@ -313,3 +313,34 @@ div.issues_in_calc
 	height: 161px;
 	}
 
+ul.folding_tree li.opened
+	{
+	list-style-image: url(../images/minus.gif);
+	}
+ul.folding_tree li.closed
+	{
+	list-style-image: url(../images/plus.gif);
+	}
+
+ul.folding_tree li.disc
+	{
+	list-style-image: none;
+	}
+
+ul.folding_tree.opened
+	{
+	display: block;
+	}
+ul.folding_tree.closed
+	{
+	display: none;
+	}
+
+
+ul.folding_tree li
+	{
+	list-style-type: disc;	
+	}
+
+
+

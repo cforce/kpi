@@ -46,8 +46,9 @@ module Kpi
 			kpi_inspector_marks.joins(:kpi_period_indicator)
 							   .where("#{KpiMark.table_name}.end_date <= ? 
 										AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
-										AND #{KpiMark.table_name}.locked = ?",
-										Date.today, false)
+										AND #{KpiMark.table_name}.locked = ?
+										AND #{KpiMark.table_name}.disabled = ?",
+										Date.today, false, false)
 		end
 
 		def get_my_marks_num
@@ -64,6 +65,13 @@ module Kpi
 
 		def subordinate?
 			eval('self.'+Setting.plugin_kpi['user_superior_id_field']) == User.current.id
+		end
+
+		def under?
+			#current_user_in_tree = UserTree.find(User.current.id)
+			#selected_user_in_tree = UserTree.find(id)
+			UserTree.joins("INNER JOIN #{UserTree.table_name} AS ut ON #{UserTree.table_name}.lft<ut.lft AND #{UserTree.table_name}.rgt>ut.rgt AND ut.id = #{id}")
+					.where("#{UserTree.table_name}.id = ?", User.current.id).count > 0
 		end
 
 		def find_default_kpi_mark_date

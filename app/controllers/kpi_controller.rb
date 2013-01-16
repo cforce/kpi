@@ -53,6 +53,6 @@ class KpiController < ApplicationController
 	end
 
 	def check_user
-		render_403 if User.current != @user and not @user.subordinate? and not User.current.admin? and not User.current.global_permission_to?(params[:controller], 'effectiveness')
+		render_403 if User.current != @user and not @user.under? and not User.current.admin? and not User.current.global_permission_to?(params[:controller], 'effectiveness')
 	end
 end

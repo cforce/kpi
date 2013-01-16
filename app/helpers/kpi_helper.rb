@@ -167,6 +167,71 @@ module KpiHelper
 			link_to image_tag("hide_table_row.png", :plugin => :kpi, :title => l(:ignore)), {:controller => 'kpi_marks', :action => 'disable', :id => mark.id}, {:class => 'no_line', :remote => true} 			
 		end
 	end
+
+	def show_sidebar_users()
+		user_list = ""
+
+		if User.current.global_permission_to?(params[:controller], 'effectiveness')
+			initial_user = UserTree.find(Setting.plugin_kpi['initial_user_id'])
+		else
+			initial_user = UserTree.find(User.current.id)
+		end
+
+		last_parent_id, last_id, last_level = nil
+		UserTree.each_with_level(UserTree.joins(:user)
+										 .order("lft")
+										 .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
+										 .where("#{User.table_name}.status=? AND lft>? AND rgt<?", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
+			user_list << "<ul class=\"folding_tree opened\">" if last_id.nil? # First time
+
+			if last_id == user_tree.attributes['parent_id'] # Next is child
+				user_list << "<ul class=\"folding_tree closed\">" unless last_id.nil? # Not First time
+			else
+				if last_id == user_tree.attributes['parent_id'] # Have single parent
+					user_list << "</li>" unless last_id.nil? # Not First time
+				else
+					user_list << "</ul></li>"*(last_level-level.to_i) unless last_id.nil? # Not First time
+				end
+			end
+
+			user_list << "<li class=\"disc\">" # Every time
+			#user_list << "<div style=\"padding-left:"+((level-1)*10).to_s+"px;\">"
+			user_list << link_to("<span>#{user_tree.attributes['lastname']}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => user_tree.attributes['id']},
+							:class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user_tree.attributes['id']}")
+			#user_list << "</div>"
+			last_parent_id = user_tree.attributes['parent_id']
+			last_id = user_tree.attributes['id']
+			last_level = level.to_i
+		end
+		#Rails.logger.debug "dddddddddddddddddddddddddddddd"
+
+		user_list << "</li></ul>" unless last_id.nil? #last time
+		user_list.html_safe
+	end
+
+def li_tree(nested_set)
+    
+
+    result = "<ul class='tree_container'>"
+    nested_set.each do |node|
+
+      if node.lft > lft+1
+        result << "</ul></li>" if rgt+1 == node.lft # neighbours - same level
+        result << "</ul></li>"*(node.lft-rgt-1) if (node.lft-rgt) > 1 # level(s) up
+      end
+      # else nothing to close - new sub node
+      
+      result << "<li id='c"+node.id.to_s+"' class='tree_fold node_expanded'>"+link_to(node.name, '#', :class => "tree_link")+"<ul class='tree_container'>"
+      result << yield(node) if block_given?
+
+      lft,rgt = node.lft,node.rgt
+      max_rgt = (max_rgt > rgt) ? max_rgt : rgt
+    end
+    result << "</ul></li>"*(max_rgt-rgt+1)
+    result << "</ul>"
+    result.html_safe
+  end
+
 =begin
 
 	def link_to_indicator(indicator)

@@ -6,6 +6,7 @@ executor_id_issue_field = @settings['executor_id_issue_field'] || defaults['exec
 user_superior_id_field = @settings['user_superior_id_field'] || defaults['user_superior_id_field']
 check_date_issue_field = @settings['check_date_issue_field'] || defaults['check_date_issue_field']
 auto_activating_date = @settings['auto_activating_date'] || defaults['auto_activating_date']
+initial_user_id = @settings['initial_user_id'] || defaults['initial_user_id']
 -%>
 
 <table cellspacing="15">
@@ -52,6 +53,13 @@ auto_activating_date = @settings['auto_activating_date'] || defaults['auto_activ
 
 <td>
     <%= select_tag 'settings[auto_activating_date]', options_for_select((1..31).map{|e| [e, e]}, auto_activating_date) %>
+</td>
+</tr>
+
+<tr>
+<td><%=l(:label_initial_user_id)%>: </td>
+<td>
+<%=text_field_tag 'settings[initial_user_id]', initial_user_id %>
 </td>
 </tr>
 

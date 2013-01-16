@@ -20,7 +20,7 @@ Redmine::Plugin.register :kpi do
     permission :update_plan_values, :kpi_marks => [:edit_plan, :update_plan]
     permission :update_fact_values, :kpi_marks => [:edit_fact, :update_fact]
     permission :show_effectiveness, :kpi => [:effectiveness]
-    permission :update_imported_values, :kpi_imported_values => [:edit_values, :update_values]
+    permission :update_imported_values, :kpi_imported_values => [:edit_values, :update_values, :create, :update, :destroy, :new]
   end
 	settings :partial => 'settings/kpi_settings',
              :default => {
@@ -30,6 +30,8 @@ Redmine::Plugin.register :kpi do
               "min_kpi" => 80,
               "check_date_issue_field" => "check_date",
               "auto_activating_date" => 2,
+              "user_tree_table_name" => "user_trees",
+              "initial_user_id" => 80,
              }, :partial => 'kpi/settings' 
 end
 

@@ -1,4 +1,25 @@
 jQuery(document).ready(function(){
+    jQuery('ul.folding_tree li').each(function(){
+        //alert(jQuery(this).children('ul.closed').length)
+        if(jQuery(this).children('ul.opened').length==1)
+            jQuery(this).toggleClass('disc').toggleClass('opened');
+        if(jQuery(this).children('ul.closed').length==1)
+            jQuery(this).toggleClass('disc').toggleClass('closed');
+    });
+    
+    jQuery('ul.folding_tree li').click(function(){
+            jQuery(this).toggleClass('closed').toggleClass('opened');
+            jQuery(this).children('ul').toggleClass('closed').toggleClass('opened');
+            return false;
+
+        });
+
+     jQuery('ul.folding_tree li a').click(function(event){
+            event.stopPropagation()
+            });
+
+     jQuery('ul.folding_tree li a.selected').parent('ul, li').parents('ul, li').removeClass('closed').addClass('opened');
+
 	jQuery('#indicator_interpretation').change(function(){
 	    if(jQuery(this).val()==1)
 		    jQuery('#kpi_matrix_div').show()

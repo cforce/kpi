@@ -40,20 +40,13 @@
 
 	<li>
 	<%= link_to "<span>#{l(:label_my_effectiveness)}</span>".html_safe, 
-				{:controller => "kpi", :action => "effectiveness", :date => params[:date] || User.current.find_default_effectiveness_date, :user_id => User.current.id},
+				{:controller => "kpi", :action => "effectiveness", :date => params[:date] || nil, :user_id => User.current.id},
 				:class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}" %>
 	</li>
 
 </ul>
 
-<ul>
-<% User.current.subordinates.each do |user| %>
-	<li><%= link_to "<span>#{user.name}</span>".html_safe, 
-					{:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || user.find_default_effectiveness_date, :user_id => user.id},
-					:class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user.id}" %>
-	</li>
-<% end %>
-</ul>
+<%= show_sidebar_users %>
 
 <% end %>
 
