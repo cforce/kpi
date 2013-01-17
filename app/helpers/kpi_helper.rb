@@ -21,17 +21,17 @@ module KpiHelper
 			default = nil
 			if not kpi_period_indicator.matrix['title'].nil? and kpi_period_indicator.matrix['title'].uniq.size>1
 				kpi_period_indicator.matrix['title'].each_index{|i|
-					options.push([kpi_period_indicator.matrix['title'][i], kpi_period_indicator.matrix['value_of_fact'][i].to_s])
-					default = kpi_period_indicator.matrix['value_of_fact'][i].to_s if kpi_period_indicator.matrix['percent'][i].to_s=='100'
+					options.push([kpi_period_indicator.matrix['title'][i], kpi_period_indicator.matrix['value_of_fact'][i].to_f])
+					default = kpi_period_indicator.matrix['value_of_fact'][i].to_f if kpi_period_indicator.matrix['percent'][i].to_i==100
 					}			
 			else
 				kpi_period_indicator.matrix['percent'].each_index{|i| 
-					options.push([kpi_period_indicator.matrix['value_of_fact'][i], kpi_period_indicator.matrix['value_of_fact'][i].to_s])
-					default = kpi_period_indicator.matrix['value_of_fact'][i].to_s if kpi_period_indicator.matrix['percent'][i].to_s=='100'
+					options.push([kpi_period_indicator.matrix['value_of_fact'][i], kpi_period_indicator.matrix['value_of_fact'][i].to_f])
+					default = kpi_period_indicator.matrix['value_of_fact'][i].to_f if kpi_period_indicator.matrix['percent'][i].to_i==100
 					}				
 			end
 		  	select_tag name, 
-		  				options_for_select(options, mark.fact_value.nil? ? default : mark.fact_value.to_s), 
+		  				options_for_select(options, mark.fact_value.nil? ? default : mark.fact_value.to_f), 
 		  				:tabindex => tabindex, :class => 'fact_value ' + (mark.fact_value.nil? ? '' : 'completed'), 
 		  				'data-explanation' => "explanation_#{mark.id}",
 		  				'data-plan' => "plan_value_#{mark.id}"

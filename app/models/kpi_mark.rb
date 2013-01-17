@@ -23,7 +23,7 @@ class KpiMark < ActiveRecord::Base
 		Indicator::INTERPRETATION_FACT == period_indicator.interpretation ?	plan_value :
 																			((period_indicator.matrix['percent'].index('100').nil?) ? 
 																			1 : 
-																			period_indicator.matrix['value_of_fact'][period_indicator.matrix['percent'].index('100')])
+																			period_indicator.matrix['value_of_fact'][period_indicator.matrix['percent'].index('100')].to_f)
 	end
 
 	def check_user_for_plan_update(period_indicator = nil, period_user = nil)
