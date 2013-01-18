@@ -28,7 +28,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	#after_create :add_inspector_marks
 	def get_month_time_clock
-		KpiImportedMonthValue.joins(:kpi_imported_value).where("time_clocks=? AND date=?", true, date).first.plan_value
+		KpiImportedMonthValue.joins(:kpi_imported_value).where("time_clocks=? AND date=?", true, date).first.try(:plan_value)
 	end
 
 	def integrity?

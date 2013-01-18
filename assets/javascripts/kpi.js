@@ -138,7 +138,7 @@ function validate_explanation()
 					}
 
 				//var id=jQuery(this).attr('id').split("_")
-				if(jQuery('#'+jQuery(this).attr('data-plan')).find('span.value').html()!=jQuery(this).val() && jQuery('#'+jQuery(this).attr('data-explanation')).val()=='')
+				if(jQuery('#'+jQuery(this).attr('data-plan')).attr('data-plan-value')!=jQuery(this).val() && jQuery('#'+jQuery(this).attr('data-explanation')).val()=='')
 				    {
 				    jQuery('#'+jQuery(this).attr('data-explanation')).addClass('expl_warning');
 				    submit.attr('disabled', 'disabled');

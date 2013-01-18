@@ -32,8 +32,9 @@
 		<%= link_to_indicator indicator %>
 	</td>
 	<td>
-	<span id="plan_value_<%= mark.id  %>">
-		<%= kpi_value mark.plan(mark.kpi_indicator_inspector.kpi_period_indicator), indicator.kpi_unit.abridgement %>
+	<% kpi_period_indicator = mark.kpi_indicator_inspector.kpi_period_indicator %>
+	<span id="plan_value_<%= mark.id  %>" data-plan-value="<%= mark.plan(kpi_period_indicator) %>">
+		<%= kpi_value mark.plan(kpi_period_indicator), indicator.kpi_unit.abridgement %>
 	</span>
 	</td>
 	<td class="fact_value">
