@@ -171,6 +171,8 @@ span.value.minus
 
 span.unit
 	{
+	position: relative;
+	top: 2px;
 	font-weight: normal;
 	font-size: 0.8em;
 	color: #c2c2c2;
@@ -341,6 +343,56 @@ ul.folding_tree li
 	{
 	list-style-type: disc;	
 	}
+div.kpi_footnote
+	{
+	border-bottom: 1px solid #ccc;
+	padding: 0px 0px 5px 150px;
+	margin-bottom: 5px;
+	}
+div.payment
+	{
+	font-size: 1.5em;
+	}
 
+span.no_align_unit
+	{
+	font-size: 0.8em;
+	color: #c2c2c2;
+	padding-left: 5px;
+	}
 
+div.fraction .numerator
+	{
+	border-bottom: 1px solid rgb(116, 116, 116);
+	padding-bottom: 3px;
+	text-align: center;
+	}
+div.fraction .denominator
+	{
+	text-align: center;
+	}
 
+div.fraction
+	{
+	float: left;
+	}
+
+div.formula
+	{
+	overflow: hidden;
+	}
+
+div.formula div.no_fraction_item
+	{
+	padding: 12px 3px 3px;
+	}
+
+div.formula span.sign
+	{
+	color: rgb(116, 116, 116);
+	}
+
+input.base_salary_field
+	{
+	width: 70px;
+	}

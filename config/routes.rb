@@ -25,15 +25,24 @@ RedmineApp::Application.routes.draw do
 	match 'kpi_patterns/:id/indicators/:indicator_id', :controller => 'kpi_patterns', :action => 'remove_indicator', :id => /\d+/, :via => :delete, :as => 'kpi_pattern_indicator'
 	match 'kpi_patterns/:copy_from/copy', :to => 'kpi_patterns#edit'
 
+	resources :kpi_period_users do
+	    member do
+	    	get 'edit_hours', :action => 'edit_hours'
+	    	get 'edit_base_salary', :action => 'edit_base_salary'
+	    	post 'update_base_salary', :action => 'update_base_salary'
+	    	post 'update_hours', :action => 'update_hours'
+	    end
+	end
+
 	resources :kpi_marks do
 	    member do
-	      get 'edit_plan/:user_id', :action => 'edit_plan'
-	      post 'update_plan/:user_id', :action => 'update_plan'
-	      get 'edit_fact/:user_id', :action => 'edit_fact'
-	      post 'update_fact/:user_id', :action => 'update_fact'
+	      get 'edit_plan', :action => 'edit_plan'
+	      post 'update_plan', :action => 'update_plan'
+	      get 'edit_fact', :action => 'edit_fact'
+	      post 'update_fact', :action => 'update_fact'
 	      get 'show_info', :action => 'show_info'
-	      get 'disable/:user_id', :action => 'disable'
-	      get 'enable/:user_id', :action => 'enable'
+	      get 'disable', :action => 'disable'
+	      get 'enable', :action => 'enable'
 	    end
 
 	    collection do

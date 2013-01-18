@@ -10,7 +10,7 @@
 <% i=0 %>
 
 <% @periods.each do |period| %>
-	<div id="calc_period_<%= period.id %>">
+	<div id="calc_period_<%= period.id %>" class="H">
 	<%= render :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => i } %>
 	</div>
 

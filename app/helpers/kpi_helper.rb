@@ -53,20 +53,25 @@ module KpiHelper
 		link_to indicator, {:controller => 'indicators', :action => 'show', :id =>indicator}
 	end
 
-	def kpi_percent(value)
+	def kpi_percent(value, minus=false)
 		case value.class.name
-		when 'Float'
-			"<nobr><span class=\"value\">#{'%0.2f' % value.to_f}</span><span class=\"unit\">%</span></nobr>".html_safe
 		when 'NilClass'
 			"<nobr><span class=\"value\">x</span><span class=\"unit\">%</span></nobr>".html_safe
 		else
-			"<nobr><span class=\"value\">#{value}</span><span class=\"unit\">%</span></nobr>".html_safe
+			css_class="" 
+			css_class="minus" if minus
+			value = number_with_precision(value, :separator => '.', :strip_insignificant_zeros => true)
+			"<nobr><span class=\"#{css_class} value\">#{value}</span><span class=\"unit\">%</span></nobr>".html_safe
 		end
 	end
 
-	def kpi_value(value, abridgement)
+	def kpi_value(value, abridgement, minus=false)
+		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
 		value='x' if value.nil?
-		"<nobr><span class=\"value\">#{value}</span><span class=\"unit\">#{abridgement}</span></nobr>".html_safe
+		css_class="" 
+		css_class="minus" if minus
+
+		"<nobr><span class=\"#{css_class} value\">#{value}</span><span class=\"unit\">#{abridgement}</span></nobr>".html_safe
 	end
 
 	def weighted_average_value(completion)
@@ -104,8 +109,9 @@ module KpiHelper
 	end
 
 	def plan_view(value, mark, period_indicator, period, period_user)
+		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
 		if mark.check_user_for_plan_update(period_indicator, period_user)
-			Rails.logger.debug "ffffffffff #{{:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}.inspect}"
+			#Rails.logger.debug "ffffffffff #{{:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}.inspect}"
 			link_to_modal_window value, :controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id
 		else
 			value
@@ -127,6 +133,7 @@ module KpiHelper
 
 	def fact_view(mark, period, period_indicator, period_user)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
+		fact_value = number_with_precision(fact_value, :delimiter => fact_value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
 		if mark.check_user_for_fact_update(period_indicator, period_user)
 			link_to_modal_window fact_value, :controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id
 		else
@@ -171,7 +178,7 @@ module KpiHelper
 	def show_sidebar_users()
 		user_list = ""
 
-		if User.current.global_permission_to?(params[:controller], 'effectiveness')
+		if User.current.global_permission_to?('kpi', 'effectiveness')
 			initial_user = UserTree.find(Setting.plugin_kpi['initial_user_id'])
 		else
 			initial_user = UserTree.find(User.current.id)
@@ -209,29 +216,58 @@ module KpiHelper
 		user_list.html_safe
 	end
 
-def li_tree(nested_set)
-    
 
-    result = "<ul class='tree_container'>"
-    nested_set.each do |node|
-
-      if node.lft > lft+1
-        result << "</ul></li>" if rgt+1 == node.lft # neighbours - same level
-        result << "</ul></li>"*(node.lft-rgt-1) if (node.lft-rgt) > 1 # level(s) up
-      end
-      # else nothing to close - new sub node
-      
-      result << "<li id='c"+node.id.to_s+"' class='tree_fold node_expanded'>"+link_to(node.name, '#', :class => "tree_link")+"<ul class='tree_container'>"
-      result << yield(node) if block_given?
-
-      lft,rgt = node.lft,node.rgt
-      max_rgt = (max_rgt > rgt) ? max_rgt : rgt
-    end
-    result << "</ul></li>"*(max_rgt-rgt+1)
-    result << "</ul>"
-    result.html_safe
+  def base_salary_value(period_user, period)
+  	v=nil
+   	v=period.base_salary unless period.base_salary.nil?
+  	v=period_user.base_salary unless period_user.base_salary.nil?
   end
 
+  def hours_value(period_user)
+  	v=nil
+  	v=period_user.hours unless period_user.hours.nil?
+  	v
+  end
+
+  def hours_view(period_user, user, value)
+  	value = 'x' if value.nil?
+  	if period_user.check_user_for_salary_update?(user)
+  		link_to_modal_window value, :controller => 'kpi_period_users', :action=> 'edit_hours', :id => period_user.id
+  	else
+  		value
+  	end
+  end
+
+  def base_salary_view(period, period_user, user, value)
+  	value='x' if value.nil?
+  	value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
+  	if period_user.check_user_for_hours_update?(user)
+  		value = link_to_modal_window value, :controller => 'kpi_period_users', :action=> 'edit_base_salary', :id => period_user.id
+  	end
+  	value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
+  	value.html_safe
+  end
+
+  def get_weighted_average_value(value)
+  	v = value
+  	v = Setting.plugin_kpi['min_kpi'].to_f if value.to_f<Setting.plugin_kpi['min_kpi'].to_f
+  	v = Setting.plugin_kpi['max_kpi'].to_f if value.to_f>Setting.plugin_kpi['max_kpi'].to_f
+  	v = nil if value.nil?
+  	v
+  end
+
+  def get_weighted_average_value_view(value)
+  	v = get_weighted_average_value(value)
+  	v = "#{number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true)} &rarr; "+v.to_s if value!=v
+  	v = 'x' if value.nil?
+  	v
+  end
+
+  def get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value)
+  	v='x'
+  	v= ((base_salary_value*weighted_average_value/100)*hours_value)/month_time_clock unless month_time_clock.nil? or hours_value.nil? or base_salary_value.nil? or weighted_average_value.nil?
+ 	number_with_precision(v, :separator => ".", :strip_insignificant_zeros => true)
+  end
 =begin
 
 	def link_to_indicator(indicator)

@@ -65,13 +65,13 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
 				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period, period_user), 
 								        period_indicator.kpi_unit.abridgement %></nobr></td>
-				<td><nobr><%= kpi_value fact_view(mark, period, period_indicator, period_user), period_indicator.kpi_unit.abridgement %></nobr></td>		
+				<td><nobr><%= kpi_value(fact_view(mark, period, period_indicator, period_user), period_indicator.kpi_unit.abridgement, mark.fact_value.to_f<0) %></nobr></td>		
 				<% 
 				completion = mark.completion(period_indicator)
 				marks[mark] = completion unless completion.nil? or mark.disabled
 				have_enabled_marks = true unless mark.disabled
 				 %>		
-				<td><%= kpi_percent completion_view(mark, completion) %></td>
+				<td><%= kpi_percent completion_view(mark, completion), completion.to_f<0 %></td>
 				</tr>
 			<% x+=1 %>
 			<% end %>
@@ -80,7 +80,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 			<td colspan="6">
 			<div class="portable_data" data-target-id="indicator_completion_<%= i %>_<%= j %>_<%= y %>">
 			<% indicator_avg_completion[period_indicator] = get_avg_completion(marks) if have_enabled_marks %>
-			<%= kpi_percent indicator_avg_completion[period_indicator] %>	
+			<%= kpi_percent indicator_avg_completion[period_indicator], indicator_avg_completion[period_indicator].to_f<0 %>	
 			</div>
 			</td>
 			</tr>
@@ -103,7 +103,8 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	
 	</tbody></table>
 
-	<div class="R">
+	<div class="H">
+	<div class="R kpi_footnote">
 	<span>
 		<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
 		<% if period.for_closing_for_user?(@user) %>
@@ -116,8 +117,50 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	</span>
 	<span class="kpi_factor">
 	<% weighted_average_value = weighted_average_value(cat_avg_completion) %>
-	<%= kpi_percent weighted_average_value %>
+	<%= kpi_percent get_weighted_average_value_view(weighted_average_value) %>
 	</span>
+	</div>
+	</div>
+
+	<% month_time_clock = period.get_month_time_clock %>
+	<% base_salary_value = base_salary_value(period_user, period) %>
+	<% hours_value = hours_value(period_user) %>
+
+	<div class="H">
+	<div class="R payment">
+
+		<div class="formula"> 
+
+		<div class="fraction">
+		<div class="numerator">
+		<span>
+		<%= base_salary_view(period, period_user, @user, base_salary_value) %>
+		</span>
+		<span class="sign">&times;</span>
+		<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true) %></span>
+		</div>
+		<div class="denominator">
+		<span><%= month_time_clock.nil? ? 'x' : month_time_clock %></span>
+		<span class="no_align_unit">ч.</span>
+		
+		</div>
+		</div>
+
+		<div class="L no_fraction_item">
+			<span class="sign">&times;</span>
+		</div>
+		<div class="L no_fraction_item">
+			<span><span><%= hours_view(period_user, @user, hours_value) %></span><span class="no_align_unit">ч.</span></span>
+		</div>
+		<div class="L no_fraction_item">
+			<span class="sign">&asymp;</span>
+		</div>		
+		<div class="L no_fraction_item">
+			<span><%= get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value) %></span><span class="no_align_unit"><%= l(:money_unit_abridgement) %></span>
+		</div>	
+		</div>
+
+	</div>
 	</div>
 
 	<script>

@@ -1,6 +1,6 @@
 class KpiMarksController < ApplicationController
 	before_filter :find_mark, :only => [:disable, :enable, :update_plan, :edit_fact, :edit_plan, :update_fact, :show_info]
-	before_filter :find_user, :only => [:disable, :enable, :update_plan, :update_fact, :edit_plan, :edit_fact]
+	#before_filter :find_user, :only => [:update_plan, :update_fact, :edit_plan, :edit_fact]
 
 	helper :kpi
 	include KpiHelper
@@ -11,6 +11,7 @@ class KpiMarksController < ApplicationController
 	end
 
 	def edit_plan
+		@user = @mark.user
 		render "edit_plan", :layout => false
 	end
 
@@ -19,6 +20,7 @@ class KpiMarksController < ApplicationController
 	end
 
 	def disable
+		@user = @mark.user
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		period_user = period.kpi_period_users.where(:user_id => @user.id).first
 		@mark.disabled=true
@@ -37,6 +39,7 @@ class KpiMarksController < ApplicationController
 
 
 	def enable
+		@user = @mark.user
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		period_user = period.kpi_period_users.where(:user_id => @user.id).first
 		@mark.disabled=false
@@ -82,6 +85,7 @@ class KpiMarksController < ApplicationController
 	end
 
 	def update_plan
+		@user = @mark.user
 		#user_id = params[:kpi_mark][:user_id] || params[:user_id]
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		@mark.plan_value=params[:kpi_mark][:plan_value]
@@ -99,10 +103,12 @@ class KpiMarksController < ApplicationController
 	end
 
 	def edit_fact
+		@user = @mark.user
 		render "edit_fact", :layout => false
 	end
 
 	def update_fact
+		@user = @mark.user
 		period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		@mark.fact_value=params[:kpi_mark][:fact_value]
 		@mark.explanation=params[:kpi_mark][:explanation]

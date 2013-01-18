@@ -85,8 +85,10 @@ class KpiCalcPeriodsController < ApplicationController
 
 	def update
 	    #@period = KpiCalcPeriod.find(params[:id])
-	    start_date = Date.new(params[:date][:year].to_i, params[:date][:month].to_i, 1)
-	    @period.date=start_date
+	    unless params[:date].nil?
+	    	start_date = Date.new(params[:date][:year].to_i, params[:date][:month].to_i, 1)
+	   		@period.date=start_date
+	   	end
 	    if request.put? and @period.update_attributes(params[:kpi_calc_period])
 	      flash[:notice] = l(:notice_successful_update)
 	      redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'general'

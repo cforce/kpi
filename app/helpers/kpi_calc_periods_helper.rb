@@ -3,7 +3,8 @@ module KpiCalcPeriodsHelper
     tabs = [{:name => 'general', :partial => 'kpi_calc_periods/general', :label => :label_general},
             {:name => 'users', :partial => 'kpi_calc_periods/users', :label => :label_inspector_list},
             {:name => 'plan_values', :partial => 'kpi_calc_periods/plan_values', :label => :label_plan_values},
-            {:name => 'apply_to', :partial => 'kpi_calc_periods/apply_to', :label => :label_assigned_list}
+            {:name => 'apply_to', :partial => 'kpi_calc_periods/apply_to', :label => :label_assigned_list},
+            {:name => 'other', :partial => 'kpi_calc_periods/managers', :label => :label_managers}
           ]
   end
 

@@ -9,8 +9,15 @@ class KpiPeriodUser < ActiveRecord::Base
 	before_save :check_period
 	before_destroy :check_period
 	
+	def check_user_for_salary_update?(user)
+		(User.current.admin? or user.subordinate?) and not locked
+	end
 
-	private
+	def check_user_for_hours_update?(user)
+		(User.current.admin? or user.subordinate?) and not locked
+	end
+
+	private	
 	def delete_marks
 		kpi_marks.each do |mark|
 			mark.destroy

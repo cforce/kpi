@@ -1,4 +1,4 @@
-<%= form_for @mark, :remote => true, :url => {:controller => 'kpi_marks', :action =>'update_plan', :id => @mark.id, :user_id => @user.id}, :html => {:method => :post} do |f| %>
+<%= form_for @mark, :remote => true, :url => {:controller => 'kpi_marks', :action =>'update_plan', :id => @mark.id}, :html => {:method => :post} do |f| %>
 
 <%= f.hidden_field :i, :value => params[:i] %>
 <p><%= f.text_field :plan_value, :required => true, :label => l(:kpi_indicator_name_label), :class => 'fact_value' %></p>
