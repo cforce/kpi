@@ -2,9 +2,9 @@
 
 <%= f.hidden_field :i, :value => params[:i] %>
 
-
-<p id="plan_value_<%= @mark.id %>" class="I">
-<span class="value"><%= @mark.plan(@mark.kpi_indicator_inspector.kpi_period_indicator)  %></span>
+<% plan = @mark.plan(@mark.kpi_indicator_inspector.kpi_period_indicator) %>
+<p id="plan_value_<%= @mark.id %>" data-plan-value="<%= plan %>" class="I">
+<span class="value"><%= plan %></span>
 </p>
 <p>
 <%= label_tag 'kpi_mark_fact_value', l(:value_of_fact) %>:<br>
