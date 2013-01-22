@@ -221,6 +221,7 @@ module KpiHelper
   	v=nil
    	v=period.base_salary unless period.base_salary.nil?
   	v=period_user.base_salary unless period_user.base_salary.nil?
+  	v
   end
 
   def hours_value(period_user)
