@@ -68,48 +68,31 @@ class KpiPatternsController < ApplicationController
 
 	def add_users
 	    #@pattern = KpiPattern.find(params[:id])
-	    users = User.find_all_by_id(params[:user_ids])
-	    @pattern.users << users if request.post?
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'users' }
-	      format.js {
-	        render(:update) {|page|
-	          page.replace_html "tab-content-users", :partial => 'kpi_patterns/users'
-	          users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
-	        }
-	      }
-	    end
+	    @users = User.find_all_by_id(params[:user_ids])
+	    @pattern.users << @users if request.post?
+		respond_to do |format|
+			 format.js { render 'users' }
+		end
 	end
 
 	def remove_user
 	    #@pattern = KpiPattern.find(params[:id])
 	    @pattern.users.delete(User.find(params[:user_id])) if request.delete?
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'groups', :action => 'edit', :id => @pattern, :tab => 'users' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-users", :partial => 'kpi_patterns/users'} }
-	    end
+		respond_to do |format|
+			 format.js { render 'users' }
+		end
 	end
 
 	def add_indicators
 	    #@pattern = KpiPattern.find(params[:id])
-	    indicators = Indicator.find_all_by_id(params[:indicator_ids])
-	    @pattern.indicators << indicators if request.post?
-	    #indicators.map{|c| c.kpi_category}.uniq().each{|c| 
-	    #	KpiPatternCategory.create(:kpi_pattern_id => @pattern.id, :kpi_category_id => c.id, :percent => c.percent)
-	    #	}	
-
+	    @indicators = Indicator.find_all_by_id(params[:indicator_ids])
+	    @pattern.indicators << @indicators if request.post?
 	    find_category_weights    
 	    get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
-	      format.js {
-	        render(:update) {|page|
-	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
-	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	          indicators.each {|indicator| page.visual_effect(:highlight, "indicator-#{indicator.id}") }
-	        }
-	      }
-	    end
+		respond_to do |format|
+			 format.js { render 'indicators' }
+		end
+
 	end
 
 	def update_indicators
@@ -130,15 +113,9 @@ class KpiPatternsController < ApplicationController
 			}
 		get_integrity_warnings
 
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'update_indicators', :id => @pattern, :tab => 'indicators' }
-	      format.js {
-	        render(:update) {|page|
-	          page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	          page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
-	        }
-	      }
-	    end
+		respond_to do |format|
+			 format.js { render 'indicators' }
+		end
 	end
 
 	def remove_indicator
@@ -146,13 +123,9 @@ class KpiPatternsController < ApplicationController
 	    #@pattern.indicators.delete(Indicator.find(params[:indicator_id])) if request.delete?
 	    KpiPatternIndicator.find(params[:indicator_id]).destroy if request.delete?
 	    get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_patterns', :action => 'edit', :id => @pattern, :tab => 'indicators' }
-	      format.js { render(:update) {|page|
-	      	 page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	      	 page.replace_html "tab-content-indicators", :partial => 'kpi_patterns/indicators'
-	      	 } }
-	    end
+		respond_to do |format|
+			 format.js { render 'indicators' }
+		end
 	end
 
 

@@ -17,16 +17,12 @@ class KpiPeriodUsersController < ApplicationController
         find_user
         @period_user.hours=params[:kpi_period_user][:hours]
         @period_user.save if @period_user.check_user_for_hours_update?(@user)
-        period = @period_user.kpi_calc_period
+        @period = @period_user.kpi_calc_period
         #Rails.logger.debug "fffffffffffffff #{period.inspect}"
         respond_to do |format|
           format.js {
-            render(:update) {|page|
-              page.replace_html "calc_period_#{period.id}", :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => period.id } 
-              page.call :portable_data_apply
-              # users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
+            render "kpi/effectiveness"
             }
-          }
         end
     end 
 
@@ -34,16 +30,12 @@ class KpiPeriodUsersController < ApplicationController
         find_user
         @period_user.base_salary=params[:kpi_period_user][:base_salary]
         @period_user.save if @period_user.check_user_for_salary_update?(@user)
-        period = @period_user.kpi_calc_period
+        @period = @period_user.kpi_calc_period
         #Rails.logger.debug "fffffffffffffff #{period.inspect}"
         respond_to do |format|
           format.js {
-            render(:update) {|page|
-              page.replace_html "calc_period_#{period.id}", :partial => 'kpi/period_effectiveness', :locals => { :period => period, :i => period.id } 
-              page.call :portable_data_apply
-              # users.each {|user| page.visual_effect(:highlight, "user-#{user.id}") }
+            render "kpi/effectiveness"
             }
-          }
         end
     end 
 

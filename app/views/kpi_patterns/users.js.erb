@@ -1,0 +1,7 @@
+$('#tab-content-users').html('<%= escape_javascript(render :partial => 'kpi_patterns/users') %>');
+
+<% unless @users.nil? %>
+    <% @users.each do |user| %>
+        $('#user-<%= user.id %>').effect("highlight");
+    <% end %>
+<% end %>

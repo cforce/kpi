@@ -142,78 +142,63 @@ class KpiCalcPeriodsController < ApplicationController
 
 	def add_inspectors
 	    if request.post?
-	    indicators=[]
+	    @indicators=[]
 	    params[:user_ids].each do |user_id|
 	    	indicator_inspector=KpiIndicatorInspector.new
 	    	indicator_inspector.user_id=user_id
 	    	indicator_inspector.kpi_period_indicator_id=params[:inspector][:period_indicator_id]
 	    	indicator_inspector.save
-	    	indicators.push(indicator_inspector)
+	    	@indicators.push(indicator_inspector)
 	    	end
 	    end
 
-	    #get_integrity_warnings
-
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
-	      format.js {
-	        render(:update) {|page|
-	          page.replace_html "tab-content-users", :partial => 'kpi_calc_periods/users'
-	          indicators.each {|indicator| page.visual_effect(:highlight, "indicator-#{indicator.id}") 
-	      								   page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'}
-	        }
-	      }
-	    end		
+		respond_to do |format|
+			format.js
+		end
+	
 	end
 
 	def add_users
 	    if request.post?
-	    period_users=[]
+	    @period_users=[]
 	    params[:user_ids].each do |user_id|
 	    	period_user=KpiPeriodUser.new
 	    	period_user.user_id=user_id
 	    	period_user.kpi_calc_period_id=@period.id
 	    	period_user.save
-	    	period_users.push(period_user)
+	    	@period_users.push(period_user)
 	    	end
 	    end
 
 	    @period.create_marks(User.find(params[:user_ids]))
 
-	    #get_integrity_warnings
-
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'apply_to' }
-	      format.js {
-	        render(:update) {|page|
-	          page.replace_html "tab-content-apply_to", :partial => 'kpi_calc_periods/apply_to'
-	          period_users.each {|period_user| page.visual_effect(:highlight, "user-#{period_user.id}")}
-	        }
-	      }
-	    end		
+		respond_to do |format|
+			format.js
+		end
+	
 	end
 
 	def remove_inspector
 		@indicator_inspector = KpiIndicatorInspector.find(params[:indicator_inspector_id])
 		@indicator_inspector.destroy
-		#get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-users", :partial => 'kpi_calc_periods/users'
-	      		 							  page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	      						}}
-	    end		
+		respond_to do |format|
+			format.js
+		end
+
 	end
 
 	def remove_user
 		@period_user = KpiPeriodUser.find(params[:period_user_id])
 		@period_user.destroy
-		#get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'apply_to' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-apply_to", :partial => 'kpi_calc_periods/apply_to'
-	      						}}
-	    end		
+
+		respond_to do |format|
+			format.js
+		end
+	    # respond_to do |format|
+	    #   format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'apply_to' }
+	    #   format.js { render(:update) {|page| page.replace_html "tab-content-apply_to", :partial => 'kpi_calc_periods/apply_to'
+	    #   						}}
+	    # end		
 	end	
 
 
@@ -226,13 +211,10 @@ class KpiCalcPeriodsController < ApplicationController
 			      @saved_errors.push(error_msg)
 			    end 			
 			}	
-		#get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'users' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-users", :partial => 'kpi_calc_periods/users'
-	      									  page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	      									  }}
-	    end	
+
+		respond_to do |format|
+			format.js
+		end
 	end	
 
 	def update_plans
@@ -244,13 +226,10 @@ class KpiCalcPeriodsController < ApplicationController
 			      @saved_errors.push(error_msg)
 			    end 			
 			}	
-		#get_integrity_warnings
-	    respond_to do |format|
-	      format.html { redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => 'plan_values' }
-	      format.js { render(:update) {|page| page.replace_html "tab-content-plan_values", :partial => 'kpi_calc_periods/plan_values'
-	      									  page.replace_html "kpi_pattern_warnings", :partial => 'kpi_patterns/warnings'
-	      									  }}
-	    end	
+		respond_to do |format|
+			format.js
+		end
+
 	end	
 
 	private

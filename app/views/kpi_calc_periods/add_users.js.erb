@@ -1,0 +1,4 @@
+$('#tab-content-apply_to').html('<%= escape_javascript(render :partial => 'kpi_calc_periods/apply_to') %>');
+<% @period_users.each do |period_user| %>
+    $('#user-<%= period_user.id %>').effect("highlight");
+<% end %>

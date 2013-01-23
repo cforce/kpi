@@ -36,18 +36,11 @@
         <td class="weight">
         <input type="text" tabindex="<%= i %>" name="percent[<%= h e.id %>]" value="<%= h e.percent %>" <%= "disabled" if @period.active %> />
         </td>
-        <%=
-        if not @period.active
-          "<td class=\"buttons\">
-              #{link_to_remote(
-                    l(:button_delete),
-                    { :url => remove_inspector_kpi_calc_period_path(:id => @period.id, :indicator_inspector_id => e.id),
-                      :method => :delete },
-                    :class => 'icon icon-del'
-                  )}
-          </td>".html_safe
-        end
-        %>
+        <% if not @period.active %>
+          <td class="buttons">
+          <%= delete_link({:controller => 'kpi_calc_periods', :action => 'remove_inspector', :indicator_inspector_id => e.id}, {:method => :delete, :remote => true})  %>       
+          </td>
+        <% end %>
       </tr>
       <% i+=1 %>
     <% end %>
@@ -76,15 +69,9 @@
 
 <p><%= label_tag "user_search", l(:label_user_search) %><%= text_field_tag 'user_search', nil %></p>
 
-<%= observe_field(:user_search,
-                 :frequency => 0.5,
-                 :update => :users,
-                 :url => autocomplete_for_user_kpi_calc_period_path(@period),
-                 :method => :get,
-                 :before => '$("user_search").addClassName("ajax-loading")',
-                 :complete => '$("user_search").removeClassName("ajax-loading")',
-                 :with => 'q')
-                  %>
+<%= javascript_tag "observeSearchfield('user_search', 'users', '#{ escape_javascript autocomplete_for_user_kpi_calc_period_path(@period) }')" %>
+
+
 
 <div id="users">
     <%= principals_check_box_tags 'user_ids[]', @users %>

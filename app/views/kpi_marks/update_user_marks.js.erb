@@ -1,0 +1,1 @@
+$('#tab-content-kpi-marks-<%= @user.id %>').html('<%= escape_javascript(render :partial => 'kpi_marks/user_marks', :locals => {:tab => {:user_id => @user.id}}) %>');

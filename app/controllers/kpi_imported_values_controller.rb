@@ -16,11 +16,7 @@ class KpiImportedValuesController < ApplicationController
 
     find_values
     respond_to do |format|
-        format.js {
-            render(:update) {|page|
-            page.replace_html "imported_values_form", :partial => 'kpi_imported_values/form'
-            }
-        }
+        format.js { render 'form'}
         end   
     end
 
@@ -48,14 +44,9 @@ class KpiImportedValuesController < ApplicationController
             end
             }
 =end
-    find_values
+        find_values
         respond_to do |format|
-          format.html { redirect_to :controller => 'imported_values_form', :action => 'edit_values'}
-          format.js {
-            render(:update) {|page|
-              page.replace_html "imported_values_form", :partial => 'kpi_imported_values/form'
-            }
-          }
+            format.js { render 'form'}
         end
     end
 

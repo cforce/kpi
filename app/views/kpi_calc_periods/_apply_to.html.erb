@@ -13,13 +13,10 @@
         </td>
         <td><%= user_period_status kpi_period_user %></td>
         <td class="buttons">
-
-            <%= link_to_remote(
-                  l(:button_delete),
-                  { :url => remove_user_kpi_calc_period_path(@period, :period_user_id => kpi_period_user.id),
-                    :method => :delete },
-                  :class => 'icon icon-del'
-                ) if not kpi_period_user.locked %>
+          <% if not kpi_period_user.locked %>
+            <%= link_to l(:button_delete), {:controller => 'kpi_calc_periods', :action => 'remove_user', :period_user_id =>  kpi_period_user.id}, {:method => :delete, :remote => true, :class => 'icon icon-del'}
+             %>
+          <% end %>
         </td>
       </tr>
     <% end %>
@@ -39,15 +36,8 @@
     <fieldset><legend><%=l(:label_user_new)%></legend>
     <p><%= label_tag "applied_user_search", l(:label_user_search) %><%= text_field_tag 'applied_user_search', nil, :class => 'user_search' %></p>
 
-    <%= observe_field(:applied_user_search,
-                 :frequency => 0.5,
-                 :update => :applied_users,
-                 :url => autocomplete_for_applied_user_kpi_calc_period_path(@period),
-                 :method => :get,
-                 :before => '$("applied_user_search").addClassName("ajax-loading")',
-                 :complete => '$("applied_user_search").removeClassName("ajax-loading")',
-                 :with => 'q')
-                  %>
+    <%= javascript_tag "observeSearchfield('applied_user_search', 'applied_users', '#{ escape_javascript autocomplete_for_applied_user_kpi_calc_period_path(@period) }')" %>
+
 
     <div id="applied_users">
       <%= principals_check_box_tags 'user_ids[]', users %>

@@ -12,7 +12,7 @@
 <div class="splitcontentleft">
 <% if @pattern.indicators.any? %>
 
-  <%= form_for(@pattern, :remote => true, :url => kpi_patterns_indicators_edit_path(@pattern),
+  <%= form_for(@pattern, :remote => true, :url => {:controler => 'kpi_patterns', :action => 'update_indicators'},
                :html => {:method => :post}) do |f| %>
   <table class="list indicators">
     <thead><tr>
@@ -42,13 +42,7 @@
         <input type="text" tabindex="<%= i %>" name="percent[<%= h pattern_indicator.id %>]" value="<%= h pattern_indicator.percent %>" />
         </td>
         <td class="buttons">
-
-            <%= link_to_remote(
-                  l(:button_delete),
-                  { :url => kpi_pattern_indicator_path(@pattern, :indicator_id => pattern_indicator.id),
-                    :method => :delete },
-                  :class => 'icon icon-del'
-                ) %>
+            <%= delete_link({:controler => "kpi_patterns", :action => 'remove_indicator', :indicator_id => pattern_indicator.id}, {:method => :delete, :remote => true}) %>
         </td>
       </tr>
       
@@ -68,20 +62,13 @@
 <div class="splitcontentright">
 <% indicators = Indicator.not_in_kpi_pattern(@pattern).all(:limit => 100) %>
 <% if indicators.any? %>
-  <%= form_for(@pattern, :remote => true, :url => kpi_patters_indicators_path(@pattern),
+  <%= form_for(@pattern, :remote => true, :url => {:controler => 'kpi_patterns', :action => 'add_indicators'},
                :html => {:method => :post}) do |f| %>
     <fieldset><legend><%=l(:label_indicator_new)%></legend>
     <p><%= label_tag "indicators_search", l(:label_indicator_search) %><%= text_field_tag 'indicators_search', nil %></p>
 
-    <%= observe_field(:indicators_search,
-                 :frequency => 0.5,
-                 :update => :indicators,
-                 :url => autocomplete_for_indicator_kpi_pattern_path(@pattern),
-                 :method => :get,
-                 :before => '$("indicators_search").addClassName("ajax-loading")',
-                 :complete => '$("indicators_search").removeClassName("ajax-loading")',
-                 :with => 'q')
-                  %>
+    <%= javascript_tag "observeSearchfield('indicators_search', 'indicators', '#{ escape_javascript autocomplete_for_indicator_kpi_pattern_path(@pattern) }')" %>
+
 
     <div id="indicators">
       <%= indicators_check_box_tags 'indicator_ids[]', indicators %>

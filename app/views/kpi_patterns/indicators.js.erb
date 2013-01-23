@@ -1,0 +1,8 @@
+$('#tab-content-indicators').html('<%= escape_javascript(render :partial => 'kpi_patterns/indicators') %>');
+$('#kpi_pattern_warnings').html('<%= escape_javascript(render :partial => 'kpi_patterns/warnings') %>');
+
+<% unless @indicators.nil? %>
+    <% @indicators.each do |indicator| %>
+        $('#indicator-<%= indicator.id %>').effect("highlight");
+    <% end %>
+<% end %>

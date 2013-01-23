@@ -1,3 +1,7 @@
+require_dependency 'project'
+require_dependency 'principal'
+require_dependency 'user'
+
 
   Redmine::CustomFieldFormat.map do |fields|
     fields.register KpiMarkCustomFieldFormat.new('kpi_mark', :label => :label_kpi_mark, :only => %w(Issue))
