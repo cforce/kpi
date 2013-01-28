@@ -58,7 +58,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 			<% period_indicator.kpi_marks.select("kpi_marks.*").joins(:inspector).where("#{KpiMark.table_name}.user_id = ?", @user.id).order("#{User.table_name}.lastname").each do |mark| %>
 				<tr class="<%= color %> <%= "disabled" if mark.disabled %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
-				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation if mark.explanation.to_s!='' %></small></td>
+				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation, {:class => 'static_content_only'} if mark.explanation.to_s!='' %></small></td>
 				<% if @user.user_kpi_marks_can_be_disabled?(period_user) %>
 					<td><%= link_to_mark_state(mark) %></td> 
 				<% end %>
