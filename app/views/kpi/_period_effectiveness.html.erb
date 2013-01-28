@@ -156,7 +156,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 			<span class="sign">&asymp;</span>
 		</div>		
 		<div class="L no_fraction_item">
-			<span><%= get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value) %></span><span class="no_align_unit"><%= l(:money_unit_abridgement) %></span>
+			<span><%= get_salary(month_time_clock, hours_value, base_salary_value, get_weighted_average_value(weighted_average_value)) %></span><span class="no_align_unit"><%= l(:money_unit_abridgement) %></span>
 		</div>	
 		</div>
 
