@@ -35,7 +35,16 @@
 
 <ul>
 	<li>
-	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi_marks", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_marks' and controller.action_name=='index'}" %>
+	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi_marks", :action => "index"}, :class=>"no_line" %>
+		<% unless @estimated_users.nil? %>
+			<ul>
+			<% i=0 %>
+			<% @estimated_users.each do |user| %>
+				<li><%= link_to user.name, '#', {:class => "in_link link_to_kpi_marks #{'selected' if i==0}", :data => {:user_id => user.id }} %></li>
+				<% i+=1 %>
+			<% end %>
+			</ul>
+		<% end %>
 	</li>
 
 	<li>
