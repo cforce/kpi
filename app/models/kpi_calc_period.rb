@@ -106,7 +106,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	end
 
 	def copy_users_from_pattern
-		kpi_pattern.kpi_pattern_users.each do |e|
+		kpi_pattern.kpi_pattern_users.joins(:user).where("#{User.table_name}.status=?", User::STATUS_ACTIVE).each do |e|
 			KpiPeriodUser.create(:user_id => e.user_id, :kpi_calc_period_id => id)
 			end		
 	end

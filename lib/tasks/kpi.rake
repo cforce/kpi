@@ -25,8 +25,9 @@ namespace :redmine do
         puts "New period has been saved #{period.date}"
         period.copy_from_pattern
         new_period_indicators = period.kpi_period_indicators
-        original_period.kpi_indicator_inspectors.select("#{KpiIndicatorInspector.table_name}.*, #{KpiPeriodIndicator.table_name}.indicator_id AS 'indicator_id' ")
-                                                .where("#{KpiPeriodIndicator.table_name}.indicator_id IN (?)", new_period_indicators.map{|i| i.indicator_id}).each do |inspector|
+        original_period.kpi_indicator_inspectors.joins(:user)
+                                                .select("#{KpiIndicatorInspector.table_name}.*, #{KpiPeriodIndicator.table_name}.indicator_id AS 'indicator_id' ")
+                                                .where("#{KpiPeriodIndicator.table_name}.indicator_id IN (?) AND #{User.table_name}.status=?", new_period_indicators.map{|i| i.indicator_id}, User::STATUS_ACTIVE).each do |inspector|
           
           attributes = inspector.attributes.dup.except('id', 'created_at', 'updated_at', "kpi_period_indicator_id", "indicator_id")
           puts "kpi_indicator_inspector id - #{inspector.id}"
