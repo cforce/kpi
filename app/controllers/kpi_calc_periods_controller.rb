@@ -126,7 +126,7 @@ class KpiCalcPeriodsController < ApplicationController
 	    else
 	    end
 =end
-	    redirect_to :action => 'index'
+	    redirect_to :action => 'index', "period[date]" => params[:period][:date]
 	
 	end    
 
