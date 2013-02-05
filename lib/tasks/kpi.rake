@@ -19,6 +19,7 @@ namespace :redmine do
       period.kpi_pattern_id = original_period.kpi_pattern_id
       period.date = original_period.date+1.months
       period.parent_id = original_period.id
+      period.base_salary = original_period.base_salary
 
       if period.save
         puts "New period has been saved #{period.date}"
