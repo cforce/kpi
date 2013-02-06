@@ -34,7 +34,7 @@ class KpiMark < ActiveRecord::Base
 	end
 
 	def check_user_for_info_showing?
-		User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin? or User.current.id == user_id	
+		User.current.id == inspector_id or User.current.global_permission_to?('kpi', 'effectiveness') or User.current.admin? or User.current.id == user_id	
 	end
 
 	def check_user_for_fact_update(period_indicator = nil, period_user = nil)
