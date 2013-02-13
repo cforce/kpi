@@ -396,3 +396,8 @@ input.base_salary_field
 	{
 	width: 70px;
 	}
+
+div.user_marks div.tabs
+	{
+	display: none;
+	}

@@ -44,7 +44,7 @@ module Kpi
 
 		def get_my_marks
 			kpi_inspector_marks.joins(:kpi_period_indicator)
-							   .where("#{KpiMark.table_name}.end_date <= ? 
+							   .where("#{KpiMark.table_name}.start_date <= ? 
 										AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
 										AND #{KpiMark.table_name}.locked = ?
 										AND #{KpiMark.table_name}.disabled = ?",

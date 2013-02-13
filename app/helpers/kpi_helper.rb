@@ -4,6 +4,12 @@ module KpiHelper
 
 	end	
 
+	def get_default_user
+		user = @not_subordinated_estimated_users.first if @not_subordinated_estimated_users.any?
+		user = @subordinated_estimated_users.first if @subordinated_estimated_users.any?
+		user
+	end
+
 	def user_tabs(users)
 		tabs = []
 		users.each do |u|

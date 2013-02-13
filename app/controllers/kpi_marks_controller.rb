@@ -124,8 +124,20 @@ class KpiMarksController < ApplicationController
 	def find_marks
 		find_user
 		find_date
-		@marks = User.current.get_my_marks.joins(:user).where("start_date >= ? AND end_date <= ?", @date, @date.at_end_of_month).includes(:user, :kpi_indicator_inspector => [{:kpi_period_indicator => [:indicator => :kpi_unit]}]).order("#{User.table_name}.lastname", :end_date)
+		@marks = User.current.get_my_marks.joins(:user).where("start_date >= ? AND end_date <= ?", @date, @date.at_end_of_month).includes(:user => :user_tree, :kpi_indicator_inspector => [{:kpi_period_indicator => [:indicator => :kpi_unit]}]).order("#{User.table_name}.lastname", :end_date)
 		@estimated_users = @marks.map{|m| m.user}.uniq
+		@user_mark_counts = {}
+
+		@marks.each do |m|
+			@user_mark_counts[m.user] = 0 if @user_mark_counts[m.user].nil?
+			@user_mark_counts[m.user]+=1 if m.fact_value.nil? 
+			end
+
+		curent_user_lft = User.current.user_tree.lft
+		curent_user_rgt = User.current.user_tree.rgt
+
+		@subordinated_estimated_users = @marks.inject([]){|u,v| u<<v.user if curent_user_lft<v.user.user_tree.lft and curent_user_rgt>v.user.user_tree.rgt; u }.uniq
+		@not_subordinated_estimated_users = @estimated_users - @subordinated_estimated_users
 	end
 
 	def find_date

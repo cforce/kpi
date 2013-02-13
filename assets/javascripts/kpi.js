@@ -5,8 +5,9 @@ jQuery(document).ready(function(){
         jQuery('div.tabs ul li a').removeClass('selected');
         jQuery('#tab-content-kpi-marks-'+jQuery(this).attr('data-user-id')).show();
         jQuery('#tab-kpi-marks-'+jQuery(this).attr('data-user-id')).addClass("selected");
-        jQuery(this).parent().parent().find('li a').removeClass('selected');
+        jQuery('#kpi_marks_user_list').find('li a').removeClass('selected');
         jQuery(this).addClass("selected");
+        jQuery('#estimated_user_name').html(jQuery(this).html())
         });
 
     jQuery('ul.folding_tree li').each(function(){

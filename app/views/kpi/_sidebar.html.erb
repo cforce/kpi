@@ -37,13 +37,36 @@
 	<li>
 	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi_marks", :action => "index"}, :class=>"no_line" %>
 		<% unless @estimated_users.nil? %>
-			<ul>
+			<ul id="kpi_marks_user_list">
+
 			<% i=0 %>
-			<% @estimated_users.each do |user| %>
-				<li><%= link_to user.name, '#', {:class => "in_link link_to_kpi_marks #{'selected' if i==0}", :data => {:user_id => user.id }} %></li>
-				<% i+=1 %>
+
+			<% if @subordinated_estimated_users.any? %>
+ 
+				<li><%= l(:marks_for_subordinates) %>
+				<ul class="marks_for_subordinates">
+				<% @subordinated_estimated_users.each do |user| %>
+					<li><%= link_to user.name, '#', {:class => "in_link link_to_kpi_marks #{'selected' if i==0}", :data => {:user_id => user.id }} %> <small>(<%= @user_mark_counts[user] %>)</small></li>
+					<% i+=1 %>
+				<% end %>
+				</ul>
+				</li>
 			<% end %>
+
+			<% if @not_subordinated_estimated_users.any? %>		
+				<li><%= l(:marks_for_other) %>
+				<ul class="marks_for_not_subordinates">
+				<% @not_subordinated_estimated_users.each do |user| %>
+					<li><%= link_to user.name, '#', {:class => "in_link link_to_kpi_marks #{'selected' if i==0}", :data => {:user_id => user.id }} %> <small>(<%= @user_mark_counts[user] %>)</small></li>
+					
+					<% i+=1 %>
+				<% end %>
+				</ul>
+				</li>	
+			<% end %>			
 			</ul>
+
+			
 		<% end %>
 	</li>
 
