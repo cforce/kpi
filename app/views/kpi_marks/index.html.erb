@@ -2,11 +2,11 @@
 <%= render :partial => 'kpi/period_links' %>
 </div>
 
-<h2><%=l(:label_kpi_marks) %>. <span id="estimated_user_name"><%= get_default_user.name %></span></h2>
+<h2><%=l(:label_kpi_marks) %>. <span id="estimated_user_name"><%= get_default_user.name  unless get_default_user.nil? %></span></h2>
 
 <div class="user_marks">
 
-<% params[:tab]="kpi-marks-#{get_default_user.id}" %>
+<% params[:tab]="kpi-marks-#{get_default_user.id}" unless get_default_user.nil? %>
 <%= render_tabs user_tabs(@estimated_users) %>
 </div>
 
