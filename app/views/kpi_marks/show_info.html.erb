@@ -13,7 +13,11 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
 <div id="chart_percent"><%= l(:percent) %></div>
 <div id="chart_matrix"><%= l(:matrix) %></div>
 <div id="chart_calc_values"><%= l(:chart_calc_values) %></div>
-<div id="available_values"><%= l(:chart_available_values) %>: <%= 80 %> % &mdash; <%= 120 %> % </div>
+<% if @period_indicator.check_for_cutting? %> 
+    <div id="available_values"><%= l(:chart_available_values) %>: <%= @period_indicator.min_effectiveness %> % &mdash; <%= @period_indicator.max_effectiveness %> % </div>
+    <div id="min_available_value"><%= @period_indicator.min_effectiveness %></div>
+    <div id="max_available_value"><%= @period_indicator.max_effectiveness %></div>
+<% end %>
 </div>
 
 <% completion = @mark.completion(@period_indicator) %>

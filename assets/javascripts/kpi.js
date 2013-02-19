@@ -231,8 +231,8 @@ function build_chart(container, data_id)
             yAxis: {
                    plotBands: [{ // mark the weekend
                         color: '#FCFFC5',
-                        from: 80,
-                        to: 120,
+                        from: jQuery('#min_available_value').html(),
+                        to: jQuery('#max_available_value').html(),
                         label: {
                             text: jQuery('#available_values').html(),
                             textAlign: 'left'

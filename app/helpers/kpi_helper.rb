@@ -265,7 +265,8 @@ module KpiHelper
   	v = value
   	v = min.to_f if value.to_f<min.to_f
   	v = max.to_f if value.to_f>max.to_f
-  	v = nil if value.nil? or max.nil? or min.nil?
+  	v = nil if value.nil? 
+  	v = value if max.nil? or min.nil?
   	v
   end
 

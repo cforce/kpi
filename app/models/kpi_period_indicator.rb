@@ -17,6 +17,10 @@ class KpiPeriodIndicator < ActiveRecord::Base
 		Indicator::INTERPRETATION_FACT == interpretation ?	plan_value : ((matrix['percent'].index('100').nil?) ? 1 : matrix['value_of_fact'][matrix['percent'].index('100')])
 	end
 
+    def check_for_cutting?
+    	((not min_effectiveness.nil?) or (not max_effectiveness.nil?)) and Indicator::INTERPRETATION_FACT == interpretation
+    end
+
 	private
 
     def check_period
