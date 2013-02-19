@@ -68,9 +68,11 @@
 								  :label => l(:kpi_interpretation_label), :required => true %></p>
 
 <% if @indicator.interpretation.to_s==Indicator::INTERPRETATION_FACT.to_s or @indicator.interpretation.nil? %>
-	<% table_style='style="display:none;"'.html_safe %>
+    <% table_style='style="display:none;"'.html_safe %>
+    <% abs_int_style='' %>
 <% else %>
-	<% table_style='' %>
+    <% table_style='' %>
+    <% abs_int_style='style="display:none;"'.html_safe %>
 <% end %>
 
 <div id="kpi_matrix_div" <%= table_style %>>
@@ -106,6 +108,12 @@
 <span><div><%= l(:bad_mark) %></div><div>0</div><div>0</div></span>
 <span><div><%= l(:terribly_mark) %></div><div>-50</div><div>-50</div></span>
 </div>
+</div>
+
+
+<div id="absolute_interpretation_settings"  <%= abs_int_style %>>
+<p><%= f.text_field :max_effectiveness, :required => false, :label => l(:kpi_indicator_max_effectiveness_label), :class => 'weight' %></p>
+<p><%= f.text_field :min_effectiveness, :required => false, :label => l(:kpi_indicator_min_effectiveness_label), :class => 'weight' %></p>
 </div>
 
 </fieldset>

@@ -92,7 +92,9 @@ class KpiCalcPeriod < ActiveRecord::Base
 									  :pattern => e.indicator.pattern,
 									  :pattern_settings => e.indicator.pattern_settings,
 									  :pattern_plan => e.indicator.pattern_plan,
-									  :pattern_plan_settings => e.indicator.pattern_plan_settings
+									  :pattern_plan_settings => e.indicator.pattern_plan_settings,
+									  :max_effectiveness => e.indicator.max_effectiveness,
+									  :min_effectiveness => e.indicator.min_effectiveness
 									  )
 			end
 	end

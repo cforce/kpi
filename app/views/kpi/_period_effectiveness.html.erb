@@ -67,7 +67,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 								        period_indicator.kpi_unit.abridgement %></nobr></td>
 				<td><nobr><%= kpi_value(fact_view(mark, period, period_indicator, period_user), period_indicator.kpi_unit.abridgement, mark.fact_value.to_f<0) %></nobr></td>		
 				<% 
-				completion = mark.completion(period_indicator)
+				completion = cut_completion(mark.completion(period_indicator), period_indicator)
 				marks[mark] = completion unless completion.nil? or mark.disabled
 				have_enabled_marks = true unless mark.disabled
 				 %>		

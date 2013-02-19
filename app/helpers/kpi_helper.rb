@@ -1,4 +1,9 @@
 module KpiHelper
+	def cut_completion(completion, period_indicator)
+		get_cut_value(completion, period_indicator.max_effectiveness, period_indicator.min_effectiveness)
+	end
+
+
 	def get_table_head
 
 
@@ -255,12 +260,17 @@ module KpiHelper
   	value.html_safe
   end
 
-  def get_weighted_average_value(value)
+
+  def get_cut_value(value, max, min)
   	v = value
-  	v = Setting.plugin_kpi['min_kpi'].to_f if value.to_f<Setting.plugin_kpi['min_kpi'].to_f
-  	v = Setting.plugin_kpi['max_kpi'].to_f if value.to_f>Setting.plugin_kpi['max_kpi'].to_f
-  	v = nil if value.nil?
+  	v = min.to_f if value.to_f<min.to_f
+  	v = max.to_f if value.to_f>max.to_f
+  	v = nil if value.nil? or max.nil? or min.nil?
   	v
+  end
+
+  def get_weighted_average_value(value)
+  	get_cut_value(value, Setting.plugin_kpi['max_kpi'].to_f, Setting.plugin_kpi['min_kpi'].to_f)
   end
 
   def get_weighted_average_value_view(value)

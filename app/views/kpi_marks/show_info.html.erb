@@ -13,6 +13,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
 <div id="chart_percent"><%= l(:percent) %></div>
 <div id="chart_matrix"><%= l(:matrix) %></div>
 <div id="chart_calc_values"><%= l(:chart_calc_values) %></div>
+<div id="available_values"><%= l(:chart_available_values) %>: <%= 80 %> % &mdash; <%= 120 %> % </div>
 </div>
 
 <% completion = @mark.completion(@period_indicator) %>

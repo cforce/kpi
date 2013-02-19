@@ -33,9 +33,16 @@ jQuery(document).ready(function(){
 
 	jQuery('#indicator_interpretation').change(function(){
 	    if(jQuery(this).val()==1)
-		    jQuery('#kpi_matrix_div').show()
+            {
+            jQuery('#kpi_matrix_div').show()
+            jQuery('#absolute_interpretation_settings').hide()
+		    }
 		else
-			jQuery('#kpi_matrix_div').hide()
+            {
+            jQuery('#kpi_matrix_div').hide()
+            jQuery('#absolute_interpretation_settings').show()
+            }
+			
 		});
 
 	jQuery('#kpi_matrix a.icon-add').click(function(){
@@ -222,6 +229,16 @@ function build_chart(container, data_id)
 
             },
             yAxis: {
+                   plotBands: [{ // mark the weekend
+                        color: '#FCFFC5',
+                        from: 80,
+                        to: 120,
+                        label: {
+                            text: jQuery('#available_values').html(),
+                            textAlign: 'left'
+                        }            
+                    }],
+
                 /*maxPadding: 0.1,*/
                 gridLineDashStyle: 'dot',
                 title: {

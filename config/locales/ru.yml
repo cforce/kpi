@@ -1,5 +1,8 @@
 # English strings go here for Rails i18n
 ru:
+  chart_available_values: Допустимые значения
+  kpi_indicator_max_effectiveness_label: Максимум
+  kpi_indicator_min_effectiveness_label: Минимум
   label_managers: "Управляющие периодом"
   field_base_salary: "Базавый оклад"
   money_unit_abridgement: "р."
