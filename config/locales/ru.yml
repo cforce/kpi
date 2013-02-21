@@ -1,5 +1,16 @@
 # English strings go here for Rails i18n
 ru:
+  surcharge_type_labbel: "Тип надбавки"
+  is_deduction_label: "Это вычет"
+  sum_labbel: Сумма
+  base_salary_pattern_label: "Шаблон расчета базы"
+  available_surcharges: "Доступные надбавки"
+  only_salary: "Только оклад"
+  only_jobprice: "Только сдельная оплата"
+  field_kpi_hours_norm: "Норма часов"
+  jobprice_and_salary: "Сдельная оплата и оклад"
+  exclude_time_ratio_label: "Исключить часы из расчета"
+  label_salary_calc: "Зарпалта"
   chart_available_values: Допустимые значения
   kpi_indicator_max_effectiveness_label: Максимум
   kpi_indicator_min_effectiveness_label: Минимум

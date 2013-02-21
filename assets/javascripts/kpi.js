@@ -1,4 +1,13 @@
 jQuery(document).ready(function(){
+
+    
+
+    jQuery('.showing_element').click(function(){
+
+        jQuery('#'+jQuery(this).attr('data-element')).toggle();
+        });
+    
+
     jQuery('a.link_to_kpi_marks').click(function(){
 
         jQuery('div.tab-content').hide();
@@ -231,10 +240,10 @@ function build_chart(container, data_id)
             yAxis: {
                    plotBands: [{ // mark the weekend
                         color: '#FCFFC5',
-                        from: jQuery('#min_available_value').html(),
-                        to: jQuery('#max_available_value').html(),
+                        from: jQuery('#'+data_id+' .min_available_value').html(),
+                        to: jQuery('#'+data_id+' .max_available_value').html(),
                         label: {
-                            text: jQuery('#available_values').html(),
+                            text: jQuery('#'+data_id+' .available_values').html(),
                             textAlign: 'left'
                         }            
                     }],

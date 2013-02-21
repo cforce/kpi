@@ -1,0 +1,76 @@
+<div style="font-size: 9pt;">
+<% if @period_not_null_surcharges.any? %>
+    <div class="L right_indent_10">
+    <table class="list">
+        <thead>
+        <tr>
+            <th>Тип</th>
+            <th>Сумма</th>        
+            <th></th>        
+        </tr>
+        </thead>
+        <tbody>
+
+    <% @period_not_null_surcharges.each do |surcharge| %>
+            <tr>
+                <td><%= h surcharge.name %></td>
+                <td><nobr><span class="value "><%= h surcharge.attributes['default_value'] %></span><span class="unit"><%= l(:money_unit_abridgement) %></span></nobr></td>
+                <td></td>
+            </tr>
+    <% end %>
+
+    <% @user_surcharges.each do |surcharge| %>
+            <tr class="<%= "negative" if surcharge.value<0 %>">
+                <td>
+                    <%= h surcharge.kpi_surcharge.name  %>
+                <% unless surcharge.explanation.nil? %>
+                    <div class="grey"><%= h surcharge.explanation  %></div>
+                <% end %>
+                </td>
+                <td><nobr><span class="value <%= 'minus' if surcharge.value<0 %>"><%= h surcharge.value %></span><span class="unit"><%= l(:money_unit_abridgement) %></span></nobr></td>
+                <td><%= link_to("<span>#{l(:button_delete)}</span>".html_safe, {:controller => 'kpi_user_surcharges', :action => 'destroy', :id => surcharge.id}, {:method => :delete, :remote => true, :class => 'in_link icon icon-del'})  %></td>
+            </tr>
+    <% end %>
+    
+
+        </tbody>
+    </table>
+    </div>
+
+<% end %>
+
+    <div class="L left_divider_5">
+    <%= form_for @user_surcharge, :remote => true, :url => {:controller => 'kpi_user_surcharges', :action =>'add_surcharge', :id => @period_user.id}, :html => {:method => :post} do |f| %>
+
+    <%= hidden_field_tag 'kpi_user_surcharge[kpi_period_user_id]',  @period_user.id %>
+
+    <p>
+    <%= label_tag 'kpi_user_surcharge_kpi_surcharge_id', l(:surcharge_type_labbel), :required => true  %>:<br>
+    <%= f.select(:kpi_surcharge_id, (@available_surcharges.map{|v| [v.name, v.id]}), {:label => l(:base_salary_pattern_label)}) %>
+    </p>
+
+    <p>
+    <%= label_tag 'kpi_user_surcharge_value', l(:sum_labbel), :required => true  %>:<br>
+    <%= f.text_field :value, :class => 'base_salary_field numeric' %>
+    </p>
+
+    <p>
+    <%= label_tag 'kpi_user_surcharge_explanation', l(:kpi_mark_desc) %>:<br>
+    <%= f.text_area :explanation, :size => "40x1", :class => 'explanation' %>
+    </p>
+
+    <p>
+    <nobr>
+        <%= f.check_box :is_deduction %> &mdash;
+        <%= content_tag(:label, l(:is_deduction_label), :class => :checkbox, :for => "kpi_user_surcharge_is_deduction")  %>
+    </nobr>
+    </p>
+
+
+    <%= submit_tag l(:button_add), :class => 'kpi_mark_submit_button' %>
+    <% end %>
+
+    </div>
+</div>
+
+<script>jQuery('#kpi_period_user_jobprise').focus();</script>

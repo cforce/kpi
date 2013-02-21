@@ -126,32 +126,75 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	<% base_salary_value = base_salary_value(period_user, period) %>
 	<% hours_value = hours_value(period_user) %>
 
+
 	<div class="H">
 	<div class="R payment">
 
 		<div class="formula"> 
 
-		<div class="fraction">
-		<div class="numerator">
-		<span>
-		<%= base_salary_view(period, period_user, @user, base_salary_value) %>
-		</span>
-		<span class="sign">&times;</span>
-		<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true) %></span>
+		<div class="L no_fraction_item">
+			<span class="sign">(</span>
 		</div>
-		<div class="denominator">
-		<span><%= month_time_clock.nil? ? 'x' : month_time_clock %></span>
-		<span class="no_align_unit">ч.</span>
-		
+
+		<% if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] != 'only_jobprice' %>
+
+		<div class="L no_fraction_item">
+			<%= base_salary_view(period, period_user, @user, base_salary_value) %>		
 		</div>
+
+
+			<% unless period.exclude_time_ratio %>
+				<div class="L no_fraction_item">
+					<span class="sign">&times;</span>
+				</div>		
+
+			
+				<div class="fraction">
+				<div class="numerator">
+				<span><span><%= hours_view(period_user, @user, hours_value) %></span><span class="no_align_unit">ч.</span></span>
+				</div>
+				<div class="denominator">
+				<span><%= month_time_clock.nil? ? 'x' : month_time_clock %></span>
+				<span class="no_align_unit">ч.</span>
+				
+				</div>
+				</div>
+			<% end %>
+
+		<% end %>
+
+		<% if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'jobprice_and_salary' %>
+			<div class="L no_fraction_item">
+				<span class="sign">&plus;</span>
+			</div>
+		<% end %>
+
+		<% if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] != 'only_salary' %>
+			<div class="L no_fraction_item">
+				<%= job_prise_view(period_user, @user, period_user.jobprise) %>		
+			</div>
+		<% end %>
+
+		<div class="L no_fraction_item">
+			<span class="sign">)</span>
 		</div>
 
 		<div class="L no_fraction_item">
 			<span class="sign">&times;</span>
-		</div>
+		</div>	
+
 		<div class="L no_fraction_item">
-			<span><span><%= hours_view(period_user, @user, hours_value) %></span><span class="no_align_unit">ч.</span></span>
+			<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true) %></span>
 		</div>
+
+		<div class="L no_fraction_item">
+			<span class="sign">&plus;</span>
+		</div>
+
+		<div class="L no_fraction_item">
+			<span><%= subcharge_view(period_user, @user, 1568) %></span>
+		</div>
+
 		<div class="L no_fraction_item">
 			<span class="sign">&asymp;</span>
 		</div>		

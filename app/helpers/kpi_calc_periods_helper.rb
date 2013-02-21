@@ -4,7 +4,8 @@ module KpiCalcPeriodsHelper
             {:name => 'users', :partial => 'kpi_calc_periods/users', :label => :label_inspector_list},
             {:name => 'plan_values', :partial => 'kpi_calc_periods/plan_values', :label => :label_plan_values},
             {:name => 'apply_to', :partial => 'kpi_calc_periods/apply_to', :label => :label_assigned_list},
-            {:name => 'other', :partial => 'kpi_calc_periods/managers', :label => :label_managers}
+            {:name => 'other', :partial => 'kpi_calc_periods/managers', :label => :label_managers},
+            {:name => 'salary', :partial => 'kpi_calc_periods/salary', :label => :label_salary_calc}
           ]
   end
 

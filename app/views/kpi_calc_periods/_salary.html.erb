@@ -1,0 +1,65 @@
+
+<%= labelled_form_for @period do |f| %>
+<%= error_messages_for 'period' %>
+
+<div class="H">
+<div class="L left_form_part">
+<div class="box tabular">
+
+<input type="hidden" name="tab" value="salary" />
+
+<p>
+    <%= f.text_field :base_salary, :disabled => @period.locked  %>
+</p>
+
+<p>
+    <%= f.select(:base_salary_pattern, (KpiCalcPeriod::BASE_SALARY_PATTERNS.map{|k,v| [l(v), k]}), {:label => l(:base_salary_pattern_label), :required => true},
+                                  :disabled => @period.locked) %>
+</p>
+
+<p>
+        <%= f.check_box :exclude_time_ratio, :label => l(:exclude_time_ratio_label), :disabled => @period.locked %>
+</p>
+<p>
+    <%= f.select(:kpi_hours_norm_id, (KpiHoursNorm.order(:name).map {|p| [p.name, p.id]}), {}, :disabled => @period.locked) %>
+</p>
+
+
+</div>
+</div>
+
+<div class="L right_form_part" >
+<div class="box">
+
+<fieldset>
+<table>
+<legend><%= l(:available_surcharges) %></legend>
+<% default_values = @period_surcharges.inject({}){|h, v| h[v.kpi_surcharge_id]=v.default_value; h} %>
+
+<%= hidden_field_tag 'kpi_calc_period[kpi_surcharge_ids][]', '' %>
+<% KpiSurcharge.order(:name).each do |surcharge| %>
+        <tr>
+        <td>
+        <% checked = @period_surcharges.map{|e| e.kpi_surcharge_id}.include?(surcharge.id) %>
+        <%= check_box_tag('kpi_calc_period[kpi_surcharge_ids][]', surcharge.id, @period_surcharges.map{|e| e.kpi_surcharge_id}.include?(surcharge.id), :id => "surcharge_#{surcharge.id}", :data => {:element => "surcharge_def_val_#{surcharge.id}"}, :class => "showing_element", :disabled => @period.locked) %>
+        </td>
+        <td>
+        <%= content_tag(:label, h(surcharge.name), :class => :checkbox, :for => "surcharge_#{surcharge.id}")  %>
+        </td>
+        <td>
+        <%= text_field_tag "default_values[#{surcharge.id}]", default_values.try('[]', surcharge.id), :class => "#{'I' if !checked}", :id => "surcharge_def_val_#{surcharge.id}", :disabled => @period.locked %>
+        </td>
+        </tr>
+<% end %>
+</table>
+</fieldset>
+
+
+</div>
+</div>
+</div>
+
+<div>
+<%= submit_tag l(@period.new_record? ? :button_create : :button_save), :disabled => @period.locked %>
+</div>
+<% end %>

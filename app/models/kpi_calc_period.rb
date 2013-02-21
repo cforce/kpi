@@ -4,6 +4,10 @@ class KpiCalcPeriod < ActiveRecord::Base
 	validates :kpi_pattern_id, :uniqueness => { :scope => :date, :message => l(:uniq_date_and_pattern_message) }
 
 	belongs_to :kpi_pattern
+	belongs_to :kpi_hours_norm
+
+	has_many :kpi_period_surcharges
+	has_many :kpi_surcharges, :through => :kpi_period_surcharges
 
 	has_many :kpi_period_users, :dependent => :destroy
 	has_many :users, :through => :kpi_period_users
@@ -25,6 +29,14 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	before_save :check_period
 	#has_many :indicators, :through => :kpi_indicator_inspectors	
+
+	BASE_SALARY_PATTERNS = {
+	                  1 => 'only_salary',
+	                  2 => 'only_jobprice',
+	                  3 => 'jobprice_and_salary'
+	                  }  
+
+
 
 	#after_create :add_inspector_marks
 	def get_month_time_clock

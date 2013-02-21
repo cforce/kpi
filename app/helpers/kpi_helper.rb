@@ -243,8 +243,8 @@ module KpiHelper
 
   def hours_view(period_user, user, value)
   	value = 'x' if value.nil?
-  	if period_user.check_user_for_salary_update?(user)
-  		link_to_modal_window value, :controller => 'kpi_period_users', :action=> 'edit_hours', :id => period_user.id
+  	if period_user.check_user_for_hours_update?(user)
+  		link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_hours', :id => period_user.id}, {:class => 'click_out'})
   	else
   		value
   	end
@@ -254,10 +254,31 @@ module KpiHelper
   	value='x' if value.nil?
   	value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
   	if period_user.check_user_for_hours_update?(user)
-  		value = link_to_modal_window value, :controller => 'kpi_period_users', :action=> 'edit_base_salary', :id => period_user.id
+  		value = link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_base_salary', :id => period_user.id}, {:class => 'click_out'})
   	end
   	value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
   	value.html_safe
+  end
+
+  def subcharge_view(period_user, user, value)
+    value='x' if value.nil?
+    value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
+    if period_user.check_user_for_surcharge_update?(user)
+        value = link_to_modal_window(value, {:controller => 'kpi_user_surcharges', :action=> 'show_surcharges', :id => period_user.id}, {:class => 'click_out'})
+    end
+    value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
+    value.html_safe
+  end
+
+
+  def job_prise_view(period_user, user, value)
+    value='x' if value.nil?
+    value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
+    if period_user.check_user_for_jobprise_update?(user)
+        value = link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_jobprise', :id => period_user.id}, {:class => 'click_out'})
+    end
+    value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
+    value.html_safe
   end
 
 
