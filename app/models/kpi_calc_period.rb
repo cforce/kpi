@@ -4,7 +4,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	validates :kpi_pattern_id, :uniqueness => { :scope => :date, :message => l(:uniq_date_and_pattern_message) }
 
 	belongs_to :kpi_pattern
-	belongs_to :kpi_hours_norm
+	belongs_to :kpi_imported_value
 
 	has_many :kpi_period_surcharges
 	has_many :kpi_surcharges, :through => :kpi_period_surcharges
@@ -40,7 +40,13 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	#after_create :add_inspector_marks
 	def get_month_time_clock
-		KpiImportedMonthValue.joins(:kpi_imported_value).where("time_clocks=? AND date=?", true, date).first.try(:plan_value)
+		hours = kpi_hours_norm
+		if hours.nil?
+			imported_value = kpi_imported_value
+			hours = imported_value.kpi_imported_month_values.where("date=?", date).first.try(:plan_value) unless imported_value.nil?
+		end
+		hours
+		#KpiImportedMonthValue.joins(:kpi_imported_value).where("time_clocks=? AND date=?", true, date).first.try(:plan_value)
 	end
 
 	def integrity?

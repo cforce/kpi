@@ -1,1 +1,2 @@
 $('#calc_period_<%= @period.id %>').html('<%= escape_javascript(render :partial => 'kpi/period_effectiveness', :locals => { :period => @period, :i => @period.id}) %>');
+portable_data_apply();

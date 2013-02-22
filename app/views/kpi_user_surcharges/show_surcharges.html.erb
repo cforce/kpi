@@ -1,5 +1,5 @@
 <div style="font-size: 9pt;">
-<% if @period_not_null_surcharges.any? %>
+<% if @period_not_null_surcharges.any? or @user_surcharges.any? %>
     <div class="L right_indent_10">
     <table class="list">
         <thead>
@@ -27,7 +27,7 @@
                     <div class="grey"><%= h surcharge.explanation  %></div>
                 <% end %>
                 </td>
-                <td><nobr><span class="value <%= 'minus' if surcharge.value<0 %>"><%= h surcharge.value %></span><span class="unit"><%= l(:money_unit_abridgement) %></span></nobr></td>
+                <td><%= kpi_value(surcharge.value, l(:money_unit_abridgement), surcharge.value<0) %></td>
                 <td><%= link_to("<span>#{l(:button_delete)}</span>".html_safe, {:controller => 'kpi_user_surcharges', :action => 'destroy', :id => surcharge.id}, {:method => :delete, :remote => true, :class => 'in_link icon icon-del'})  %></td>
             </tr>
     <% end %>
@@ -39,6 +39,7 @@
 
 <% end %>
 
+<% if @available_surcharges.any? %>
     <div class="L left_divider_5">
     <%= form_for @user_surcharge, :remote => true, :url => {:controller => 'kpi_user_surcharges', :action =>'add_surcharge', :id => @period_user.id}, :html => {:method => :post} do |f| %>
 
@@ -71,6 +72,7 @@
     <% end %>
 
     </div>
+<% end %>
 </div>
 
 <script>jQuery('#kpi_period_user_jobprise').focus();</script>

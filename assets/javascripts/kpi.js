@@ -1,6 +1,24 @@
 jQuery(document).ready(function(){
 
-    
+    jQuery(document.body).on("submit", 'form', function(){
+        jQuery(this).find('input.numeric').each(function(){
+            jQuery(this).val(jQuery(this).val().split(' ').join(''))
+            })
+        });
+
+    jQuery(document.body).on("change keyup input", 'input.numeric', function(){
+
+        var re = /([^\.,0-9-]{1,})|(^\.)/g
+        jQuery(this).val(jQuery(this).val().replace(re, ''))
+
+        jQuery(this).val(jQuery(this).val().split(',').join('.'))
+
+        var re = /(\.\d{0,})([^0-9]{1,})(\d{0,})/g
+        jQuery(this).val(jQuery(this).val().replace(re, '$1$3'))
+
+        re = /(\d)(?=(\d\d\d)+([^\d]|$))/g
+        jQuery(this).val(jQuery(this).val().replace(re, '$1 '))
+        });
 
     jQuery('.showing_element').click(function(){
 

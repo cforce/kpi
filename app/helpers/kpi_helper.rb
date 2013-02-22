@@ -77,7 +77,7 @@ module KpiHelper
 	end
 
 	def kpi_value(value, abridgement, minus=false)
-		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
+		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')
 		value='x' if value.nil?
 		css_class="" 
 		css_class="minus" if minus
@@ -123,7 +123,7 @@ module KpiHelper
 		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
 		if mark.check_user_for_plan_update(period_indicator, period_user)
 			#Rails.logger.debug "ffffffffff #{{:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}.inspect}"
-			link_to_modal_window value, :controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id
+			link_to_modal_window(value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}, {:class => 'click_out'})
 		else
 			value
 		end
@@ -144,9 +144,9 @@ module KpiHelper
 
 	def fact_view(mark, period, period_indicator, period_user)
 		fact_value = mark.fact_value.nil? ? 'x' : mark.fact_value
-		fact_value = number_with_precision(fact_value, :delimiter => fact_value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
+		fact_value = number_with_precision(fact_value, :delimiter => fact_value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision => 2)
 		if mark.check_user_for_fact_update(period_indicator, period_user)
-			link_to_modal_window fact_value, :controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id
+			link_to_modal_window(fact_value, {:controller => 'kpi_marks', :action=> 'edit_fact', :id => mark.id, :i=>period.id}, {:class => 'click_out'})
 		else
 			fact_value
 		end		
@@ -228,12 +228,12 @@ module KpiHelper
 	end
 
 
-  def base_salary_value(period_user, period)
-  	v=nil
-   	v=period.base_salary unless period.base_salary.nil?
-  	v=period_user.base_salary unless period_user.base_salary.nil?
-  	v
-  end
+  # def base_salary_value(period_user, period)
+  # 	v=nil
+  #  	v=period.base_salary unless period.base_salary.nil?
+  # 	v=period_user.base_salary unless period_user.base_salary.nil?
+  # 	v
+  # end
 
   def hours_value(period_user)
   	v=nil
@@ -243,6 +243,7 @@ module KpiHelper
 
   def hours_view(period_user, user, value)
   	value = 'x' if value.nil?
+    value = number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
   	if period_user.check_user_for_hours_update?(user)
   		link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_hours', :id => period_user.id}, {:class => 'click_out'})
   	else
@@ -262,7 +263,7 @@ module KpiHelper
 
   def subcharge_view(period_user, user, value)
     value='x' if value.nil?
-    value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
+    value = number_with_delimiter(number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2), :delimiter => " ", :separator => '.')
     if period_user.check_user_for_surcharge_update?(user)
         value = link_to_modal_window(value, {:controller => 'kpi_user_surcharges', :action=> 'show_surcharges', :id => period_user.id}, {:class => 'click_out'})
     end
@@ -297,25 +298,15 @@ module KpiHelper
 
   def get_weighted_average_value_view(value)
   	v = get_weighted_average_value(value)
-  	v = "#{number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true)} &rarr; "+v.to_s if value!=v
+  	v = "#{number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2)} &rarr; "+v.to_s if value!=v
   	v = 'x' if value.nil?
   	v
   end
 
-  def get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value)
-  	v='x'
-  	v= ((base_salary_value*weighted_average_value/100)*hours_value)/month_time_clock unless month_time_clock.nil? or hours_value.nil? or base_salary_value.nil? or weighted_average_value.nil?
- 	number_with_precision(v, :separator => ".", :strip_insignificant_zeros => true)
-  end
-=begin
+  # def get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value)
+  	# v='x'
+  	# v= ((base_salary_value*weighted_average_value/100)*hours_value)/month_time_clock unless month_time_clock.nil? or hours_value.nil? or base_salary_value.nil? or weighted_average_value.nil?
+ 	# number_with_precision(v, :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
+  # end
 
-	def link_to_indicator(indicator)
-		link_to_remote indicator,
-		                   :url => {:controller => 'indicators',
-		                            :action => 'show',
-		                            :id => indicator},
-		                   :method => 'get',
-		                   :before => "showModal('ajax-modal'); return false"
-	end
-=end
 end	

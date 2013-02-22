@@ -2,12 +2,13 @@
 ru:
   surcharge_type_labbel: "Тип надбавки"
   is_deduction_label: "Это вычет"
+  is_time_clocks: "Это норма часов"
   sum_labbel: Сумма
   base_salary_pattern_label: "Шаблон расчета базы"
   available_surcharges: "Доступные надбавки"
   only_salary: "Только оклад"
   only_jobprice: "Только сдельная оплата"
-  field_kpi_hours_norm: "Норма часов"
+  field_kpi_imported_value: "Норма часов"
   jobprice_and_salary: "Сдельная оплата и оклад"
   exclude_time_ratio_label: "Исключить часы из расчета"
   label_salary_calc: "Зарпалта"
@@ -17,6 +18,7 @@ ru:
   label_managers: "Управляющие периодом"
   field_base_salary: "Базавый оклад"
   money_unit_abridgement: "р."
+  hour_unit_abridgement: "ч."
   label_kpi_indicators: "Показатели результативности"
   label_kpi_patterns: "Шаблоны расчета"
   label_kpi_indicators_new: "Добавить показатель"

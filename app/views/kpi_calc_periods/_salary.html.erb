@@ -18,10 +18,10 @@
 </p>
 
 <p>
-        <%= f.check_box :exclude_time_ratio, :label => l(:exclude_time_ratio_label), :disabled => @period.locked %>
+    <%= f.check_box :exclude_time_ratio, :label => l(:exclude_time_ratio_label), :disabled => @period.locked %>
 </p>
 <p>
-    <%= f.select(:kpi_hours_norm_id, (KpiHoursNorm.order(:name).map {|p| [p.name, p.id]}), {}, :disabled => @period.locked) %>
+    <%= f.select(:kpi_imported_value_id, (KpiImportedValue.where(:time_clocks => true).order(:name).map {|p| [p.name, p.id]}), {}, :disabled => @period.locked) %>
 </p>
 
 

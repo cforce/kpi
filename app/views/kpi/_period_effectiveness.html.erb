@@ -103,6 +103,8 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	
 	</tbody></table>
 
+	<%= period_user.kpi %>
+
 	<div class="H">
 	<div class="R kpi_footnote">
 	<span>
@@ -123,11 +125,11 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	</div>
 
 	<% month_time_clock = period.get_month_time_clock %>
-	<% base_salary_value = base_salary_value(period_user, period) %>
+	<% base_salary_value = period_user.base_salary_value %>
 	<% hours_value = hours_value(period_user) %>
 
 
-	<div class="H">
+	<div class="">
 	<div class="R payment">
 
 		<div class="formula"> 
@@ -151,11 +153,11 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 			
 				<div class="fraction">
 				<div class="numerator">
-				<span><span><%= hours_view(period_user, @user, hours_value) %></span><span class="no_align_unit">ч.</span></span>
+				<span><span><%= hours_view(period_user, @user, hours_value) %></span><span class="no_align_unit"><%= l(:hour_unit_abridgement) %></span></span>
 				</div>
 				<div class="denominator">
-				<span><%= month_time_clock.nil? ? 'x' : month_time_clock %></span>
-				<span class="no_align_unit">ч.</span>
+
+				<%= kpi_value(month_time_clock.nil? ? 'x' : month_time_clock, l(:hour_unit_abridgement)) %>
 				
 				</div>
 				</div>
@@ -184,26 +186,50 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 		</div>	
 
 		<div class="L no_fraction_item">
-			<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true) %></span>
+			<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
 		</div>
 
 		<div class="L no_fraction_item">
 			<span class="sign">&plus;</span>
 		</div>
 
-		<div class="L no_fraction_item">
-			<span><%= subcharge_view(period_user, @user, 1568) %></span>
+		<% surcharge_details = period_user.get_surcharge_details %>
+		<% if surcharge_details.any? %>
+		<div class="L explanation_window no_fraction_item">
+			<%= image_tag("info.png", :plugin=>:kpi)  %>
+			<em>
+				<table class="list">
+				<% surcharge_details.each do |k,v| %>
+					<tr><td><nobr><%= k %></nobr></td><td> <%= kpi_value(v, l(:money_unit_abridgement)) %></td></tr>
+				<% end %>
+				</table>
+				<i></i>
+			</em>
+			
 		</div>
+
+		<% end %>
+
+		<div class="L no_fraction_item">
+			<span><%= subcharge_view(period_user, @user, period_user.subcharge_total) %></span>
+		</div>
+
 
 		<div class="L no_fraction_item">
 			<span class="sign">&asymp;</span>
 		</div>		
 		<div class="L no_fraction_item">
-			<span><%= get_salary(month_time_clock, hours_value, base_salary_value, get_weighted_average_value(weighted_average_value)) %></span><span class="no_align_unit"><%= l(:money_unit_abridgement) %></span>
+			<span><%= kpi_value(period_user.salary(1.2), l(:money_unit_abridgement)) %></span>
 		</div>	
 		</div>
 
 	</div>
+
+	<div style="C"></div>
+	</div>
+
+	<div>
+	<%= period_user.get_surcharge_details.inspect %>
 	</div>
 
 	<script>

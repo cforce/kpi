@@ -239,6 +239,11 @@ a.reopen_period
 	float: right;
 	}
 
+.C
+	{
+	clear:both;
+	}
+
 #select_period_date {
 	font-size: 1.2em;
 	padding-right: 15px;
@@ -379,7 +384,7 @@ div.fraction
 
 div.formula
 	{
-	overflow: hidden;
+	/*overflow: hidden;*/
 	}
 
 div.formula div.no_fraction_item
@@ -431,3 +436,42 @@ div.grey
 	background-color: #cde8f8;
 	}
 
+/*Всплывающие подсказки*/
+/*----------------------------------------------------------------------------------------------*/
+.explanation_window{
+	position:relative;
+	z-index:1;
+	zoom:1;
+	color:#06F;
+}
+.explanation_window em{display:none;}
+
+.explanation_window:hover em{
+-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+display: block;
+position: absolute;
+z-index: 1;
+background-color: #fff;
+line-height: normal;
+color: #000;
+text-decoration: none;
+padding: 5px;
+top: 45px;
+font-size: 9pt;
+font-style: normal;
+}
+.explanation_window:hover em i{
+position: absolute;
+z-index: 1;
+top: -7px;
+left: 5px;
+border-bottom: 7px solid #666;
+border-right: 7px solid transparent;
+_border-left: 7px solid #FDEFC6;
+display: block;
+height: 0;
+overflow: hidden;
+}	
+/*----------------------------------------------------------------------------------------------*/

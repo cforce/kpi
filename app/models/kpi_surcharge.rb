@@ -1,4 +1,5 @@
 class KpiSurcharge < ActiveRecord::Base
+
     has_many :kpi_period_surcharge
 
     def list_name
