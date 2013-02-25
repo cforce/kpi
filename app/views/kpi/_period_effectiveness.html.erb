@@ -118,6 +118,7 @@ kpi = period_user.kpi
 	<span class="kpi_factor">
 	<% weighted_average_value = weighted_average_value(cat_avg_completion) %>
 	<%= kpi_percent get_weighted_average_value_view(weighted_average_value) %>
+	<%= kpi[:ratio] %>
 	</span>
 	</div>
 	</div>
