@@ -77,7 +77,8 @@ module KpiHelper
 	end
 
 	def kpi_value(value, abridgement, minus=false)
-		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')
+        value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')  unless value.nil?
+
 		value='x' if value.nil?
 		css_class="" 
 		css_class="minus" if minus

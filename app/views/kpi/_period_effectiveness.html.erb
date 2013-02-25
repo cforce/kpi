@@ -2,7 +2,7 @@
 period_user = period.kpi_period_users.where(:user_id => @user.id).first
 colspan = 2
 colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : colspan 
-
+kpi = period_user.kpi 
 %> 
 
 	<table class="list kpi_calc">
@@ -103,8 +103,6 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	
 	</tbody></table>
 
-	<%= period_user.kpi %>
-
 	<div class="H">
 	<div class="R kpi_footnote">
 	<span>
@@ -186,7 +184,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 		</div>	
 
 		<div class="L no_fraction_item">
-			<span><%= weighted_average_value.nil? ? 'x' : number_with_precision(get_weighted_average_value(weighted_average_value)/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
+			<span><%= kpi.nil? ? 'x' : number_with_precision(kpi[:ratio]/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
 		</div>
 
 		<div class="L no_fraction_item">
@@ -219,7 +217,7 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 			<span class="sign">&asymp;</span>
 		</div>		
 		<div class="L no_fraction_item">
-			<span><%= kpi_value(period_user.salary(1.2), l(:money_unit_abridgement)) %></span>
+			<span><%= kpi_value(period_user.salary(kpi[:ratio]/100), l(:money_unit_abridgement)) %></span>
 		</div>	
 		</div>
 
@@ -228,9 +226,6 @@ colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : col
 	<div style="C"></div>
 	</div>
 
-	<div>
-	<%= period_user.get_surcharge_details.inspect %>
-	</div>
 
 	<script>
 	jQuery('div.modal_window').hide();

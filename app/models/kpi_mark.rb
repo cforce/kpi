@@ -84,7 +84,9 @@ class KpiMark < ActiveRecord::Base
 		
 	end
 
-	def completion(period_indicator)
+	def completion(period_indicator = false)
+		period_indicator = kpi_period_indicator unless period_indicator
+
 		return nil if fact_value.nil?
 		if period_indicator.interpretation == Indicator::INTERPRETATION_MATRIX
 			#Rails.logger.debug("ddddddddd #{period_indicator.matrix['value_of_fact'].inspect} #{period_indicator.id}")
