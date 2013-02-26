@@ -12,10 +12,6 @@
 	<%= f.select :kpi_pattern_id, (@patterns.collect {|p| [p.name, p.id]}), {}, :disabled => !@period.new_record? %>
 </p>
 
-<p>
-    <%= f.text_field :base_salary unless @period.new_record? %>
-</p>
-
 </div>
 </div>
 

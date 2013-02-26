@@ -107,18 +107,18 @@ kpi = period_user.kpi
 	<div class="R kpi_footnote">
 	<span>
 		<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
-		<% if period.for_closing_for_user?(@user) %>
+		<% if period_user.for_closing? %>
 			<% if  period_user.locked %>
-				<%= link_to l(:reopen_period), {:controller => "kpi_calc_periods", :action => "reopen_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon reopen_period' if User.current.admin? %>
+				<%= link_to l(:reopen_period), {:controller => "kpi_period_users", :action => "reopen", :id => period_user.id}, :class => 'icon reopen_period' if User.current.admin? %>
 			<% else  %>
-				<%= link_to l(:close_period), {:controller => "kpi_calc_periods", :action => "close_for_user", :user_id => @user.id, :id => period.id}, :class => 'icon close_period'  %>
+				<%= link_to l(:close_period), {:controller => "kpi_period_users", :action => "close", :id => period_user.id}, :class => 'icon close_period'  %>
 			<% end  %>
 		<% end %>
 	</span>
 	<span class="kpi_factor">
 	<% weighted_average_value = weighted_average_value(cat_avg_completion) %>
 	<%= kpi_percent get_weighted_average_value_view(weighted_average_value) %>
-	<%= kpi[:ratio] %>
+	<%= kpi.nil? ? nil : kpi[:ratio] %>
 	</span>
 	</div>
 	</div>
@@ -185,7 +185,7 @@ kpi = period_user.kpi
 		</div>	
 
 		<div class="L no_fraction_item">
-			<span><%= kpi.nil? ? 'x' : number_with_precision(kpi[:ratio]/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
+			<span><%= kpi.nil? ? 'x' : number_with_precision(period_user.kpi_ratio_value(kpi)/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
 		</div>
 
 		<div class="L no_fraction_item">
@@ -218,7 +218,7 @@ kpi = period_user.kpi
 			<span class="sign">&asymp;</span>
 		</div>		
 		<div class="L no_fraction_item">
-			<span><%= kpi_value(period_user.salary(kpi[:ratio]/100), l(:money_unit_abridgement)) %></span>
+			<span><%= kpi_value(kpi.nil? ? nil : period_user.get_salary(kpi), l(:money_unit_abridgement)) %></span>
 		</div>	
 		</div>
 

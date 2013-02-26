@@ -23,7 +23,7 @@ class KpiUserSurchargesController < ApplicationController
 
         @user_surcharge = KpiUserSurcharge.new(params[:kpi_user_surcharge])
         @user_surcharge.value = 0-@user_surcharge.value if @user_surcharge.is_deduction and @user_surcharge.value>0
-        @user_surcharge.save if @period_user.check_user_for_surcharge_update?(@user)
+        @user_surcharge.save if @period_user.check_user_for_surcharge_update?
 
         @period = @period_user.kpi_calc_period 
 
@@ -39,7 +39,7 @@ class KpiUserSurchargesController < ApplicationController
         @period_user = @user_surcharge.kpi_period_user
         find_user
         @period = @period_user.kpi_calc_period
-        @user_surcharge.destroy if @period_user.check_user_for_surcharge_update?(@user)
+        @user_surcharge.destroy if @period_user.check_user_for_surcharge_update?
         
         #Rails.logger.debug "fffffffffffffff #{@period_user.inspect}"
         respond_to do |format|

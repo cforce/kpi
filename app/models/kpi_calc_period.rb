@@ -55,12 +55,12 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	def for_closing?
 		active and not locked and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.disabled=0").any? and User.current.global_permission_to?('kpi_calc_periods', 'close_for_user')
+		false
 	end
 
-	def for_closing_for_user?(user)
-		#and kpi_period_users.where("user_id = ? AND #{KpiPeriodUser.table_name}.locked = ?", user.id, false).count==1 
-		active and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ? AND #{KpiMark.table_name}.disabled=?", user.id, false).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate?)
-	end
+	#def for_closing_for_user?(user)
+		#active and not kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ? AND #{KpiMark.table_name}.disabled=?", user.id, false).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate?)
+	#end
 
 	def inspectors_integrity?
 		inspectors_sum_integrity? and inspectors_null_percent_integrity?

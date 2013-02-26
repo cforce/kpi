@@ -9,6 +9,8 @@ class KpiPeriodUser < ActiveRecord::Base
 	after_destroy :delete_marks
 	before_save :check_period
 	before_destroy :check_period
+
+	include KpiHelper
 	
 	def check_user_for_salary_update?(user)
 		#(User.current.admin? or user.subordinate?) and not locked
@@ -24,13 +26,59 @@ class KpiPeriodUser < ActiveRecord::Base
 		(User.current.admin?) and not locked
 	end
 
-	def check_user_for_surcharge_update?(user)
+	def check_user_for_surcharge_update?
 		(User.current.admin? or user.subordinate?) and not locked
 	end
 
-	def lock
-		locked = true
-		save 
+	def check_user_for_surcharge_show?
+		(User.current.admin? or user.subordinate? or user = User.current)
+	end
+	
+
+	def reopen
+        if  for_closing?
+        	self.locked = false
+        	self.save 
+
+        	kpi_calc_period.locked = false
+        	kpi_calc_period.save
+
+        	kpi_marks.where("#{KpiMark.table_name}.user_id = ?", user_id).update_all("#{KpiMark.table_name}.locked=0")
+        end
+	end
+
+	def close
+        if for_closing?
+        		self.salary = get_salary(kpi)
+        		self.kpi_ratio = kpi[:cut_ratio]
+            self.locked = true
+            self.save
+
+            kpi_calc_period.kpi_hours_norm = kpi_calc_period.get_month_time_clock
+
+            if KpiPeriodUser.where("#{KpiPeriodUser.table_name}.kpi_calc_period_id = ? AND #{KpiPeriodUser.table_name}.locked = ? ", kpi_calc_period_id, false).count == 0
+                kpi_calc_period.locked = true
+            end
+
+            kpi_calc_period.save
+
+            kpi_marks.where("#{KpiMark.table_name}.user_id = ?", user_id).update_all("#{KpiMark.table_name}.locked=1")
+        end
+	end
+
+	def for_closing?
+		period = kpi_calc_period
+		period.active and not period.kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ? AND #{KpiMark.table_name}.disabled=?", user.id, false).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate?) and is_salary_calc_attr?
+	end
+
+	def is_salary_calc_attr?
+		period = kpi_calc_period
+		(((not hours.nil?) and (period.get_month_time_clock)) or period.exclude_time_ratio) and (((not base_salary.nil?) or (not period.base_salary.nil?)) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_jobprice') and ((not jobprise.nil?) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_salary')
+	end
+
+	def kpi_ratio_value(kpi_values=false)
+		kpi_values = kpi unless kpi_values
+		locked ? kpi_ratio : kpi_values[:cut_ratio]
 	end
 
 	def kpi
@@ -50,6 +98,8 @@ class KpiPeriodUser < ActiveRecord::Base
 				#{KpiPeriodCategory.table_name}.kpi_category_id AS category_id,
 				#{KpiPeriodIndicator.table_name}.indicator_id AS indicator_id,
 				#{KpiPeriodIndicator.table_name}.percent AS indicator_percent,
+				#{KpiPeriodIndicator.table_name}.max_effectiveness AS max_effectiveness,
+				#{KpiPeriodIndicator.table_name}.min_effectiveness AS min_effectiveness,
 				#{KpiIndicatorInspector.table_name}.percent AS ins_percent,
 				#{KpiMark.table_name}.*
 				")
@@ -79,7 +129,7 @@ class KpiPeriodUser < ActiveRecord::Base
 				indicator_percent = mark.attributes['indicator_percent']
 				inspector_id = mark.inspector_id
 			end
-		kpi_completions << mark.completion
+		kpi_completions << get_cut_value(mark.completion, mark.attributes['max_effectiveness'], mark.attributes['min_effectiveness'])
 		end
 
 		unless category_id.nil?
@@ -158,7 +208,10 @@ class KpiPeriodUser < ActiveRecord::Base
 
 			ratio = cat_avg.inject(0){|r, v| r += (v[:category_percent]*v[:avg_value])/100; r }
 
-			return {:ratio => ratio}
+			return {:ratio => ratio,
+						  :cut_ratio => get_cut_value(ratio, Setting.plugin_kpi['max_kpi'].to_f, Setting.plugin_kpi['min_kpi'].to_f),
+							:data => {:indicator_avg => indicator_avg}}
+
 		end
 
 		nil
@@ -196,23 +249,27 @@ class KpiPeriodUser < ActiveRecord::Base
   	v
   end
 
-	def salary(kpi=false)
-		period = kpi_calc_period
+	def get_salary(kpi_values=false)
+		if locked
+			salary
+		else
+			kpi_ratio = kpi_ratio_value(kpi_values)/100
 
-		base = 0.to_f
-		if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] != 'only_jobprice'
-			return nil if base_salary_value.nil?
-			base += base_salary_value.to_f 
+			base = 0.to_f
+			if KpiCalcPeriod::BASE_SALARY_PATTERNS[kpi_calc_period.base_salary_pattern] != 'only_jobprice'
+				return nil if base_salary_value.nil?
+				base += base_salary_value.to_f 
+			end
+			unless kpi_calc_period.exclude_time_ratio
+				return nil if hours.nil? or kpi_calc_period.get_month_time_clock.nil?
+				base = base*(hours.to_f/kpi_calc_period.get_month_time_clock.to_f) 
+			end
+			if KpiCalcPeriod::BASE_SALARY_PATTERNS[kpi_calc_period.base_salary_pattern] != 'only_salary'
+				return nil if jobprise.nil?
+				base += jobprise.to_f
+			end 
+			base*kpi_ratio.to_f+subcharge_total.to_f
 		end
-		unless period.exclude_time_ratio
-			return nil if hours.nil? or period.get_month_time_clock.nil?
-			base = base*(hours.to_f/period.get_month_time_clock.to_f) 
-		end
-		if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] != 'only_salary'
-			return nil if jobprise.nil?
-			base += jobprise.to_f
-		end 
-		base*kpi.to_f+subcharge_total.to_f
 	end
 
 	def get_surcharge_details

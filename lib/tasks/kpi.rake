@@ -4,13 +4,27 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../../config/applicati
 
 namespace :redmine do
 
+  task :copy_time_clock => :environment do
+    KpiCalcPeriod.active_opened.order("date").each do |p|
+
+      p.kpi_period_users.includes(:user).each do |pu|
+        user_month_value = ImUserMonthValue.where(:user_guid => pu.user.ldap_guid, :user_login => pu.user.login, :date => p.date)
+        if user_month_value.any?
+        pu.hours = user_month_value.first.time_clock
+        pu.save 
+        puts "Time clocks has been copied. User - #{pu.user.login}. Hours - #{pu.time_clock}. Month - #{p.date}"
+        end
+      end
+    end
+  end
+
   task :copy_calc_periods => :environment do
     puts "Copy Calc Period task is executing"
     puts "-----------------------------------" 
-    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month} 
+    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month+1.months} 
                          INNER JOIN #{KpiPattern.table_name} ON #{KpiPattern.table_name}.id = #{KpiCalcPeriod.table_name}.kpi_pattern_id ")
                  .where("#{KpiCalcPeriod.table_name}.date = ? AND p.id IS NULL AND #{KpiCalcPeriod.table_name}.active = ?", 
-                         Date.today.at_beginning_of_month-1.months,
+                         Date.today.at_beginning_of_month,
                          true)
                  .each do |original_period|
       #puts "Original period date - #{original_period.date}"

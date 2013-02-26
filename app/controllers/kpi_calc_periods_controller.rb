@@ -38,8 +38,8 @@ class KpiCalcPeriodsController < ApplicationController
 		user=User.find(params[:user_id])
 		if @period.for_closing_for_user?(user)
 			user_period = KpiPeriodUser.where("kpi_calc_period_id = ? AND user_id = ?", @period.id, user.id).first
-			user_period.lock
-
+			user_period.locked = true
+			user_period.save 
 
 			if @period.kpi_period_users.where("#{KpiPeriodUser.table_name}.locked = ? ", false).count == 0
 				@period.locked = true

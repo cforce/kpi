@@ -39,7 +39,7 @@
 
 <% end %>
 
-<% if @available_surcharges.any? %>
+<% if @available_surcharges.any? and @period_user.check_user_for_surcharge_update? %>
     <div class="L left_divider_5">
     <%= form_for @user_surcharge, :remote => true, :url => {:controller => 'kpi_user_surcharges', :action =>'add_surcharge', :id => @period_user.id}, :html => {:method => :post} do |f| %>
 

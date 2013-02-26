@@ -265,7 +265,7 @@ module KpiHelper
   def subcharge_view(period_user, user, value)
     value='x' if value.nil?
     value = number_with_delimiter(number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2), :delimiter => " ", :separator => '.')
-    if period_user.check_user_for_surcharge_update?(user)
+    if period_user.check_user_for_surcharge_show?
         value = link_to_modal_window(value, {:controller => 'kpi_user_surcharges', :action=> 'show_surcharges', :id => period_user.id}, {:class => 'click_out'})
     end
     value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
