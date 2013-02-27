@@ -185,7 +185,7 @@ kpi = period_user.kpi
 		</div>	
 
 		<div class="L no_fraction_item">
-			<span><%= kpi.nil? ? 'x' : number_with_precision(period_user.kpi_ratio_value(kpi)/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
+			<span><%= period_user.kpi_ratio_value(kpi).nil? ? 'x' : number_with_precision(period_user.kpi_ratio_value(kpi)/100, :strip_insignificant_zeros => true, :separator => '.') %></span>
 		</div>
 
 		<div class="L no_fraction_item">

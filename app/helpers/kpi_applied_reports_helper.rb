@@ -1,0 +1,3 @@
+module KpiAppliedReportsHelper
+
+end

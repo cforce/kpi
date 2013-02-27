@@ -1,5 +1,15 @@
 # English strings go here for Rails i18n
 ru:
+  employee: "Сотрудник"
+  aprove: "Согласовать"
+  aproved: "Согласовано"
+  redo: "Отменить согласование"
+  detailed_calculation: "Подробный расчет"
+  user_title: "Должность"
+  main_money: "База"
+  time_ratio: "Временной коэффициент"
+  kpi_ratio: "Коэффициент результативности"
+  total: "Итого"
   surcharge_type_labbel: "Тип надбавки"
   is_deduction_label: "Это вычет"
   is_time_clocks: "Это норма часов"
@@ -82,6 +92,7 @@ ru:
   permission_update_fact_values: "Изменять факты показателей в расчете"
   permission_show_effectiveness: "Просматривать результативность всех"
   permission_update_imported_values: "Редактировать импортированные значения"
+  permission_apply_salary_report: "Утверждать сводный расчет ЗП"
   label_effectiveness: "Результативность."
   label_effectiveness_calc: "Расчеты результативности"
   label_kpi_mark: "Оценка"
@@ -141,6 +152,9 @@ ru:
   label_initial_user_id: "ID пользователя, с которого будет строится дерево пользователей"
   marks_for_subordinates: "Подчиненные"
   marks_for_other: "Остальные"
+  salary_report: "Отчет о зарплате"
+  no_closed_periods: "Не закрытые периоды"
+  salary_report_can_not_be_approved: "Сводный отчет по зарплате не может быть утвержден. Не все расчетные периоды еще закрыты"
   self_and_executors_issues_avg_custom_field_mark_explanation: "Была посчитана средняя оценка по всем задачам из текущего плана, у которых исполнителем является любой сотрудник, в тех проектах где оцениваемый сотрудник (%{valued_employee}) является руководителем.<br/> 
                          Задачи без оценок не брались в расчет.<br/>
                          На основе средней оценки (%{fact}) и расчетных значений (%{calc_values}) было вычисленно выполнение данного показателя (%{completion})"

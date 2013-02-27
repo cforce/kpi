@@ -33,6 +33,15 @@ RedmineApp::Application.routes.draw do
 	    end
 	end
 
+	resources :kpi_applied_reports do
+		collection do
+			get 'show', :action => 'show'
+			get 'apply/:date', :action => 'apply'
+			get 'redo/:date', :action => 'redo'
+		end
+
+	end
+
 	resources :kpi_period_users do
 	    member do
 	    	get 'edit_hours', :action => 'edit_hours'

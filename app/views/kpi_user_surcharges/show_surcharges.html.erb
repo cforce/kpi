@@ -1,3 +1,5 @@
+<% updated = @period_user.check_user_for_surcharge_update? %>
+
 <div style="font-size: 9pt;">
 <% if @period_not_null_surcharges.any? or @user_surcharges.any? %>
     <div class="L right_indent_10">
@@ -5,8 +7,10 @@
         <thead>
         <tr>
             <th>Тип</th>
-            <th>Сумма</th>        
-            <th></th>        
+            <th>Сумма</th>   
+            <% if updated %>     
+                <th></th>  
+            <% end %>      
         </tr>
         </thead>
         <tbody>
@@ -15,7 +19,9 @@
             <tr>
                 <td><%= h surcharge.name %></td>
                 <td><nobr><span class="value "><%= h surcharge.attributes['default_value'] %></span><span class="unit"><%= l(:money_unit_abridgement) %></span></nobr></td>
-                <td></td>
+                <% if updated %>
+                    <td></td>
+                <% end %>
             </tr>
     <% end %>
 
@@ -28,7 +34,9 @@
                 <% end %>
                 </td>
                 <td><%= kpi_value(surcharge.value, l(:money_unit_abridgement), surcharge.value<0) %></td>
-                <td><%= link_to("<span>#{l(:button_delete)}</span>".html_safe, {:controller => 'kpi_user_surcharges', :action => 'destroy', :id => surcharge.id}, {:method => :delete, :remote => true, :class => 'in_link icon icon-del'})  %></td>
+                <% if updated %>
+                    <td><%= link_to("<span>#{l(:button_delete)}</span>".html_safe, {:controller => 'kpi_user_surcharges', :action => 'destroy', :id => surcharge.id}, {:method => :delete, :remote => true, :class => 'in_link icon icon-del'})  %></td>
+                <% end %>
             </tr>
     <% end %>
     
@@ -39,7 +47,7 @@
 
 <% end %>
 
-<% if @available_surcharges.any? and @period_user.check_user_for_surcharge_update? %>
+<% if @available_surcharges.any? and updated %>
     <div class="L left_divider_5">
     <%= form_for @user_surcharge, :remote => true, :url => {:controller => 'kpi_user_surcharges', :action =>'add_surcharge', :id => @period_user.id}, :html => {:method => :post} do |f| %>
 

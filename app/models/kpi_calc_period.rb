@@ -26,6 +26,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 	scope :active, :conditions => "#{KpiCalcPeriod.table_name}.active = 1"	
 	scope :active_opened, :conditions => "#{KpiCalcPeriod.table_name}.active = 1 AND #{KpiCalcPeriod.table_name}.locked != 1 "	
 	scope :novel, :conditions => "#{KpiCalcPeriod.table_name}.active != 1 AND #{KpiCalcPeriod.table_name}.locked != 1 "	
+	scope :locked, :conditions => "#{KpiCalcPeriod.table_name}.locked = 1 "	
 
 	before_save :check_period
 	#has_many :indicators, :through => :kpi_indicator_inspectors	

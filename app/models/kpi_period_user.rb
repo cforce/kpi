@@ -78,7 +78,10 @@ class KpiPeriodUser < ActiveRecord::Base
 
 	def kpi_ratio_value(kpi_values=false)
 		kpi_values = kpi unless kpi_values
-		locked ? kpi_ratio : kpi_values[:cut_ratio]
+		v = nil
+		v = kpi_ratio if locked
+		v = kpi_values[:cut_ratio] if (not locked) and (not kpi_values.nil?)
+		v
 	end
 
 	def kpi
@@ -249,26 +252,38 @@ class KpiPeriodUser < ActiveRecord::Base
   	v
   end
 
-	def get_salary(kpi_values=false)
-		if locked
-			salary
-		else
-			kpi_ratio = kpi_ratio_value(kpi_values)/100
 
+  def time_ratio
+		return nil if hours.nil? or kpi_calc_period.get_month_time_clock.nil?
+		time_raio = hours.to_f/kpi_calc_period.get_month_time_clock.to_f
+		time_raio
+  end
+
+  def main_money
 			base = 0.to_f
 			if KpiCalcPeriod::BASE_SALARY_PATTERNS[kpi_calc_period.base_salary_pattern] != 'only_jobprice'
 				return nil if base_salary_value.nil?
 				base += base_salary_value.to_f 
 			end
 			unless kpi_calc_period.exclude_time_ratio
-				return nil if hours.nil? or kpi_calc_period.get_month_time_clock.nil?
-				base = base*(hours.to_f/kpi_calc_period.get_month_time_clock.to_f) 
+				return nil if time_ratio.nil?
+				base = base*time_ratio
 			end
 			if KpiCalcPeriod::BASE_SALARY_PATTERNS[kpi_calc_period.base_salary_pattern] != 'only_salary'
 				return nil if jobprise.nil?
 				base += jobprise.to_f
 			end 
-			base*kpi_ratio.to_f+subcharge_total.to_f
+
+			base
+  end
+
+	def get_salary(kpi_values=false)
+		if locked
+			salary
+		else
+			return nil if main_money.nil? or kpi_ratio_value(kpi_values).nil?
+
+			main_money*kpi_ratio_value(kpi_values)/100+subcharge_total.to_f
 		end
 	end
 

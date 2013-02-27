@@ -1,0 +1,102 @@
+<div class="contextual">
+<%= render :partial => 'kpi/period_links' %>
+</div>
+
+<h2><%=l(:salary_report) %></h2>
+
+<% if @users_with_open_period.any? and @period_dates.any? %>
+<div class="nodata">
+  <%= l(:salary_report_can_not_be_approved) %>
+</div>
+
+<table class="list"> 
+  <tr>
+    <th><%= l(:employee) %></th>
+    <th><%= %></th>  
+  </tr>
+  <% @users_with_open_period.each do |u| %>
+    <tr>
+    <td><%= link_to_user u %></td>
+    <td><%= link_to l(:no_closed_periods), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => u.id} %></td>
+    </tr>
+  <% end %>
+</table>
+
+<% else %>
+<table class="list"> 
+  <tr>
+    <th><%= l(:employee) %></th>
+    <th><%= l(:user_title) %></th>  
+    <th><%= l(:main_money) %></th>  
+    <th><%= l(:time_ratio) %></th>  
+    <th><%= l(:kpi_ratio) %></th>  
+
+    <% all_surcharges_names = KpiSurcharge.all.each %>
+    <% surcharges_col_num = 0 %>
+    <% all_surcharges_names.each do |sn| %>
+      <th><%= sn.name %></th>
+      <% surcharges_col_num+=1 %>
+    <% end %>
+
+    <th><%= l(:total) %></th>  
+    <th></th>  
+  </tr>  
+  <% user_department_id = nil %>
+  <% total = 0.to_f %>
+
+  <% @closed_user_periods.each do |pu| %>
+
+  <% if user_department_id != pu.user.user_department_id %>
+    <tr class="kpi_cat"><td colspan="<%= 7+surcharges_col_num %>"><%= pu.user.user_department.name %></td></tr>
+    <% user_department_id = pu.user.user_department_id %>
+  <% end %>
+
+  <tr>
+    <td><%= link_to_user pu.user %></td>
+    <td><%= pu.user.user_title.name %></td>
+
+    <td><%= kpi_value pu.main_money, l(:money_unit_abridgement) %></td>
+    <td><%= kpi_value pu.time_ratio, '' %></td>
+    <td><%= kpi_value pu.kpi_ratio, '' %></td>
+
+    <% surcharge_details = pu.get_surcharge_details %>
+    <% all_surcharges_names.each do |su| %>
+      <td>
+      <%= kpi_value surcharge_details[su.name], l(:money_unit_abridgement) %>
+      </td>
+    <% end %>
+
+    <td><%= kpi_value pu.salary, l(:money_unit_abridgement)  %></td>
+    <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
+
+    <% total += pu.salary%>
+  </tr>
+  <% end %>
+
+  <tr>
+  <td colspan="<%= 5+surcharges_col_num %>"></td>
+  <td><%= kpi_value total, l(:money_unit_abridgement)  %></td>
+  <td></td>
+  </tr>
+
+</table>
+
+<div class="R kpi_footnote">
+
+
+    <% if  KpiAppliedReport.applied?(@date) %>
+      <% if User.current.admin? %>
+      <span class="selected"><%= l(:aproved) %>. <%= format_date @applied_report.created_at %>, <%= link_to_user @applied_report.user %></span>
+      <%= link_to l(:redo), {:controller => "kpi_applied_reports", :action => "redo", :date => @date}, :class => 'icon redo' if User.current.admin? %>
+      <% end %>
+    <% else  %>
+      <% if  KpiAppliedReport.user_can_apply? %>
+      <%= link_to l(:aprove), {:controller => "kpi_applied_reports", :action => "apply", :date => @date}, :class => 'icon approve'  %>
+      <% end %>
+    <% end  %>
+
+</div>
+
+<% end %>
+
+<%= render :partial => 'kpi/sidebar' %>

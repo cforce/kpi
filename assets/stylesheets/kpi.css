@@ -225,6 +225,17 @@ a.reopen_period
 	margin-right: 5px;
 	}
 
+a.approve
+	{
+	background-image: url(../images/approve.png);
+	margin-right: 5px;
+	}
+a.redo
+	{
+	background-image: url(../images/redo.png);
+	margin-right: 5px;
+	}
+
 
 .H, .h
 	{
@@ -352,7 +363,7 @@ div.kpi_footnote
 	{
 	border-bottom: 1px solid #ccc;
 	padding: 0px 0px 5px 150px;
-	margin-bottom: 5px;
+	margin: 5px 0px 5px 0px;
 	}
 div.payment
 	{

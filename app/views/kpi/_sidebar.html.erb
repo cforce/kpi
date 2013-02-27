@@ -28,7 +28,12 @@
 		<li>
 		<%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values'}" %>
 		</li>
+	<% end %>
 
+	<% if User.current.global_permission_to?('kpi_applied_reports', 'show') or User.current.global_permission_to?('kpi_applied_reports', 'apply') %>
+		<li>
+		<%= link_to "<span>#{l(:salary_report)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "show"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_applied_reports'}" %>
+		</li>
 	<% end %>
 
 </ul>

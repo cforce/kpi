@@ -10,7 +10,7 @@ class CreateKpiSurcharges < ActiveRecord::Migration
 
     KpiSurcharge.create(:name => "Связь", :changable => false)
     KpiSurcharge.create(:name => "Спорт")
-    KpiSurcharge.create(:name => "Другие надбавки")
+    KpiSurcharge.create(:name => "Другие надбавки", :some_values => true)
   end
 
   def self.down
