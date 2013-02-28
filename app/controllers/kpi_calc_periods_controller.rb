@@ -94,10 +94,12 @@ class KpiCalcPeriodsController < ApplicationController
 	   	end
 
 	    if request.put? and @period.update_attributes(params[:kpi_calc_period])
-		  @period.kpi_period_surcharges.each{|e|
-				e.default_value = params[:default_values][e.kpi_surcharge_id.to_s]
-				e.save
-				}	    	
+		    if not params[:default_values].nil?
+				  @period.kpi_period_surcharges.each{|e|
+						e.default_value = params[:default_values][e.kpi_surcharge_id.to_s]
+						e.save
+						}	
+				end    	
 	      flash[:notice] = l(:notice_successful_update)
 	      redirect_to :controller => 'kpi_calc_periods', :action => 'edit', :id => @period, :tab => tab
 	      return
