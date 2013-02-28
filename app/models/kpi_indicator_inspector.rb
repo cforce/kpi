@@ -10,7 +10,7 @@ class KpiIndicatorInspector < ActiveRecord::Base
 	scope :active, :conditions => "#{KpiIndicatorInspector.table_name}.locked != 1 OR #{KpiIndicatorInspector.table_name}.locked IS NULL"	
 
 	before_save :check_period
-	before_destroy :check_period
+	before_destroy :check_period_before_destroy
 
 
 	private
@@ -18,5 +18,9 @@ class KpiIndicatorInspector < ActiveRecord::Base
 	def check_period
         false if kpi_period_indicator.kpi_period_category.kpi_calc_period.locked or kpi_period_indicator.kpi_period_category.kpi_calc_period.active
     end 
+
+  def check_period_before_destroy
+  	false if kpi_period_indicator.kpi_period_category.kpi_calc_period.locked
+  end
 	
 end

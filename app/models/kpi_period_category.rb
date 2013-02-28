@@ -5,7 +5,7 @@ class KpiPeriodCategory < ActiveRecord::Base
 
 
 	before_save :check_period
-    before_destroy :check_period
+  before_destroy :check_period_before_destroy
 
 
 	private
@@ -13,4 +13,8 @@ class KpiPeriodCategory < ActiveRecord::Base
     def check_period
         false if kpi_calc_period.locked or kpi_calc_period.active
     end 
+
+  def check_period_before_destroy
+    false if kpi_calc_period.locked
+  end
 end

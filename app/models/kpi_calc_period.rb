@@ -5,8 +5,9 @@ class KpiCalcPeriod < ActiveRecord::Base
 
 	belongs_to :kpi_pattern
 	belongs_to :kpi_imported_value
+	belongs_to :manager, :class_name => 'User', :foreign_key => 'user_id'
 
-	has_many :kpi_period_surcharges
+	has_many :kpi_period_surcharges, :dependent => :destroy
 	has_many :kpi_surcharges, :through => :kpi_period_surcharges
 
 	has_many :kpi_period_users, :dependent => :destroy
@@ -133,9 +134,16 @@ class KpiCalcPeriod < ActiveRecord::Base
 	end
 
 	def assign_immediate_superior
-		kpi_period_indicators.joins("LEFT JOIN #{KpiIndicatorInspector.table_name} kii ON kii.kpi_period_indicator_id=#{KpiPeriodIndicator.table_name}.id")
-							 .where("kii.id IS NULL").each do |e|
-			KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :percent => 100)
+		if manager.nil?
+			kpi_period_indicators.joins("LEFT JOIN #{KpiIndicatorInspector.table_name} kii ON kii.kpi_period_indicator_id=#{KpiPeriodIndicator.table_name}.id")
+								 .where("kii.id IS NULL").each do |e|
+				KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :percent => 100)
+			end			
+		else
+			kpi_period_indicators.joins("LEFT JOIN #{KpiIndicatorInspector.table_name} kii ON kii.kpi_period_indicator_id=#{KpiPeriodIndicator.table_name}.id")
+											 .where("kii.id IS NULL").each do |e|
+							KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :user_id => user.id, :percent => 100)
+						end						
 		end
 	end
 

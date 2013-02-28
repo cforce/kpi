@@ -1,1 +1,23 @@
-.
+<%= labelled_form_for @period do |f| %>
+<%= error_messages_for 'period' %>
+
+  <div class="H">
+
+  <div class="box tabular">
+
+  <input type="hidden" name="tab" value="managers" />
+
+  <p>
+      <%= f.select(:user_id, User.active.order('lastname').map{|v| ["<nobr>#{v.name}</nobr>".html_safe, v.id]}, {:label => l(:calc_period_manager), :include_blank => true }, :disabled => @period.locked, :class => 'select2') %>
+
+  </p>
+
+  </div>
+  </div>
+
+
+  <div>
+    <%= submit_tag l(@period.new_record? ? :button_create : :button_save), :disabled => @period.locked%>
+  </div>
+
+<% end %>

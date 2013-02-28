@@ -30,18 +30,18 @@ class KpiMark < ActiveRecord::Base
 		period_indicator = kpi_period_indicator if period_indicator.nil?
 		period_user = period_indicator.kpi_calc_period.kpi_period_users.where(:user_id => user_id).first if period_user.nil?
 
-		(User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin?) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT) and not period_user.locked
+		(User.current.id == inspector_id or User.current.global_permission_to?('kpi_marks', 'edit_plan') or User.current.admin? or period_user.kpi_calc_period.manager.try(:id) == User.current.id) and (period_indicator.interpretation == Indicator::INTERPRETATION_FACT) and not period_user.locked
 	end
 
 	def check_user_for_info_showing?
-		User.current.id == inspector_id or User.current.global_permission_to?('kpi', 'effectiveness') or User.current.admin? or User.current.id == user_id	
+		User.current.id == inspector_id or User.current.global_permission_to?('kpi', 'effectiveness') or User.current.admin? or User.current.id == user_id or kpi_period_indicator.kpi_calc_period.manager.id == User.current.try(:id)
 	end
 
 	def check_user_for_fact_update(period_indicator = nil, period_user = nil)
 		period_indicator = kpi_period_indicator if period_indicator.nil?
 		period_user = period_indicator.kpi_calc_period.kpi_period_users.where(:user_id => user_id).first if period_user.nil?
 
-		((User.current.id == inspector_id and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?) ) and not period_user.locked
+		(((User.current.id == inspector_id or  period_user.kpi_calc_period.manager.try(:id) == User.current.id) and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?) ) and not period_user.locked
 	end
 
 	def get_matrix_calc_values(period_indicator)

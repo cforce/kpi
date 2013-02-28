@@ -197,7 +197,7 @@ module KpiHelper
 		end
 
 		last_parent_id, last_id, last_level = nil
-		UserTree.each_with_level(UserTree.joins(:user)
+		UserTree.each_with_level(UserTree.joins(:user).includes(:user)
 										 .order("lft")
 										 .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
 										 .where("#{User.table_name}.status=? AND lft>? AND rgt<?", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
@@ -215,7 +215,7 @@ module KpiHelper
 
 			user_list << "<li class=\"disc\">" # Every time
 			#user_list << "<div style=\"padding-left:"+((level-1)*10).to_s+"px;\">"
-			user_list << link_to("<span>#{user_tree.attributes['lastname']}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => user_tree.attributes['id']},
+			user_list << link_to("<span>#{user_tree.user.name}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => user_tree.attributes['id']},
 							:class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user_tree.attributes['id']}")
 			#user_list << "</div>"
 			last_parent_id = user_tree.attributes['parent_id']
@@ -224,7 +224,24 @@ module KpiHelper
 		end
 		#Rails.logger.debug "dddddddddddddddddddddddddddddd"
 
-		user_list << "</li></ul>" unless last_id.nil? #last time
+		user_list << "</li></ul>"*last_level unless last_id.nil? #last time
+
+    functional_unders = User.joins(:kpi_period_users => :kpi_calc_period).where("#{KpiCalcPeriod.table_name}.user_id = ?", User.current.id).group("#{User.table_name}.id").order(:lastname)
+
+    i=0
+    functional_unders.each do |u|
+      if i==0
+        user_list << "<h3>#{l(:functional_unders)}</h3>"
+        user_list << "<ul>"
+      end
+      user_list << "<li>"
+      user_list << link_to("<span>#{u.name}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => u.id},
+              :class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==u.id}")
+       user_list << "</li>"
+      i+=1
+      end
+    user_list << "</ul>" unless i!=0
+
 		user_list.html_safe
 	end
 
