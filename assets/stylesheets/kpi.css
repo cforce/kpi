@@ -257,6 +257,12 @@ a.redo
 	clear:both;
 	}
 
+.W100AUTO
+	{
+	width: 100%;
+	overflow: auto;
+	}
+
 #select_period_date {
 	font-size: 1.2em;
 	padding-right: 15px;

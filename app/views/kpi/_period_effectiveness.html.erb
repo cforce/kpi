@@ -104,7 +104,7 @@ kpi = period_user.kpi
 	</tbody></table>
 
 
-<div>
+<div class="W100AUTO">
 	<div class="R kpi_footnote">
 			<span>
 				<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
@@ -121,8 +121,6 @@ kpi = period_user.kpi
 			<%= kpi_ratio_view(kpi) %>
 			</span>
 	</div>
-	<div class="C"></div>
-
 </div>
 
 
