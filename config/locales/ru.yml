@@ -28,7 +28,7 @@ ru:
   kpi_indicator_max_effectiveness_label: Максимум
   kpi_indicator_min_effectiveness_label: Минимум
   label_managers: "Управляющие периодом"
-  field_base_salary: "Базавый оклад"
+  field_base_salary: "Базовый оклад"
   money_unit_abridgement: "р."
   hour_unit_abridgement: "ч."
   label_kpi_indicators: "Показатели результативности"

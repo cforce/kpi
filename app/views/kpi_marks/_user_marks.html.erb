@@ -38,7 +38,7 @@
 	</span>
 	</td>
 	<td class="fact_value">
-	<nobr><%= get_indicator_input(mark, "mark[#{mark.id}]", i)  %> <span class="unit"><%= indicator.kpi_unit.abridgement %></span></nobr>
+	<nobr><%= get_indicator_input(mark, "mark[#{mark.id}]", i)  %> </nobr>
 	</td>
 	<td>
 	<%= text_area_tag "explanation[#{mark.id}]", mark.explanation, :size => "40x1", :class => 'explanation ' + (mark.explanation.to_s=='' ? '' : 'completed') %>
