@@ -77,7 +77,7 @@ module KpiHelper
 	end
 
 	def kpi_value(value, abridgement, minus=false)
-        value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')  unless value.nil?
+    value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')  unless value.nil?
 
 		value='x' if value.nil?
 		css_class="" 
@@ -310,16 +310,27 @@ module KpiHelper
   	v
   end
 
-  def get_weighted_average_value(value)
-  	get_cut_value(value, Setting.plugin_kpi['max_kpi'].to_f, Setting.plugin_kpi['min_kpi'].to_f)
+  def kpi_ratio_view(kpi_values)
+    v = ''
+    return 'x' if kpi_values.nil?
+    cut_ratio = number_with_precision(kpi_values[:cut_ratio], :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
+    ratio = number_with_precision(kpi_values[:ratio], :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
+    v = ratio
+    v = "#{ratio} &rarr; #{cut_ratio}".html_safe if cut_ratio!=ratio
+    v = kpi_percent(v)
+    v
   end
 
-  def get_weighted_average_value_view(value)
-  	v = get_weighted_average_value(value)
-  	v = "#{number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2)} &rarr; "+v.to_s if value!=v
-  	v = 'x' if value.nil?
-  	v
-  end
+  # def get_weighted_average_value(value)
+  # 	get_cut_value(value, Setting.plugin_kpi['max_kpi'].to_f, Setting.plugin_kpi['min_kpi'].to_f)
+  # end
+
+  # def get_weighted_average_value_view(value)
+  # 	v = get_weighted_average_value(value)
+  # 	v = "#{number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2)} &rarr; "+v.to_s if value!=v
+  # 	v = 'x' if value.nil?
+  # 	v
+  # end
 
   # def get_salary(month_time_clock, hours_value, base_salary_value, weighted_average_value)
   	# v='x'
