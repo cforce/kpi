@@ -252,6 +252,8 @@ a.redo
 
 .C
 	{
+	height:1px;
+	overflow:hidden;
 	clear:both;
 	}
 

@@ -103,31 +103,35 @@ kpi = period_user.kpi
 	
 	</tbody></table>
 
-	<div class="H">
-	<div class="R kpi_footnote">
-	<span>
-		<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
-		<% if period_user.for_closing? %>
-			<% if  period_user.locked %>
-				<%= link_to l(:reopen_period), {:controller => "kpi_period_users", :action => "reopen", :id => period_user.id}, :class => 'icon reopen_period' if User.current.admin? %>
-			<% else  %>
-				<%= link_to l(:close_period), {:controller => "kpi_period_users", :action => "close", :id => period_user.id}, :class => 'icon close_period'  %>
-			<% end  %>
-		<% end %>
-	</span>
-	<span class="kpi_factor">
 
-	<%= kpi_ratio_view(kpi) %>
-	</span>
+<div>
+	<div class="R kpi_footnote">
+			<span>
+				<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
+				<% if period_user.for_closing? %>
+					<% if  period_user.locked %>
+						<%= link_to l(:reopen_period), {:controller => "kpi_period_users", :action => "reopen", :id => period_user.id}, :class => 'icon reopen_period' if User.current.admin? %>
+					<% else  %>
+						<%= link_to l(:close_period), {:controller => "kpi_period_users", :action => "close", :id => period_user.id}, :class => 'icon close_period'  %>
+					<% end  %>
+				<% end %>
+			</span>
+			<span class="kpi_factor">
+
+			<%= kpi_ratio_view(kpi) %>
+			</span>
 	</div>
-	</div>
+	<div class="C"></div>
+
+</div>
+
 
 	<% month_time_clock = period.get_month_time_clock %>
 	<% base_salary_value = period_user.base_salary_value %>
 	<% hours_value = hours_value(period_user) %>
 
 
-	<div class="">
+	<div>
 	<div class="R payment">
 
 		<div class="formula"> 
@@ -165,7 +169,7 @@ kpi = period_user.kpi
 
 		<% if KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'jobprice_and_salary' %>
 			<div class="L no_fraction_item">
-				<span class="sign">&plus;</span>
+				<span class="sign">+</span>
 			</div>
 		<% end %>
 
@@ -188,7 +192,7 @@ kpi = period_user.kpi
 		</div>
 
 		<div class="L no_fraction_item">
-			<span class="sign">&plus;</span>
+			<span class="sign">+</span>
 		</div>
 
 		<% surcharge_details = period_user.get_surcharge_details %>
@@ -220,14 +224,13 @@ kpi = period_user.kpi
 			<span><%= kpi_value(kpi.nil? ? nil : period_user.get_salary(kpi), l(:money_unit_abridgement)) %></span>
 		</div>	
 		</div>
-
 	</div>
-
-	<div style="C"></div>
+	<div class="C"></div>
 	</div>
-
 
 	<script>
 	jQuery('div.modal_window').hide();
 	</script>
+	<div class="C"></div>
+
 

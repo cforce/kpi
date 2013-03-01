@@ -142,7 +142,7 @@ class KpiCalcPeriod < ActiveRecord::Base
 		else
 			kpi_period_indicators.joins("LEFT JOIN #{KpiIndicatorInspector.table_name} kii ON kii.kpi_period_indicator_id=#{KpiPeriodIndicator.table_name}.id")
 											 .where("kii.id IS NULL").each do |e|
-							KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :user_id => user.id, :percent => 100)
+							KpiIndicatorInspector.create(:kpi_period_indicator_id => e.id, :user_id => manager.id, :percent => 100)
 						end						
 		end
 	end

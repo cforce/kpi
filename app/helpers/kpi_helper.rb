@@ -312,7 +312,7 @@ module KpiHelper
 
   def kpi_ratio_view(kpi_values)
     v = ''
-    return 'x' if kpi_values.nil?
+    return kpi_percent('x') if kpi_values.nil?
     cut_ratio = number_with_precision(kpi_values[:cut_ratio], :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
     ratio = number_with_precision(kpi_values[:ratio], :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
     v = ratio
