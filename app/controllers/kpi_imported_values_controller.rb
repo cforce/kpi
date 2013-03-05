@@ -4,6 +4,15 @@ class KpiImportedValuesController < ApplicationController
     helper :kpi
     include KpiHelper
 
+    def permission_titles
+        @titles = UserTitle.joins(:department_title_relations).order(:name).where("#{DepartmentTitleRelation.table_name}.user_department_id = ? ", params[:id])
+        respond_to do |format|
+          format.js {
+            render "permission_titles_select_box"
+            }
+        end
+    end
+
     def new
         find_date
         @value = KpiImportedValue.new

@@ -1,5 +1,16 @@
 jQuery(document).ready(function(){
 
+    jQuery(document.body).on("change", '#kpi_imported_value_user_department_id', function(){
+
+        $.ajax({
+            url: jQuery(this).attr('data-title-url'),
+            type: 'get',
+            dataType: 'script',
+            data: 'id='+jQuery(this).val()
+          });
+        });
+    
+
     jQuery(document.body).on("submit", 'form', function(){
         jQuery(this).find('input.numeric').each(function(){
             jQuery(this).val(jQuery(this).val().split(' ').join(''))

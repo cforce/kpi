@@ -1,8 +1,21 @@
 <%= form_for @value, :remote => true do |f| %>
 <%= hidden_field_tag :full_date, @date %>
+
+<fieldset>
+<legend><%= l(:permissions) %></legend>
+<p>
+    <%= f.label :user_department_id, l(:department) %><br/>
+    <%= f.select :user_department_id, UserDepartment.order(:name).map {|p| [ p.name, p.id ] }, { :include_blank => true}, {:data => {:title_url =>  url_for(:controller =>'kpi_imported_values', :action => 'permission_titles')}} %>
+</p>
+
+<p id="title_container">
+</p>
+
+</fieldset>
+
 <p>
     <%= f.label :name, l(:imported_value_name) %><br/>
-    <%= f.text_field :name, :required => true, :label => "sadasdsad", :style => "width: 400px;" %>
+    <%= f.text_field :name, :required => true, :style => "width: 400px;" %>
 </p>
 
 <p>

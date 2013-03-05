@@ -37,10 +37,18 @@ namespace :redmine do
       period.exclude_time_ratio = original_period.exclude_time_ratio
       period.kpi_imported_value_id = original_period.kpi_imported_value_id
       period.base_salary = original_period.base_salary
+      period.user_id = original_period.user_id
 
 
       if period.save
         puts "New period has been saved #{period.date}"
+        original_period.kpi_period_surcharges.each do |s|
+            attributes = s.attributes.dup.except('id', 'created_at', 'updated_at', 'kpi_calc_period_id')
+            attributes['kpi_calc_period_id'] = period.id
+            surcharge = KpiPeriodSurcharge.new(attributes)
+            surcharge.save
+          end
+
         period.copy_from_pattern
         new_period_indicators = period.kpi_period_indicators
         original_period.kpi_indicator_inspectors.joins(:user)

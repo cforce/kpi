@@ -1,0 +1,2 @@
+<%= label_tag 'kpi_imported_value_user_department_id', l(:position) %><br/>
+<%= select_tag 'kpi_imported_value[user_title_id]', options_for_select(@titles.map {|p| [ p.name, p.id ] }) %>

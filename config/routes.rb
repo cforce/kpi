@@ -90,6 +90,7 @@ RedmineApp::Application.routes.draw do
 	    collection do
 	      post 'update_values'
 	      get 'edit_values'
+	      get 'permission_titles', :action => 'permission_titles'
 	    end
 	end
 
