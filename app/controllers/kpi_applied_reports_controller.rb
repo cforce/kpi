@@ -41,11 +41,12 @@ class KpiAppliedReportsController < ApplicationController
   private
 
   def find_period_dates
-    if  User.current.global_permission_to?('kpi_applied_reports', 'apply')
-      @period_dates = KpiCalcPeriod.active.select(:date).group(:date).order(:date)
-    else
-      @period_dates = KpiAppliedReport.select(:date).group(:date).order(:date)
-    end
+    # if  User.current.global_permission_to?('kpi_applied_reports', 'apply')
+    #   @period_dates = KpiCalcPeriod.active.select(:date).group(:date).order(:date)
+    # else
+    #   @period_dates = KpiAppliedReport.select(:date).group(:date).order(:date)
+    # end
+    @period_dates = KpiCalcPeriod.active.select(:date).group(:date).order(:date)
   end
 
   def find_user_periods

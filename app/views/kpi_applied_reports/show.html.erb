@@ -61,7 +61,7 @@
     <td><%= kpi_value pu.salary, l(:money_unit_abridgement)  %></td>
     <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
 
-    <% total += pu.salary%>
+    <% total += pu.salary.to_f %>
   </tr>
 
   <% else %>
