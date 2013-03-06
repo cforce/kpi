@@ -1,0 +1,28 @@
+<table class="list patterns">
+    <thead>
+        <tr>
+        <th><%= l(:imported_value_name) %></th>
+        <th><%= l(:permissions) %></th>
+        <th></th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+
+    <% @values.each do |value| %>
+        <% permissions_not_null = !value.user_department.nil? or !value.user_title.nil? %>
+        <tr>
+            <td><%= h value.name %> </td>
+            <td><%= h value.user_department.try(:name) %> <%= '<big>&rarr;</big>'.html_safe if permissions_not_null %> <%= h value.user_title.try(:name) %> </td>
+            <td>
+            <%= link_to_modal_window l(:button_edit), {:controller => 'kpi_imported_values', :action=> 'edit', :id => value.id}, {:class => "icon icon-edit click_out"} %>
+            <%= link_to(l(:button_delete), {:controller => "kpi_imported_values", :action => "destroy", :id => value.id},
+                                           :method => :delete,
+                                           :confirm => l(:text_are_you_sure),
+                                           :class => 'icon icon-del') %>         
+            </td>   
+        </tr>
+    <% end %>
+    </tbody>
+</table>

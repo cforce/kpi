@@ -1,5 +1,5 @@
 class KpiImportedValuesController < ApplicationController
-    before_filter :authorized_globaly?
+    before_filter :authorized_globaly?, :except => [:edit_values, :update_values]
 
     helper :kpi
     include KpiHelper
@@ -13,10 +13,29 @@ class KpiImportedValuesController < ApplicationController
         end
     end
 
+    def index
+        @values = KpiImportedValue.includes(:user_department, :user_title).order(:name)
+    end
+
     def new
-        find_date
         @value = KpiImportedValue.new
         render "new", :layout => false
+    end
+
+    def edit
+      @value = KpiImportedValue.find(params[:id])
+      @titles = UserTitle.joins(:department_title_relations).order(:name).where("#{DepartmentTitleRelation.table_name}.user_department_id = ? ", @value.user_department_id)
+      render "edit", :layout => false
+    end
+
+    def update
+        @value = KpiImportedValue.find(params[:id])
+        if request.put? and @value.update_attributes(params[:kpi_imported_value])
+        find_values
+        respond_to do |format|
+            format.js { render 'list'}
+            end  
+        end
     end
 
     def create
@@ -25,23 +44,26 @@ class KpiImportedValuesController < ApplicationController
 
     find_values
     respond_to do |format|
-        format.js { render 'form'}
+        format.js { render 'list'}
         end   
     end
 
     def destroy
         @value = KpiImportedValue.find(params[:id])
         @value.destroy
-        redirect_to :action => 'edit_values', "date[month]" => params[:date][:month], "date[year]" => params[:date][:year]
+        redirect_to :action => 'index'
     end
 
     def update_values
+    find_values
 
-    params[:imported_value].each do |id, imported_value|
-        month_value = KpiImportedMonthValue.find_or_create_by_kpi_imported_value_id_and_date(id, params[:full_date])
-        month_value.plan_value = imported_value['plan_value']
-        month_value.fact_value = imported_value['fact_value']
-        month_value.save
+    if @values.map{|v| v.id.to_i} == params[:imported_value].map{|k,v| k.to_i}
+        params[:imported_value].each do |id, imported_value|
+            month_value = KpiImportedMonthValue.find_or_create_by_kpi_imported_value_id_and_date(id, params[:full_date])
+            month_value.plan_value = imported_value['plan_value']
+            month_value.fact_value = imported_value['fact_value']
+            month_value.save
+        end
     end
 =begin
         @values = KpiImportedValue.order("name");
@@ -71,12 +93,19 @@ class KpiImportedValuesController < ApplicationController
     end
 
     def find_values
-    find_date
-
+        find_date
+        if User.current.global_permission_to?('kpi_imported_values', 'create')
         @values = KpiImportedValue.joins("LEFT OUTER JOIN #{KpiImportedMonthValue.table_name} ON #{KpiImportedMonthValue.table_name}.kpi_imported_value_id = #{KpiImportedValue.table_name}.id 
                                     AND #{KpiImportedMonthValue.table_name}.date = '#{@date.year}-#{@date.month}-#{@date.day}'")
                                   .select("#{KpiImportedMonthValue.table_name}.*, #{KpiImportedValue.table_name}.*")                            
                                   .order("name");
+        else
+        @values = KpiImportedValue.joins("LEFT OUTER JOIN #{KpiImportedMonthValue.table_name} ON #{KpiImportedMonthValue.table_name}.kpi_imported_value_id = #{KpiImportedValue.table_name}.id 
+                                    AND #{KpiImportedMonthValue.table_name}.date = '#{@date.year}-#{@date.month}-#{@date.day}'")
+                                  .select("#{KpiImportedMonthValue.table_name}.*, #{KpiImportedValue.table_name}.*")   
+                                  .where(:user_department_id => User.current.user_department_id, :user_title_id => User.current.user_title_id)                         
+                                  .order("name");
+        end
 
     end
 

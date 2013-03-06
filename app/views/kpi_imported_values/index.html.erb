@@ -1,0 +1,16 @@
+<div class="contextual">
+
+<%= link_to_modal_window l(:add_new_imported_value), {:controller => 'kpi_imported_values', :action=> 'new', :full_date => @date}, {:class => "refreshable click_out"} %>
+</div>
+
+<h2><%= l(:imported_values) %></h2>
+
+<% if @values.any? %>
+<div id="imported_values_list">
+<%= render :partial => 'kpi_imported_values/list' %>
+</div>
+<% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<%= render :partial => 'kpi/sidebar' %>

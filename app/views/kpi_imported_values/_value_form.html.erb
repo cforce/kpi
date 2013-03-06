@@ -1,0 +1,31 @@
+<fieldset>
+<legend><%= l(:permissions) %></legend>
+<p>
+    <%= f.label :user_department_id, l(:department) %><br/>
+    <%= f.select :user_department_id, UserDepartment.order(:name).map {|p| [ p.name, p.id ] }, { :include_blank => true}, {:data => {:title_url =>  url_for(:controller =>'kpi_imported_values', :action => 'permission_titles')}} %>
+</p>
+
+<p id="title_container">
+  <% if not @titles.nil? and @titles!=[] %>
+    <%= f.label :user_title_id, l(:position) %><br/>
+    <%= f.select :user_title_id, options_for_select(@titles.map {|p| [ p.name, p.id ] }) %>
+  <% end %>
+</p>
+
+</fieldset>
+
+<p>
+    <%= f.label :name, l(:imported_value_name) %><br/>
+    <%= f.text_field :name, :required => true, :style => "width: 400px;" %>
+</p>
+
+<p>
+    <nobr><%= f.check_box :plan_value_enable, :label => l(:kpi_indicator_name_label) %> &mdash; <%= f.label :plan_value_enable, l(:plan_value_enable) %></nobr>
+</p>
+<p>
+    <nobr><%= f.check_box :fact_value_enable, :label => l(:kpi_indicator_name_label) %> &mdash; <%= f.label :fact_value_enable, l(:fact_value_enable) %></nobr>
+</p>
+<p>
+    <nobr><%= f.check_box :time_clocks, :label => l(:kpi_indicator_name_label) %> &mdash; <%= f.label :time_clocks, l(:is_time_clocks) %></nobr>
+</p>
+<%= submit_tag l(:button_save) %>

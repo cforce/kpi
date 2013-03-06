@@ -197,10 +197,19 @@ module KpiHelper
 		end
 
 		last_parent_id, last_id, last_level = nil
+    i=0 
 		UserTree.each_with_level(UserTree.joins(:user).includes(:user)
 										 .order("lft")
 										 .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
 										 .where("#{User.table_name}.status=? AND lft>? AND rgt<?", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
+      if i==0
+        user_list << "<h3>#{l(:label_effectiveness)}</h3>"
+        user_list << "<li>"
+        user_list << link_to("<span>#{l(:label_my_effectiveness)}</span>".html_safe,
+                    {:controller => "kpi", :action => "effectiveness", :date => params[:date] || nil, :user_id => User.current.id},
+                    :class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}")
+        user_list << "</li>"
+      end
 			user_list << "<ul class=\"folding_tree opened\">" if last_id.nil? # First time
 
 			if last_id == user_tree.attributes['parent_id'] # Next is child
@@ -221,6 +230,7 @@ module KpiHelper
 			last_parent_id = user_tree.attributes['parent_id']
 			last_id = user_tree.attributes['id']
 			last_level = level.to_i
+      i+=1
 		end
 		#Rails.logger.debug "dddddddddddddddddddddddddddddd"
 
@@ -231,7 +241,7 @@ module KpiHelper
     i=0
     functional_unders.each do |u|
       if i==0
-        user_list << "<h3>#{l(:functional_unders)}</h3>"
+        user_list << "<h3>#{l(:effectiveness_functional_unders)}</h3>"
         user_list << "<ul>"
       end
       user_list << "<li>"

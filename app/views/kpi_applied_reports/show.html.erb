@@ -4,25 +4,14 @@
 
 <h2><%=l(:salary_report) %></h2>
 
-<% if @users_with_open_period.any? and @period_dates.any? %>
-<div class="nodata">
-  <%= l(:salary_report_can_not_be_approved) %>
-</div>
+<% if @user_periods.any? and @period_dates.any? %>
 
-<table class="list"> 
-  <tr>
-    <th><%= l(:employee) %></th>
-    <th><%= %></th>  
-  </tr>
-  <% @users_with_open_period.each do |u| %>
-    <tr>
-    <td><%= link_to_user u %></td>
-    <td><%= link_to l(:no_closed_periods), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => u.id} %></td>
-    </tr>
-  <% end %>
-</table>
+<% if @is_open_periods %>
+  <div class="nodata">
+    <%= l(:salary_report_can_not_be_approved) %>
+  </div>
+<% end %>
 
-<% else %>
 <table class="list"> 
   <tr>
     <th><%= l(:employee) %></th>
@@ -44,13 +33,16 @@
   <% user_department_id = nil %>
   <% total = 0.to_f %>
 
-  <% @closed_user_periods.each do |pu| %>
+  <% exist_locked_period=false %>
+  <% @user_periods.each do |pu| %>
 
   <% if user_department_id != pu.user.user_department_id %>
     <tr class="kpi_cat"><td colspan="<%= 7+surcharges_col_num %>"><%= pu.user.user_department.name %></td></tr>
     <% user_department_id = pu.user.user_department_id %>
   <% end %>
 
+  <% if pu.locked %>
+  <% exist_locked_period=true %>
   <tr>
     <td><%= link_to_user pu.user %></td>
     <td><%= pu.user.user_title.name %></td>
@@ -71,11 +63,33 @@
 
     <% total += pu.salary%>
   </tr>
+
+  <% else %>
+
+  <tr>
+    <td><%= link_to_user pu.user %></td>
+    <td><%= pu.user.user_title.name %></td>
+
+    <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
+    <td><%= kpi_value 'x', '' %></td>
+    <td><%= kpi_value 'x', '' %></td>
+
+    <% all_surcharges_names.each do |su| %>
+      <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
+    <% end %>
+
+    <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
+    <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
+
+  </tr>
+
+  <% end %>
+
   <% end %>
 
   <tr>
   <td colspan="<%= 5+surcharges_col_num %>"></td>
-  <td><%= kpi_value total, l(:money_unit_abridgement)  %></td>
+  <td><%= kpi_value exist_locked_period ? total : 'x', l(:money_unit_abridgement)  %></td>
   <td></td>
   </tr>
 

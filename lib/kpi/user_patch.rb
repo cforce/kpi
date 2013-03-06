@@ -31,6 +31,18 @@ module Kpi
 	
 	module InstanceMethods
 
+		def has_managed_periods?
+			KpiPeriodUser.joins(:kpi_calc_period, :user => [:user_tree])                                          
+			             .where("(#{UserTree.table_name}.lft>? AND #{UserTree.table_name}.rgt<? AND #{KpiCalcPeriod.table_name}.user_id IS NULL)
+			              			OR (#{KpiCalcPeriod.table_name}.user_id = ?)",
+			                    user_tree.lft, user_tree.right, id)
+			             .any?
+		end
+
+		def imported_values
+			KpiImportedValue.order(:name).where(:user_department_id => self.user_department_id, :user_title_id => self.user_title_id)
+		end
+
 		def user_kpi_marks_can_be_disabled?(period_user)
 			(User.current.admin? or subordinate?) and not period_user.locked
 		end

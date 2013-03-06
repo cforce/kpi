@@ -1,4 +1,9 @@
 <% content_for :sidebar do %>
+
+<% if User.current.global_permission_to?('indicators', 'index') %>
+	<h3><%= l(:administration) %></h3>
+<% end %>
+
 <ul>
 	<% if User.current.global_permission_to?('indicators', 'index') %>
 		<li>
@@ -24,21 +29,33 @@
 
 	<% end %>
 
-	<% if User.current.global_permission_to?('kpi_imported_values', 'update_values') %>
+	<% if User.current.global_permission_to?('kpi_imported_values', 'create') %>
 		<li>
-		<%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values'}" %>
+		<%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values' and controller.action_name=='index'}" %>
 		</li>
 	<% end %>
-
-	<% if User.current.global_permission_to?('kpi_applied_reports', 'show') or User.current.global_permission_to?('kpi_applied_reports', 'apply') %>
-		<li>
-		<%= link_to "<span>#{l(:salary_report)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "show"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_applied_reports'}" %>
-		</li>
-	<% end %>
-
 </ul>
 
+	<% if User.current.global_permission_to?('kpi_applied_reports', 'show') or User.current.global_permission_to?('kpi_applied_reports', 'apply') or User.current.has_managed_periods? %>
+		<h3><%= l(:reports) %></h3>
+		<ul>
+			<li>
+			<%= link_to "<span>#{l(:salary_report)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "show"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_applied_reports'}" %>
+			</li>
+		</ul>
+	<% end %>
+
+
+
+
+<h3><%= l(:my_kpi_marks) %></h3>
+
 <ul>
+
+	<% if User.current.imported_values.any? %>
+		<li><%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values' and controller.action_name=='edit_values'}" %></li>
+	<% end %>
+
 	<li>
 	<%= link_to "<span>#{l(:label_kpi_marks)}</span>".html_safe, {:controller => "kpi_marks", :action => "index"}, :class=>"no_line" %>
 		<% unless @estimated_users.nil? %>
@@ -73,12 +90,6 @@
 
 			
 		<% end %>
-	</li>
-
-	<li>
-	<%= link_to "<span>#{l(:label_my_effectiveness)}</span>".html_safe, 
-				{:controller => "kpi", :action => "effectiveness", :date => params[:date] || nil, :user_id => User.current.id},
-				:class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}" %>
 	</li>
 
 </ul>
