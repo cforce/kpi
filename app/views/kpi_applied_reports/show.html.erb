@@ -48,7 +48,7 @@
     <td><%= pu.user.user_title.name %></td>
 
     <td><%= kpi_value pu.main_money, l(:money_unit_abridgement) %></td>
-    <td><%= kpi_value(pu.kpi_calc_period.exclude_time_ratio ? 'x' : pu.time_ratio, '') %></td>
+    <td><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice') ? 'x' : pu.time_ratio, '') %></td>
     <td><%= kpi_value pu.kpi_ratio, '' %></td>
 
     <% surcharge_details = pu.get_surcharge_details %>
