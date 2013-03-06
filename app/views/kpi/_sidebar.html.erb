@@ -52,7 +52,7 @@
 
 <ul>
 
-	<% if User.current.imported_values.any? %>
+	<% if User.current.imported_values.any? or User.current.global_permission_to?('kpi_imported_values', 'create') %>
 		<li><%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values' and controller.action_name=='edit_values'}" %></li>
 	<% end %>
 
