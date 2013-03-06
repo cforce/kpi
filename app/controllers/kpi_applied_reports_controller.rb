@@ -1,5 +1,5 @@
 class KpiAppliedReportsController < ApplicationController
-  before_filter :authorized_globaly? 
+  before_filter :authorized_globaly?, :except => [:show]
   before_filter :find_period_dates, :only => [:show,  :apply, :redo]
   before_filter :find_date, :only => [:show, :apply, :redo]
     
