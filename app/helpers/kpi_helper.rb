@@ -204,11 +204,11 @@ module KpiHelper
 										 .where("#{User.table_name}.status=? AND lft>? AND rgt<?", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
       if i==0
         user_list << "<h3>#{l(:label_effectiveness)}</h3>"
-        user_list << "<li>"
+        user_list << "<ul><li>"
         user_list << link_to("<span>#{l(:label_my_effectiveness)}</span>".html_safe,
                     {:controller => "kpi", :action => "effectiveness", :date => params[:date] || nil, :user_id => User.current.id},
                     :class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}")
-        user_list << "</li>"
+        user_list << "</li></ul>"
       end
 			user_list << "<ul class=\"folding_tree opened\">" if last_id.nil? # First time
 
