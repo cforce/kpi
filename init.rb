@@ -19,7 +19,7 @@ Redmine::Plugin.register :kpi do
   menu :top_menu, :my_marks, { :controller => 'kpi_marks', :action => 'index' }, :caption => Proc.new { User.current.my_kpi_marks_caption },  :if => Proc.new { User.current.logged? }, :first => true
   project_module :kpi do
     permission :manage_kpi_indicators, :indicators => [:index, :update, :new, :edit, :create, :destroy]
-    permission :manage_kpi_periods, :kpi_calc_periods => [:index, :new, :edit, :close_for_user, :reopen_for_user, :activate, :update, :create, :destroy, :autocomplete_for_user, :add_inspectors, :remove_inspector, :update_plans, :update_inspectors]
+    permission :manage_kpi_periods, :kpi_calc_periods => [:index, :new, :edit, :close_for_user, :reopen_for_user, :activate, :update, :create, :destroy, :autocomplete_for_user, :autocomplete_for_applied_user, :add_inspectors, :remove_inspector, :update_plans, :update_inspectors]
     permission :manage_kpi_patterns, :kpi_patterns => [:index, :update, :new, :edit, :create, :destroy, :add_users, :remove_user, :add_indicators, :update_indicators, :remove_indicator, :autocomplete_for_user, :autocomplete_for_indicator]
     permission :update_plan_values, :kpi_marks => [:edit_plan, :update_plan]
     permission :update_fact_values, :kpi_marks => [:edit_fact, :update_fact]
