@@ -283,7 +283,7 @@ module KpiHelper
   def base_salary_view(period, period_user, user, value)
   	value='x' if value.nil?
   	value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
-  	if period_user.check_user_for_hours_update?(user)
+  	if period_user.check_user_for_salary_update?(user)
   		value = link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_base_salary', :id => period_user.id}, {:class => 'click_out'})
   	end
   	value << "<span class=\"no_align_unit\">#{l(:money_unit_abridgement)}</span>".html_safe
