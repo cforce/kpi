@@ -1,0 +1,48 @@
+<h3><%= l(:you_want_delete_calc_period) %></h3>
+
+<p>
+<%= l(:removal_of_the_billing_period) %>
+</p>
+
+<table class="list">
+  <th><%= l(:employee) %></th>
+  <th><%= l(:аftermath) %></th>
+<% @period.kpi_period_users.includes(:user).each do |pu| %>
+  <tr>
+    <td>
+    <%= link_to_user pu.user %>
+    </td>
+    <td>
+    <ul>
+    <% аftermath = false %>
+    <% if pu.set_kpi_marks.any? %>
+      <li><%= l(:user_has_set_kpi_marks_warning).html_safe %></li>
+      <% аftermath = true %>
+    <% end %>
+    <% if pu.locked %>
+      <li><%= l(:user_has_locked_period_warning).html_safe %></li>
+      <% аftermath = true %>
+    <% end %>
+    <% if pu.kpi_user_surcharges.any? %>
+      <li><%= l(:user_has_surcharges_warning).html_safe %></li>
+      <% аftermath = true %>
+    <% end %>
+     <% if not pu.jobprise.nil? %>
+      <li><%= l(:user_has_jobprise_warning).html_safe %></li>
+      <% аftermath = true %>
+    <% end %>   
+
+    <% if not аftermath %>
+
+    <% end %>
+
+    </ul>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br/>
+<%= link_to("<span>#{l(:i_read_and_agree)}</span>".html_safe, {:controller => :kpi_calc_periods, :action => :destroy, :id =>@period, :period => {:date => @date} },
+                                :method => :delete,
+                                :class => 'icon icon-del') %>

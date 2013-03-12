@@ -37,10 +37,12 @@
 			<%= link_to l(:source), {:controller => 'kpi_calc_periods', :action => 'edit', :id => period.parent_id} unless period.parent_id.nil? %>
 		</td>
 		<td class="buttons">
+				<%= link_to_modal_window(l(:button_delete), {:controller => 'kpi_calc_periods', :action=> 'show_warning_message', :id => period, :period => {:date => @date}}, {:class => 'icon icon-del click_out'}) %>
+
 		    <%= link_to(l(:button_delete), {:controller => :kpi_calc_periods, :action => :destroy, :id =>period, :period => {:date => @date} },
 		                                   :method => :delete,
 		                                   :confirm => l(:text_are_you_sure),
-		                                   :class => 'icon icon-del') %>
+		                                   :class => 'icon icon-del') if User.current.admin? %>
 		</td>		
 	</tr>
 <% end %>

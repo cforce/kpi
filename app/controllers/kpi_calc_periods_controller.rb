@@ -1,7 +1,7 @@
 class KpiCalcPeriodsController < ApplicationController
 	before_filter :authorized_globaly?, :except => [:close_for_user]
 	
-	before_filter :find_period, :only => [:close_for_user, :reopen_for_user, :close, :edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
+	before_filter :find_period, :only => [:show_warning_message, :close_for_user, :reopen_for_user, :close, :edit, :update, :destroy, :autocomplete_for_user, :add_inspectors, :add_users, :remove_inspector, :remove_user, :update_inspectors, :update_plans, :activate]
 	before_filter :find_patterns, :only => [:new, :edit]
 	before_filter :find_calc_periods, :only => [:index]
 	#before_filter :find_indicators, :only => [:edit, :add_inspectors, :remove_inspector, :update_inspectors, :update_plans]
@@ -166,6 +166,11 @@ class KpiCalcPeriodsController < ApplicationController
 			format.js
 		end
 	
+	end
+
+	def show_warning_message
+		@date = params[:period].nil? ? '' : params[:period][:date]
+		render 'show_warning_message', :layout => false
 	end
 
 	def add_users

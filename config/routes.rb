@@ -106,6 +106,7 @@ RedmineApp::Application.routes.draw do
 	      post 'add_users', :as => 'add_users'
 	      get 'autocomplete_for_user'
 	      get 'autocomplete_for_applied_user'
+	      get 'show_warning_message'
 	      get 'activate'
 	      get 'close'
 	      delete 'remove_inspector/:indicator_inspector_id', :action => 'remove_inspector', :as => 'remove_inspector'

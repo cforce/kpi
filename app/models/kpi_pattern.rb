@@ -14,7 +14,7 @@ class KpiPattern < ActiveRecord::Base
 	end 
 
 	def indicators_integrity?
-		! KpiPatternIndicator.where(:kpi_pattern_id => id).joins(:indicator).select("sum(#{KpiPatternIndicator.table_name}.percent) AS weight").group("kpi_category_id").having("sum(#{KpiPatternIndicator.table_name}.percent)!=100").map{|e| e }.any?
+		! KpiPatternIndicator.where(:kpi_pattern_id => id).joins(:indicator).select("sum(#{KpiPatternIndicator.table_name}.percent) AS weight").group("kpi_category_id").having("sum(#{KpiPatternIndicator.table_name}.percent)!=100 OR sum(#{KpiPatternIndicator.table_name}.percent) IS NULL").map{|e| e }.any?
 	end
 
 	def copy_to(pattern)

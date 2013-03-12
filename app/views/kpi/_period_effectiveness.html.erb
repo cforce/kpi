@@ -129,7 +129,7 @@ kpi = period_user.kpi
 	<% hours_value = hours_value(period_user) %>
 
 
-	<div>
+	<div class="W100AUTO">
 	<div class="R payment">
 
 		<div class="formula"> 
@@ -196,16 +196,13 @@ kpi = period_user.kpi
 		<% surcharge_details = period_user.get_surcharge_details %>
 		<% if surcharge_details.any? %>
 		<div class="L explanation_window no_fraction_item">
-			<%= image_tag("info.png", :plugin=>:kpi)  %>
-			<em>
-				<table class="list">
+				
 				<% surcharge_details.each do |k,v| %>
-					<tr><td><nobr><%= k %></nobr></td><td> <%= kpi_value(v, l(:money_unit_abridgement)) %></td></tr>
+					
 				<% end %>
-				</table>
-				<i></i>
-			</em>
-			
+				
+
+			<%= link_to_modal_window image_tag("info.png", :plugin=>:kpi), "<table class=\"list\">#{surcharge_details.inject(''){|s, (k,v)| s << "<tr><td><nobr>#{k}</nobr></td><td>#{  kpi_value(v, l(:money_unit_abridgement)) }</td></tr>"; s} }</table>".html_safe, {:class => 'static_content_only'} %>
 		</div>
 
 		<% end %>
@@ -223,12 +220,10 @@ kpi = period_user.kpi
 		</div>	
 		</div>
 	</div>
-	<div class="C"></div>
 	</div>
 
 	<script>
 	jQuery('div.modal_window').hide();
 	</script>
-	<div class="C"></div>
 
 

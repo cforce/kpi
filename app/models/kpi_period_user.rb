@@ -4,7 +4,7 @@ class KpiPeriodUser < ActiveRecord::Base
 	has_many :kpi_period_indicators, :through => :kpi_calc_period
 	has_many :kpi_indicator_inspectors, :through => :kpi_period_indicators
 	has_many :kpi_marks, :through => :kpi_indicator_inspectors, :conditions => lambda {|*args| "#{KpiMark.table_name}.user_id=#{user_id}"}
-	has_many :kpi_user_surcharges
+	has_many :kpi_user_surcharges, :dependent => :destroy
 
 	after_destroy :delete_marks
 	before_save :check_period
@@ -33,7 +33,10 @@ class KpiPeriodUser < ActiveRecord::Base
 	def check_user_for_surcharge_show?
 		(User.current.admin? or user.subordinate? or user = User.current)
 	end
-	
+
+	def set_kpi_marks
+		kpi_marks.where("#{KpiMark.table_name}.fact_value IS NOT NULL OR #{KpiMark.table_name}.disabled = ?", true)
+	end
 
 	def reopen
         if  for_closing?
@@ -149,6 +152,7 @@ class KpiPeriodUser < ActiveRecord::Base
 
 			category_id, indicator_id, indicator_percent, inspector_id, avg_value, category_percent, inspector_percent  = nil	
 			#----------------------------------------------------------
+
 			mark_avg.each do |mark|
 
 				if indicator_id!= mark[:indicator_id] or category_id != mark[:category_id]
@@ -182,6 +186,7 @@ class KpiPeriodUser < ActiveRecord::Base
 			#----------------------------------------------------------
 
 			category_id, indicator_id, indicator_percent, inspector_id, avg_value, category_percent, inspector_percent  = nil
+
 			#----------------------------------------------------------
 			indicator_avg.each do |mark|
 				if category_id != mark[:category_id]
@@ -200,9 +205,10 @@ class KpiPeriodUser < ActiveRecord::Base
 				kpi_completions << {:avg_value => mark[:avg_value], :indicator_percent => mark[:indicator_percent]}
 			end
 
+			#avg_value = kpi_completions.inject(0){|avg, v| avg+=(v[:avg_value]*v[:indicator_percent])/100; avg}
+
 			avg_value = kpi_completions.inject(0){|avg, v| avg+=(v[:avg_value]*v[:indicator_percent])/100; avg}
-						avg_value = kpi_completions.inject(0){|avg, v| avg+=(v[:avg_value]*v[:indicator_percent])/100; avg}
-						kpi_completions = []
+			kpi_completions = []
 						cat_avg << {:category_id => category_id,
 									:category_percent => category_percent,
 									:avg_value => avg_value}
@@ -265,7 +271,7 @@ class KpiPeriodUser < ActiveRecord::Base
 				return nil if base_salary_value.nil?
 				base += base_salary_value.to_f 
 			end
-			unless kpi_calc_period.exclude_time_ratio
+			if (not kpi_calc_period.exclude_time_ratio) and KpiCalcPeriod::BASE_SALARY_PATTERNS[kpi_calc_period.base_salary_pattern] != 'only_jobprice'
 				return nil if time_ratio.nil?
 				base = base*time_ratio
 			end
@@ -273,7 +279,6 @@ class KpiPeriodUser < ActiveRecord::Base
 				return nil if jobprise.nil?
 				base += jobprise.to_f
 			end 
-
 			base
   end
 
