@@ -13,12 +13,12 @@ class KpiPeriodUser < ActiveRecord::Base
 	include KpiHelper
 	
 	def check_user_for_salary_update?(user)
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not locked
+		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
 		#(User.current.admin?) and not locked
 	end
 
 	def check_user_for_jobprise_update?(user)
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not locked
+		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
 	end
 
 	def check_user_for_hours_update?(user)
@@ -27,7 +27,7 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def check_user_for_surcharge_update?
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not locked
+		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
 	end
 
 	def check_user_for_surcharge_show?
