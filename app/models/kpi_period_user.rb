@@ -76,7 +76,7 @@ class KpiPeriodUser < ActiveRecord::Base
 
 	def is_salary_calc_attr?
 		period = kpi_calc_period
-		(((not hours.nil?) and (period.get_month_time_clock)) or period.exclude_time_ratio) and (((not base_salary.nil?) or (not period.base_salary.nil?)) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_jobprice') and ((not jobprise.nil?) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_salary')
+		(((not hours.nil?) and (period.get_month_time_clock)) or (period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_jobprice' )) and (((not base_salary.nil?) or (not period.base_salary.nil?)) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_jobprice') and ((not jobprise.nil?) or KpiCalcPeriod::BASE_SALARY_PATTERNS[period.base_salary_pattern] == 'only_salary')
 	end
 
 	def kpi_ratio_value(kpi_values=false)
