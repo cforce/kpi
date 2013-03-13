@@ -41,7 +41,7 @@ class KpiMark < ActiveRecord::Base
 		period_indicator = kpi_period_indicator if period_indicator.nil?
 		period_user = period_indicator.kpi_calc_period.kpi_period_users.where(:user_id => user_id).first if period_user.nil?
 
-		(((User.current.id == inspector_id or  period_user.kpi_calc_period.manager.try(:id) == User.current.id) and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?) ) and not period_user.locked
+		(((User.current.id == inspector_id) and period_indicator.pattern.nil?) or (User.current.global_permission_to?('kpi_marks', 'edit_fact') or User.current.admin?) ) and not period_user.locked
 	end
 
 	def get_matrix_calc_values(period_indicator)

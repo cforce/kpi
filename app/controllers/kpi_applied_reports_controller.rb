@@ -59,7 +59,7 @@ class KpiAppliedReportsController < ApplicationController
     else
       @user_periods = KpiPeriodUser.joins(:kpi_calc_period, :user => [{:user_department => :node}, :user_title, :user_tree])                                          
                                             .where("#{KpiCalcPeriod.table_name}.date = ?
-                                                    AND ((#{UserTree.table_name}.lft>? AND #{UserTree.table_name}.rgt<? AND #{KpiCalcPeriod.table_name}.user_id IS NULL) OR (#{KpiCalcPeriod.table_name}.user_id = ?))",
+                                                    AND ((#{UserTree.table_name}.lft>=? AND #{UserTree.table_name}.rgt<=? AND #{KpiCalcPeriod.table_name}.user_id IS NULL) OR (#{KpiCalcPeriod.table_name}.user_id = ?))",
                                                     @date, User.current.user_tree.lft, User.current.user_tree.right, User.current.id)
                                             .includes(:kpi_calc_period, :user => [{:user_department => :node}, :user_title])
                                             .order("#{UserDepartmentTree.table_name}.lft")
