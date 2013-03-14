@@ -169,7 +169,7 @@ namespace :redmine do
               m.fact_date = Time.now
               m.save unless m.fact_value.nil?
             }
-          when "xxx_avg_custom_field_mark_in_current_period"
+          when "avg_custom_field_mark_in_current_period"
             puts "Pattern is 'avg_custom_field_mark_in_current_period'"
             Issue.joins(:custom_values, {:fixed_version => :milestones})
                  .select("AVG(#{CustomValue.table_name}.value) AS 'fact',
