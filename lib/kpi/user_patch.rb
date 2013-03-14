@@ -75,6 +75,10 @@ module Kpi
 			User.active.where("#{Setting.plugin_kpi['user_superior_id_field']} = ?", id);
 		end
 
+		def unders
+			User.joins(:user_tree).where("#{UserTree.table_name}.lft>? AND #{UserTree.table_name}.rgt<?", user_tree.lft, user_tree.rgt)
+		end
+
 		def subordinate?
 			eval('self.'+Setting.plugin_kpi['user_superior_id_field']) == User.current.id
 		end

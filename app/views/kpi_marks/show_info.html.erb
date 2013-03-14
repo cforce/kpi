@@ -1,3 +1,4 @@
+
 <script>
 build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>');
 </script>
@@ -61,8 +62,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
 
 <div class="mark_chart" id="mark_chart_<%= @mark.id %>"></div>
 
-<% if not @issues.nil? %>
-
+<% unless @mark.issues.nil? %>
 <div class="indicator_percent_desc L">
 
 <% if not @mark.fact_date.nil? %>
@@ -73,9 +73,7 @@ build_chart('<%= "mark_chart_#{@mark.id}" %>', '<%= "mark_data_#{@mark.id}" %>')
     </div>
 <% end %>
 
-<div class="caption"><%= l(:what_issues_are_involved_in_the_calculation) %>:</div>
-<%= render :partial => "kpi_marks/info/#{Indicator::FACT_PATTERNS[@period_indicator.pattern.to_s]}", :locals => { :completion => completion, :kpi_unit => kpi_unit, :calc_values => calc_values} %>
+<%= render :partial => "kpi_marks/info/#{Indicator::FACT_PATTERNS[@period_indicator.pattern.to_s]}", :locals => { :completion => number_with_precision(completion, :strip_insignificant_zeros => true, :precision =>2, :separator => '.'), :kpi_unit => kpi_unit, :calc_values => calc_values} %>
 
 </div>
-
 <% end %>

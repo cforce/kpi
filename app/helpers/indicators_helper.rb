@@ -29,6 +29,16 @@ module IndicatorsHelper
 		options_for_select(Role.where(:builtin => 0).order(:name).map{ |u| [u.name, u.id]}, default)
 	end
 
+	def options_for_indicator(indicator)
+		default = nil
+
+		if not indicator.pattern_settings.nil?
+			default = indicator.pattern_settings['indicator_id']  if not indicator.pattern_settings['indicator_id'].nil?
+		end		
+
+		options_for_select(Indicator.order(:name).map{ |u| [u.name, u.id]}, default)
+	end
+
 	def options_for_imported_values(indicator, plan = false)
 		default = nil
 

@@ -1,0 +1,35 @@
+
+
+<% if not @mark.issues.nil? %>
+
+<div class="caption"><%= l(:what_marks_are_involved_in_the_calculation) %>:</div>
+<div class="issues_in_calc">
+    <table class="list issues">
+    <thead>
+    <tr>
+        <th width="82%"><%= l(:employee) %></th>
+        <th><%= l(:label_mark_period) %></th>
+        <th><%= l(:imported_value) %></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <% users = User.find(@mark.issues.map{|k,v| v['user_id'].to_i}).inject({}){|h, user| h[user.id.to_i]=user; h} %>
+
+    <% @mark.issues.each do |user_id, issue| %>
+        <tr>
+            <td><%= link_to_user users[issue['user_id'].to_i] %></td>
+            <td><nobr><%= format_date issue['start_date'] %> &mdash; <%= format_date issue['end_date'] %></nobr></td>
+            <td><%=  issue['fact_value'] %></td>
+        </tr>
+    <% end %>
+    </tbody>
+    </table>
+</div>
+    
+    <div class="info"><%= l(:avg_from_unders_explanation, 
+                            :valued_employee => link_to_user(@mark.user), 
+                            :fact => "<nobr><span class=\"fact_on_chart\">#{@mark.fact_value}</span> #{kpi_unit}</nobr>",
+                            :calc_values => "<nobr><span class=\"plan_on_chart\">"+calc_values.join("</span> #{kpi_unit}</nobr>, <nobr><span class=\"plan_on_chart\">")+"</span> #{kpi_unit}</nobr>",
+                            :completion => "<nobr><span class=\"fact_on_chart\">#{completion}<span> %</nobr>").html_safe %></div>
+<% end %>

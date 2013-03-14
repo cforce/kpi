@@ -116,6 +116,52 @@ namespace :redmine do
           kpi_marks = i.kpi_marks
 
           case Indicator::FACT_PATTERNS[i.pattern.to_s]
+          when "avg_from_unders"
+            puts "Pattern is 'avg_from_unders'"
+            kpi_marks.each{|m|
+              puts "User name #{m.user.name}"
+              # m.fact_value = KpiMark.joins(:kpi_period_indicator)
+                                    # .where("#{KpiMark.table_name}.user_id IN (?) 
+                                            # AND #{KpiPeriodIndicator.table_name}.indicator_id =? ", m.user.unders, i.pattern_settings['indicator_id'])
+              KpiMark.joins(:kpi_period_indicator).select("AVG(#{KpiMark.table_name}.fact_value) AS 'fact',
+                                                                          GROUP_CONCAT(CONCAT(#{KpiMark.table_name}.user_id, '&', #{KpiMark.table_name}.start_date, '&', #{KpiMark.table_name}.end_date, '&', #{KpiMark.table_name}.fact_value, '&', 'true') ORDER BY #{User.table_name}.lastname SEPARATOR '|') AS 'involved_marks'")
+                                                  .joins(:kpi_period_indicator, :user)
+                                                  .where("#{KpiMark.table_name}.user_id IN (?) 
+                                                  AND #{KpiMark.table_name}.disabled = ?
+                                                  AND #{KpiPeriodIndicator.table_name}.indicator_id =? 
+                                                  AND #{KpiMark.table_name}.start_date BETWEEN ? AND ?", 
+                                                  m.user.unders, 
+                                                  false,
+                                                  i.pattern_settings['indicator_id'], 
+                                                  m.start_date,
+                                                  m.end_date
+                                                  ).each do |f|
+
+                  description = {}
+                  k = 0 
+                  f.involved_marks.to_s.split("|").each do |e|
+                    data = e.split('&') 
+                               
+                    if data[4] == 'true'
+                      description[k] = {}
+                      description[k]['user_id'] = data[0]
+                      description[k]['start_date'] = data[1]
+                      description[k]['end_date'] = data[2]
+                      description[k]['fact_value'] = data[3]
+                    end
+                    k+=1
+                  end
+
+                  puts "Average value is - #{f.fact}"
+                  puts "Average value is - #{description.inspect}"
+
+                  m.fact_date = Time.now
+                  m.fact_value = f.fact              
+                  m.issues = description
+                  m.save unless m.fact_value.nil?
+                  
+                end
+              }
           when "import_from_other_system"
             puts "Pattern is 'import_from_other_system'"
             kpi_marks.each{|m|
@@ -123,7 +169,7 @@ namespace :redmine do
               m.fact_date = Time.now
               m.save unless m.fact_value.nil?
             }
-          when "avg_custom_field_mark_in_current_period"
+          when "xxx_avg_custom_field_mark_in_current_period"
             puts "Pattern is 'avg_custom_field_mark_in_current_period'"
             Issue.joins(:custom_values, {:fixed_version => :milestones})
                  .select("AVG(#{CustomValue.table_name}.value) AS 'fact',

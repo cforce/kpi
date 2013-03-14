@@ -140,7 +140,7 @@ module KpiHelper
 	end
 
 	def completion_view(mark, completion)
-		link_to_modal_window kpi_val_round(completion), {:controller => 'kpi_marks', :action=> 'show_info', :id => mark.id} unless completion.nil?
+		link_to_modal_window kpi_val_round(completion), {:controller => 'kpi_marks', :action=> 'show_info', :id => mark.id}, :class => 'click_out' unless completion.nil?
 	end
 
 	def fact_view(mark, period, period_indicator, period_user)

@@ -37,7 +37,8 @@ class Indicator < ActiveRecord::Base
                   '3' => 'issue_lag_in_current_period',
                   '4' => 'self_and_executors_issues_lag',
                   '5' => 'self_and_executors_issues_avg_custom_field_mark',
-                  '6' => 'import_from_other_system'
+                  '6' => 'import_from_other_system',
+                  '7' => 'avg_from_unders'
                   }     
 
   PLAN_PATTERNS = {

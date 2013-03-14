@@ -39,6 +39,10 @@
 <%= label_tag 'indicator_pattern_settings_imported_value_id', l(:imported_value) %>
 <%= select_tag 'indicator[pattern_settings][imported_value_id]', options_for_imported_values(@indicator) %>
 </p>
+<p class="I kpi_pattern_custom_field_7">
+<%= label_tag 'indicator_pattern_settings_indicator_id', l(:indicator) %>
+<%= select_tag 'indicator[pattern_settings][indicator_id]', options_for_indicator(@indicator) %>
+</p>
 </div>
 
 </fieldset>
