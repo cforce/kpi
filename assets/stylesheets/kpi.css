@@ -35,7 +35,7 @@ table.indicators tr.active
 	{
 	background-color: #F1FBEC;
 	}
-table.indicators tr.locked
+table tr.locked
 	{
 	background-color: #FCF7ED;
 	}
