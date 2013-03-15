@@ -137,7 +137,7 @@ class KpiPatternsController < ApplicationController
 
 	def autocomplete_for_indicator
 	    #@pattern = KpiPattern.find(params[:id])
-	    @indicators = Indicator.not_in_kpi_pattern(@pattern).where("name like ?", "%#{params[:q]}%").limit(1)
+	    @indicators = Indicator.not_in_kpi_pattern(@pattern).where("name like ?", "%#{params[:q]}%").limit(100)
 	    render 'kpi_patterns/autocomplete_for_indicator', :layout => false
 	end	
 
