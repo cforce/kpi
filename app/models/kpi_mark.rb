@@ -12,6 +12,8 @@ class KpiMark < ActiveRecord::Base
 
 	serialize :issues
 
+	scope :not_set, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"	
+
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"
 

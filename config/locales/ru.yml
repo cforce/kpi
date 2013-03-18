@@ -1,6 +1,13 @@
 # English strings go here for Rails i18n
 ru:
   employee: "Сотрудник"
+  customer_custom_field: "Настраеваемое поле заказчик (закрытие периода)"
+  are_you_sure_you_want_to_close_calc_period: "Вы уверены что хотите закрыть расчетный период?"
+  employee_doesnt_set_all_issue_mark: "Сотрудник не выставил оценок по  задачам, отправленным ему на проверку"
+  mark_custom_field_that_should_be_set: "Поле оценки, которое должно быть заполнено (закрытие периода)"
+  status_of_the_issue_in_which_should_be_set_the_mark: "Стутус задачи, в котором ее должен проверить заказчик"
+  you_cannot_close_period: "Расчетный период данного сотрудника не может быть закрыт!"
+  employee_doesnt_set_all_kpi_mark: "Сотрудник не выставил оценок по показателям"
   аftermath: "Последствия"
   you_want_delete_calc_period: "Внимание! Вы хотите удалить расчетный период."
   removal_of_the_billing_period: "Удаление данного расчетного периода будет иметь следующие необратимые последствия:"
@@ -137,7 +144,7 @@ ru:
   import_from_other_system: "Импортированное значение с других систем"
   avg_from_unders: "Среднее от значений подчиненных"
   if_has_role: "Если имеет роль"
-  close_period: "Закрыть"
+  close_period: "Закрыть расчет"
   closed: "Закрыт"
   actived: "Активирован"
   not_actived: "Не активирован"

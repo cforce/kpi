@@ -108,13 +108,14 @@ kpi = period_user.kpi
 	<div class="R kpi_footnote">
 			<span>
 				<%= "<span class=\"selected\">#{l(:cacl_period_is_locked)}</span>".html_safe if period_user.locked? %>
-				<% if period_user.for_closing? %>
 					<% if  period_user.locked %>
 						<%= link_to l(:reopen_period), {:controller => "kpi_period_users", :action => "reopen", :id => period_user.id}, :class => 'icon reopen_period' if User.current.admin? %>
 					<% else  %>
-						<%= link_to l(:close_period), {:controller => "kpi_period_users", :action => "close", :id => period_user.id}, :class => 'icon close_period'  %>
+						<% if period_user.for_closing? %>
+							<%= link_to_modal_window("<span>#{l(:close_period)}</span>".html_safe, {:controller => 'kpi_period_users', :action=> 'close_message', :id => period_user.id}, {:class => 'icon close_period click_out'}) %>
+							<%= link_to "<span>#{l(:close_period)}</span>".html_safe, {:controller => "kpi_period_users", :action => "close", :id => period_user.id}, :class => 'icon close_period', :confirm => l(:text_are_you_sure) if User.current.admin? %>
+						<% end %>
 					<% end  %>
-				<% end %>
 			</span>
 			<span class="kpi_factor">
 

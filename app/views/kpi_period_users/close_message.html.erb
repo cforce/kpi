@@ -1,0 +1,38 @@
+<% if @not_set_marks_in_period!=[] or @isues_requiring_attention!=[] %>
+  <h3><%= l(:you_cannot_close_period) %></h3>
+  <% if @not_set_marks_in_period!=[] %>
+    <div class="info">
+      <%= l(:employee_doesnt_set_all_kpi_mark) %>
+    </div>
+  <% end %>
+
+  <% if @isues_requiring_attention!=[] %>
+    <div class="info"><%= l(:employee_doesnt_set_all_issue_mark) %></div>
+    <br/>
+    <div class="issues_in_calc">
+        <table class="list issues">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th width="82%"><%= l(:field_issue) %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @isues_requiring_attention.each do |issue| %>
+            <tr>
+                <td><%= link_to issue.id, issue_path(issue), {:class => 'issue'} %></td>
+                <td><%= link_to "<div class=\"text\"><span>#{issue.subject}</span></div><div class=\"end\"></div>".html_safe, issue_path(issue), {:class => 'unexpected_end no_line issue'} %></td>
+            </tr>
+        <% end %>
+        </tbody>
+        </table>
+    </div>
+    <% end %>
+
+<% else %>
+
+<%= l(:are_you_sure_you_want_to_close_calc_period) %><br/>
+<%= link_to("<span>#{l(:close_period)}</span>".html_safe, 
+            {:controller => "kpi_period_users", :action => "close", :id => @period_user.id},
+            :class => 'icon close_period') %>
+<% end %>

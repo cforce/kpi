@@ -46,6 +46,7 @@ RedmineApp::Application.routes.draw do
 	    member do
 	    	get 'edit_hours', :action => 'edit_hours'
 	    	get 'edit_base_salary', :action => 'edit_base_salary'
+	    	get 'close_message', :action => 'close_message'
 	    	get 'edit_jobprise', :action => 'edit_jobprise'
 	    	post 'update_base_salary', :action => 'update_base_salary'
 	    	post 'update_jobprise', :action => 'update_jobprise'

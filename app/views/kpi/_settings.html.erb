@@ -63,4 +63,15 @@ initial_user_id = @settings['initial_user_id'] || defaults['initial_user_id']
 </td>
 </tr>
 
+<tr>
+<td><%= l(:status_of_the_issue_in_which_should_be_set_the_mark) %>: </td>
+<td>
+      <%= select_tag 'settings[issue_status_id]',
+                     options_for_select(IssueStatus.order("name").map{|el| [el.name,el.id]},
+                     @settings['issue_status_id'])
+                      %>
+</td>
+</tr>
+
+
 </table>
