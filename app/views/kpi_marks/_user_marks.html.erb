@@ -47,8 +47,8 @@
 	<%= text_area_tag "explanation[#{mark.id}]", mark.explanation, :size => "40x1", :class => 'explanation ' + (mark.explanation.to_s=='' ? '' : 'completed') %>
 	</td>
 	<td>
+	<%= hidden_field_tag "disabled[#{mark.id}]", 0, :id => "disabled_ht_#{mark.id}" %>
 	<% if @user.kpi_mark_can_be_disabled?(mark) %>
-		<%= hidden_field_tag "disabled[#{mark.id}]", 0, :id => "disabled_ht_#{mark.id}" %>
 		<%= check_box_tag "disabled[#{mark.id}]", 1, mark.disabled, :class => 'enable_field', 'data-rel-element' => "mark_#{mark.id}" %>
 	<% end %>
 
