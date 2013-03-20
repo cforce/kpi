@@ -1,7 +1,7 @@
 <%= form_for @period_user, :remote => true, :url => {:controller => 'kpi_period_users', :action =>'update_jobprise', :id => @period_user.id}, :html => {:method => :post} do |f| %>
 
 <p>
-<%= f.text_field :jobprise, :class => 'base_salary_field' %>
+<%= f.text_field :jobprise, :class => 'numeric base_salary_field' %>
 </p>
 
 <%= submit_tag l(:button_save), :class => 'kpi_mark_submit_button' %>
@@ -9,4 +9,5 @@
 
 <script>
     jQuery('#kpi_period_user_jobprise').focus();
+    numeric_value(jQuery('#kpi_period_user_jobprise'));
 </script>

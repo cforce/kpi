@@ -1,5 +1,12 @@
 jQuery(document).ready(function(){
 
+    jQuery(document.body).on("click", 'input.enable_field', function(){
+        if(jQuery('#'+jQuery(this).attr('data-rel-element')).attr('disabled')=='disabled')
+            jQuery('#'+jQuery(this).attr('data-rel-element')).removeAttr('disabled')
+        else
+            jQuery('#'+jQuery(this).attr('data-rel-element')).attr('disabled', 'disabled')
+        });
+
     jQuery(document.body).on("change", '#kpi_imported_value_user_department_id', function(){
 
         $.ajax({
@@ -17,19 +24,18 @@ jQuery(document).ready(function(){
             })
         });
 
-    jQuery(document.body).on("change keyup input", 'input.numeric', function(){
 
-        var re = /([^\.,0-9-]{1,})|(^\.)/g
-        jQuery(this).val(jQuery(this).val().replace(re, ''))
-
-        jQuery(this).val(jQuery(this).val().split(',').join('.'))
-
-        var re = /(\.\d{0,})([^0-9]{1,})(\d{0,})/g
-        jQuery(this).val(jQuery(this).val().replace(re, '$1$3'))
-
-        re = /(\d)(?=(\d\d\d)+([^\d]|$))/g
-        jQuery(this).val(jQuery(this).val().replace(re, '$1 '))
+    jQuery(document.body).on("change input keyup", 'input.numeric', function(event){
+        numeric_value(jQuery(this))
         });
+
+    /*jQuery(document.body).on("keyup", 'input.numeric', function(event){
+        if(event.keyCode != 8 && event.keyCode != 46)
+            {
+            alert(event.keyCode)
+            numeric_value(event, jQuery(this))
+            }
+        });*/
 
     jQuery('.showing_element').click(function(){
 
@@ -150,6 +156,57 @@ jQuery(document).ready(function(){
 		show_hide_custom_fields(jQuery(this));
 		});
 	});
+
+
+function get_caret_position (ctrl) {
+    var CaretPos = 0;   // IE Support
+    if (document.selection) {
+    ctrl.focus ();
+        var Sel = document.selection.createRange ();
+        Sel.moveStart ('character', -ctrl.value.length);
+        CaretPos = Sel.text.length;
+    }
+    // Firefox support
+    else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+        CaretPos = ctrl.selectionStart;
+    return (CaretPos);
+}
+
+function set_caret_position(ctrl, pos){
+    if(ctrl.setSelectionRange)
+    {
+        ctrl.focus();
+        ctrl.setSelectionRange(pos,pos);
+    }
+    else if (ctrl.createTextRange) {
+        var range = ctrl.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', pos);
+        range.moveStart('character', pos);
+        range.select();
+    }
+}
+
+function numeric_value(obj)
+    {
+    caret_position = get_caret_position(document.getElementById(obj.attr('id')))
+    space_count_before = obj.val().substring(0, caret_position).split(' ').length-1
+
+    var re = /([^\.,0-9-]{1,})|(^\.)/g
+    obj.val(obj.val().replace(re, ''))
+
+    obj.val(obj.val().split(',').join('.'))
+
+    var re = /(\.\d{0,})([^0-9]{1,})(\d{0,})/g
+    obj.val(obj.val().replace(re, '$1$3'))
+
+    re = /(\d)(?=(\d\d\d)+([^\d]|$))/g
+    obj.val(obj.val().replace(re, '$1 '))
+
+    space_count_after = obj.val().substring(0, caret_position).split(' ').length-1
+    set_caret_position(document.getElementById(obj.attr('id')), caret_position+(space_count_after-space_count_before))
+    }
+
 
 function portable_data_apply()
 	{

@@ -47,6 +47,10 @@ module Kpi
 			(User.current.admin? or subordinate?) and not period_user.locked
 		end
 
+		def kpi_mark_can_be_disabled?(mark)
+			(User.current.admin? or subordinate?) and not mark.locked
+		end
+
 		def my_kpi_marks_caption
 			label=l(:my_kpi_marks)
 			num=get_my_marks_num
@@ -59,8 +63,9 @@ module Kpi
 							   .where("#{KpiMark.table_name}.start_date <= ? 
 										AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
 										AND #{KpiMark.table_name}.locked = ?
-										AND #{KpiMark.table_name}.disabled = ?",
-										Date.today, false, false)
+										",
+										Date.today, false)
+			#AND #{KpiMark.table_name}.disabled = ?
 		end
 
 		def get_my_marks_num

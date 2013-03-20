@@ -67,11 +67,12 @@ class KpiMarksController < ApplicationController
 	end
 
 	def update_user_marks
-		marks = KpiMark.find(params[:mark].map{|k, v| k})
+		marks = KpiMark.find(params[:explanation].map{|k, v| k})
 
 		marks.each{|mark|
 			mark.fact_value=params[:mark][mark.id.to_s]
 			mark.explanation=params[:explanation][mark.id.to_s]
+			mark.disabled=params[:disabled][mark.id.to_s] if mark.user.kpi_mark_can_be_disabled?(mark)
 			mark.save if mark.check_user_for_fact_update		
 			}	
 		find_marks

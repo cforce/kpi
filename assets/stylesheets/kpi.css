@@ -1,3 +1,8 @@
+.align_right input
+	{
+	text-align: right;
+	}
+
 #kpi_matrix
 	{
 	width: auto;

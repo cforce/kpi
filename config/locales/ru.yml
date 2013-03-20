@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 ru:
   employee: "Сотрудник"
+  exclude: "Исключить"
   customer_custom_field: "Настраеваемое поле заказчик (закрытие периода)"
   are_you_sure_you_want_to_close_calc_period: "Вы уверены что хотите закрыть расчетный период?"
   employee_doesnt_set_all_issue_mark: "Сотрудник не выставил оценок по  задачам, отправленным ему на проверку"

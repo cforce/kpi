@@ -17,8 +17,12 @@
     <% @values.each do |value| %>
         <tr>
             <td><%= h value.name %> </td>
-            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}][plan_value]", value.attributes['plan_value'] , :class => "#{'completed' unless value.attributes['plan_value'].nil? }" if value.plan_value_enable %></td>
-            <td class="fact_value"><%= text_field_tag "imported_value[#{value.id}][fact_value]", value.attributes['fact_value']  , :class => "#{'completed' unless value.attributes['fact_value'].nil? }" if value.fact_value_enable %></td>
+            <td class="fact_value align_right">
+                <%= text_field_tag "imported_value[#{value.id}][plan_value]", numeric_value(value.attributes['plan_value']) , :class => "numeric #{'completed' unless value.attributes['plan_value'].nil? }" if value.plan_value_enable %>
+            </td>
+            <td class="fact_value align_right">
+                <%= text_field_tag "imported_value[#{value.id}][fact_value]", numeric_value(value.attributes['fact_value'])  , :class => "numeric #{'completed' unless value.attributes['fact_value'].nil? }" if value.fact_value_enable %>
+            </td>
             <td>
             <%= link_to(l(:button_delete), {:controller => "kpi_imported_values", :action => "destroy", :id => value.id, "date[month]"=>@date.month, "date[year]"=>@date.year },
                                            :method => :delete,

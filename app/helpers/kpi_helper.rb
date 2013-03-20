@@ -1,4 +1,8 @@
 module KpiHelper
+  def numeric_value(value)
+    number_with_precision(value, :delimiter => " ", :strip_insignificant_zeros => false, :precision =>2, :separator => '.')
+  end
+
 	def cut_completion(completion, period_indicator)
 		get_cut_value(completion, period_indicator.max_effectiveness, period_indicator.min_effectiveness)
 	end
@@ -43,11 +47,13 @@ module KpiHelper
 			end
 		  	select_tag name, 
 		  				options_for_select(options, mark.fact_value.nil? ? default : mark.fact_value.to_f), 
-		  				:tabindex => tabindex, :class => 'fact_value ' + (mark.fact_value.nil? ? '' : 'completed'), 
+		  				:tabindex => tabindex, :class => 'fact_value' + (mark.fact_value.nil? ? '' : ' completed'), 
+              :disabled => mark.disabled,
 		  				'data-explanation' => "explanation_#{mark.id}",
 		  				'data-plan' => "plan_value_#{mark.id}"
 		else
-		  	"<input type=\"text\" name=\"#{name}\" tabindex=\"#{tabindex}\" value=\"#{mark.fact_value}\" class=\"#{'completed' if not mark.fact_value.nil?}\"/> ".html_safe
+        text_field_tag(name, value = mark.fact_value, :tabindex => tabindex, :class => (mark.fact_value.nil? ? 'numeric' : 'numeric completed'), :disabled => mark.disabled)
+		  	#"<input type=\"text\" name=\"#{name}\" tabindex=\"#{tabindex}\" value=\"#{mark.fact_value}\" class=\"#{'completed' if not mark.fact_value.nil?}\"/> ".html_safe
 		end		
 
 	end
@@ -123,7 +129,6 @@ module KpiHelper
 	def plan_view(value, mark, period_indicator, period, period_user)
 		value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true)
 		if mark.check_user_for_plan_update(period_indicator, period_user)
-			#Rails.logger.debug "ffffffffff #{{:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}.inspect}"
 			link_to_modal_window(value, {:controller => 'kpi_marks', :action=> 'edit_plan', :id => mark.id, :i=>period.id}, {:class => 'click_out'})
 		else
 			value
