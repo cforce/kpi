@@ -1,5 +1,5 @@
 <% marks = @marks.reject{|m| m.user_id!=tab[:user_id]} %>
-
+<% user = @estimated_users.find{|u| u.id==tab[:user_id].to_i} %>
 <% if marks.any? %>
 
 <%= form_tag({:controller => 'kpi_marks', :action => 'update_user_marks', :user_id => tab[:user_id]}, :method => :post, :remote => true, :class => 'kpi_marks',:id => "mark_form_#{tab[:user_id]}") do |f| %>
@@ -12,7 +12,7 @@
 				<th style="width:5%"><%= l(:label_plan) %></th>
 				<th style="width:10%"><%= l(:my_kpi_mark) %></th>
 				<th><%= l(:kpi_mark_desc) %></th>
-				<% if User.current.admin? or @user.subordinate? %>
+				<% if User.current.admin? or user.subordinate? %>
 					<th><%= l(:exclude) %></th>
 				<% end %>
 				</tr>
@@ -45,14 +45,17 @@
 	</td>
 	<td>
 	<%= text_area_tag "explanation[#{mark.id}]", mark.explanation, :size => "40x1", :class => 'explanation ' + (mark.explanation.to_s=='' ? '' : 'completed') %>
-	</td>
-	<td>
 	<%= hidden_field_tag "disabled[#{mark.id}]", 0, :id => "disabled_ht_#{mark.id}" %>
-	<% if @user.kpi_mark_can_be_disabled?(mark) %>
+	</td>
+	
+	
+	<% if user.kpi_mark_can_be_disabled?(mark) %>
+		<td>
 		<%= check_box_tag "disabled[#{mark.id}]", 1, mark.disabled, :class => 'enable_field', 'data-rel-element' => "mark_#{mark.id}" %>
+		</td>
 	<% end %>
 
-	</td>
+	
 	</tr>
 <% end %>
 
