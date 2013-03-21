@@ -1,3 +1,13 @@
+table.list tr.divider td, table.list tr.divider:hover td
+	{
+	border: none;
+	height: 15px;
+	}
+table.list tr.divider:hover
+	{
+	background-color: #fff;
+	}
+
 .align_right input
 	{
 	text-align: right;
@@ -144,7 +154,7 @@ span.arr
 
 table.list tbody tr.kpi_cat td
 	{
-	font-weight: bold;
+	/*font-weight: bold;*/
 	background-color: #f7f7f7;
 	}
 

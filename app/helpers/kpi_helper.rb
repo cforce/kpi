@@ -1,4 +1,31 @@
 module KpiHelper
+  def salary_report_table_thead(all_surcharges_names)
+    s = ''
+    s << '<tr>'
+    s << "<th>#{l(:employee)}</th>"
+    s << "<th>#{l(:user_title)}</th>"  
+    s << "<th>#{l(:main_money)}</th>"  
+    s << "<th>#{l(:time_ratio).html_safe}</th>"  
+    s << "<th>#{l(:kpi_ratio).html_safe} </th>"  
+    s << "<th>#{l(:calculated_salary).html_safe} </th>"  
+
+    
+    all_surcharges_names.each do |sn|
+        s << '<th>'
+        s << sn.name
+        s << '</th>'
+    end
+
+    s << '<th>'
+    s << l(:total)
+    s << '</th>'
+
+    s << '<th>'
+    s << '</th>'
+    s << '</tr>'
+    s.html_safe       
+  end
+
   def numeric_value(value)
     number_with_precision(value, :delimiter => " ", :strip_insignificant_zeros => false, :precision =>2, :separator => '.')
   end
@@ -82,14 +109,22 @@ module KpiHelper
 		end
 	end
 
-	def kpi_value(value, abridgement, minus=false)
-    value = number_with_precision(value, :delimiter => value.to_s.split('.').first.length > 4 ? " " : "", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')  unless value.nil?
+	def kpi_value(value, abridgement, minus=false, strip_insignificant_zeros = true, right_align = false)
+    if strip_insignificant_zeros
+      value = number_with_precision(value, :delimiter =>" ", :strip_insignificant_zeros => true, :precision =>2, :separator => '.')  unless value.nil?
+    else
+      value = numeric_value(value) if not value.nil?
+    end
 
 		value='x' if value.nil?
 		css_class="" 
 		css_class="minus" if minus
 
-		"<nobr><span class=\"#{css_class} value\">#{value}</span><span class=\"unit\">#{abridgement}</span></nobr>".html_safe
+    if right_align
+      "<nobr><span class=\"unit\">#{abridgement}</span><span class=\"#{css_class} value R\">&nbsp;#{value}</span></nobr>".html_safe  
+    else
+      "<nobr><span class=\"#{css_class} value\">#{value}</span><span class=\"unit\">#{abridgement}</span></nobr>".html_safe
+    end
 	end
 
 	def weighted_average_value(completion)

@@ -13,83 +13,80 @@
 <% end %>
 
 <table class="list"> 
-  <tr>
-    <th><%= l(:employee) %></th>
-    <th><%= l(:user_title) %></th>  
-    <th><%= l(:main_money) %></th>  
-    <th><%= l(:time_ratio) %></th>  
-    <th><%= l(:kpi_ratio) %></th>  
 
-    <% all_surcharges_names = KpiSurcharge.all.each %>
-    <% surcharges_col_num = 0 %>
-    <% all_surcharges_names.each do |sn| %>
-      <th><%= sn.name %></th>
-      <% surcharges_col_num+=1 %>
-    <% end %>
+  <% all_surcharges_names = KpiSurcharge.all %>
+  <% surcharges_col_num = all_surcharges_names.length %>
+  <%= salary_report_table_thead(all_surcharges_names) %>
 
-    <th><%= l(:total) %></th>  
-    <th></th>  
-  </tr>  
   <% user_department_id = nil %>
-  <% total = 0.to_f %>
+
+  <% salary_total = {} %>
 
   <% exist_locked_period=false %>
-  <% @user_periods.each do |pu| %>
+  <% @user_periods.each_with_index do |pu, index| %>
 
   <% if user_department_id != pu.user.user_department_id %>
-    <tr class="kpi_cat"><td colspan="<%= 7+surcharges_col_num %>"><%= pu.user.user_department.name %></td></tr>
+    <% if pu.user.user_department.head_of_branch %>
+      <% salary_total[pu.user.user_department_id] = 0.to_f %>
+      <tr>
+      <td colspan="<%= 5 %>"></td>
+      <td></td>
+      <% all_surcharges_names.each do |su| %>
+        <td class="align_right">
+        sad
+        </td>
+      <% end %>
+      <td class="align_right"><%= kpi_value salary_total[user_department_id], l(:money_unit_abridgement), false, false, true  %></td>
+      <td></td>
+      </tr>
+
+      <tr class="divider"><td colspan="<%= 8 + surcharges_col_num %>" ></td></tr>
+
+      <tr class="divider"><td colspan="<%= 8 + surcharges_col_num %>" ><big><big><%= pu.user.user_department.name %></big></big></td></tr>
+      <%= salary_report_table_thead(all_surcharges_names) %>
+    <% else %>
+      <tr class="kpi_cat">
+      <td colspan="<%= 8+surcharges_col_num %>"><%= pu.user.user_department.name %></td>
+      </tr>
+    <% end %>
+
     <% user_department_id = pu.user.user_department_id %>
   <% end %>
 
-  <% if pu.locked %>
-  <% exist_locked_period=true %>
-  <tr>
-    <td><%= link_to_user pu.user %></td>
-    <td><%= pu.user.user_title.name %></td>
 
-    <td><%= kpi_value pu.main_money, l(:money_unit_abridgement) %></td>
-    <td><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice') ? 'x' : pu.time_ratio, '') %></td>
-    <td><%= kpi_value pu.kpi_ratio, '' %></td>
+  <% exist_locked_period = true %>
+  <tr class="<%= 'locked' unless pu.locked %>">
+    <td><%= link_to_user pu.user %></td>
+    <td>
+      <%= pu.user.user_title.name %>
+      <% if @user_periods[index-1].try(:user_id) == pu.user_id or @user_periods[index+1].try(:user_id) == pu.user_id %><br>
+        <small><%= pu.kpi_calc_period.kpi_pattern.try(:name) %></small>
+      <% end %>
+    </td>
+
+    <td class="align_right"><%= kpi_value (pu.locked ? pu.main_money : 'x'), l(:money_unit_abridgement), false, false, true %></td>
+    <td class="align_right"><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice' or not pu.locked) ? 'x' : pu.time_ratio, '%', false, false, true) %></td>
+    <td class="align_right"><%= kpi_value (pu.locked ? pu.kpi_ratio : 'x'), '%', false, false, true %></td>
+    <td class="align_right"><%= kpi_value (pu.locked ? pu.main_money*pu.kpi_ratio/100 : 'x'), l(:money_unit_abridgement), false, false, true %></td>
 
     <% surcharge_details = pu.get_surcharge_details %>
     <% all_surcharges_names.each do |su| %>
-      <td>
-      <%= kpi_value surcharge_details[su.name], l(:money_unit_abridgement) %>
+      <td class="align_right">
+      <%= kpi_value (pu.locked ? surcharge_details[su.name] : 'x'), l(:money_unit_abridgement), false, false, true %>
       </td>
     <% end %>
 
-    <td><%= kpi_value pu.salary, l(:money_unit_abridgement)  %></td>
+    <td class="align_right"><%= kpi_value (pu.locked ? pu.salary : 'x'), l(:money_unit_abridgement), false, false, true  %></td>
     <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
 
-    <% total += pu.salary.to_f %>
+    <% salary_total[pu.user.user_department_id] += pu.salary.to_f if pu.locked and not salary_total[pu.user.user_department_id].nil? %>
   </tr>
-
-  <% else %>
-
-  <tr class="locked">
-    <td><%= link_to_user pu.user %></td>
-    <td><%= pu.user.user_title.name %></td>
-
-    <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
-    <td><%= kpi_value 'x', '' %></td>
-    <td><%= kpi_value 'x', '' %></td>
-
-    <% all_surcharges_names.each do |su| %>
-      <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
-    <% end %>
-
-    <td><%= kpi_value 'x', l(:money_unit_abridgement) %></td>
-    <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
-
-  </tr>
-
-  <% end %>
 
   <% end %>
 
   <tr>
-  <td colspan="<%= 5+surcharges_col_num %>"></td>
-  <td><%= kpi_value exist_locked_period ? total : 'x', l(:money_unit_abridgement)  %></td>
+  <td colspan="<%= 6+surcharges_col_num %>"></td>
+  <td class="align_right"><%= kpi_value exist_locked_period ? '1' : 'x', l(:money_unit_abridgement), false, false, true  %></td>
   <td></td>
   </tr>
 
