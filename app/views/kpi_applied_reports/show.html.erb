@@ -49,9 +49,12 @@
     <td class="align_right"><%= kpi_value (pu.locked ? pu.main_money : 'x'), l(:money_unit_abridgement), false, false, true %></td>
     <td class="align_right"><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice' or not pu.locked or pu.time_ratio.nil?) ? 'x' : pu.time_ratio*100, '%', false, false, true) %></td>
     <td class="align_right"><%= kpi_value (pu.locked ? pu.kpi_ratio : 'x'), '%', false, false, true %></td>
-    <% calculated_salary = pu.main_money*pu.kpi_ratio/100 if pu.locked %>
-    <% @totals[:calculated_salary][last_department.id] = 0.to_f if @totals[:calculated_salary][last_department.id].nil? %>
-    <% @totals[:calculated_salary][last_department.id] += calculated_salary if pu.locked  %>    
+    <% Rails.logger.debug "gggggggggg #{pu.main_money.inspect} " %>
+    <% if pu.locked and not pu.kpi_ratio.nil? %>
+      <% calculated_salary = pu.main_money*pu.kpi_ratio/100 %>
+      <% @totals[:calculated_salary][last_department.id] = 0.to_f if @totals[:calculated_salary][last_department.id].nil? %>
+      <% @totals[:calculated_salary][last_department.id] += calculated_salary if pu.locked  %>    
+    <% end %>
     <td class="align_right"><%= kpi_value (pu.locked ? calculated_salary : 'x'), l(:money_unit_abridgement), false, false, true %></td>
 
 
