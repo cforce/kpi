@@ -189,22 +189,26 @@ function set_caret_position(ctrl, pos){
 
 function numeric_value(obj)
     {
-    caret_position = get_caret_position(document.getElementById(obj.attr('id')))
-    space_count_before = obj.val().substring(0, caret_position).split(' ').length-1
+    if(obj.val()!='')
+        {
+        caret_position = get_caret_position(document.getElementById(obj.attr('id')))
+        space_count_before = obj.val().substring(0, caret_position).split(' ').length-1
 
-    var re = /([^\.,0-9-]{1,})|(^\.)/g
-    obj.val(obj.val().replace(re, ''))
+        var re = /([^\.,0-9-]{1,})|(^\.)/g
+        obj.val(obj.val().replace(re, ''))
 
-    obj.val(obj.val().split(',').join('.'))
+        obj.val(obj.val().split(',').join('.'))
 
-    var re = /(\.\d{0,})([^0-9]{1,})(\d{0,})/g
-    obj.val(obj.val().replace(re, '$1$3'))
+        var re = /(\.\d{0,})([^0-9]{1,})(\d{0,})/g
+        obj.val(obj.val().replace(re, '$1$3'))
 
-    re = /(\d)(?=(\d\d\d)+([^\d]|$))/g
-    obj.val(obj.val().replace(re, '$1 '))
+        re = /(\d)(?=(\d\d\d)+([^\d]|$))/g
+        obj.val(obj.val().replace(re, '$1 '))
 
-    space_count_after = obj.val().substring(0, caret_position).split(' ').length-1
-    set_caret_position(document.getElementById(obj.attr('id')), caret_position+(space_count_after-space_count_before))
+        space_count_after = obj.val().substring(0, caret_position).split(' ').length-1
+
+        set_caret_position(document.getElementById(obj.attr('id')), caret_position+(space_count_after-space_count_before))
+        }
     }
 
 

@@ -1,0 +1,17 @@
+ <tr class="divider"><td colspan="<%= 8 + @all_surcharges_names.length %>" ></td></tr>
+
+<tr>
+<td colspan="<%= 5 %>"></td>
+<td>
+<%= kpi_value @totals[:calculated_salary].inject(0.to_f){|sum, (id, salary)| sum+=salary; sum}, l(:money_unit_abridgement), false, false, true %>
+</td>
+<% @all_surcharges_names.each do |su| %>
+  <td class="align_right">
+  <%= kpi_value @totals[:surcharges].inject(0.to_f){|sum, (id, sur)| sum+=sur[su.id]; sum}, l(:money_unit_abridgement), false, false, true %>
+  </td>
+<% end %>
+<td class="align_right">
+<%= kpi_value @totals[:salary].inject(0.to_f){|sum, (id, salary)| sum+=salary; sum}, l(:money_unit_abridgement), false, false, true %>
+</td>
+<td></td>
+</tr>  

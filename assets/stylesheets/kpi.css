@@ -2,6 +2,7 @@ table.list tr.divider td, table.list tr.divider:hover td
 	{
 	border: none;
 	height: 15px;
+	padding: 0px;
 	}
 table.list tr.divider:hover
 	{
@@ -386,8 +387,17 @@ div.kpi_footnote
 	{
 	border-bottom: 1px solid #ccc;
 	padding: 0px 0px 5px 150px;
-	margin: 5px 0px 5px 0px;
+	margin: 5px 3px 5px 0px;
 	}
+div.kpi_footnote .nodata
+	{
+	margin-bottom: 0px;	
+	}
+div.kpi_footnote .selected
+	{
+	padding: 2px;
+	}
+	
 div.payment
 	{
 	font-size: 1.5em;

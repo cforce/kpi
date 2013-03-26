@@ -1,41 +1,48 @@
 class KpiAppliedReportsController < ApplicationController
   before_filter :authorized_globaly?, :except => [:show]
-  before_filter :find_period_dates, :only => [:show,  :apply, :redo]
-  before_filter :find_date, :only => [:show, :apply, :redo]
+  before_filter :find_period_dates, :only => [:show,  :apply, :cancel]
+  before_filter :find_date, :only => [:show, :apply, :cancel]
     
   helper :kpi
   include KpiHelper
 
   def show
-    @applied_report = KpiAppliedReport.where(:date => @date).try(:first)
-
     #@users_with_open_period = User.joins(:kpi_calc_periods).where("#{KpiCalcPeriod.table_name}.date = ? AND #{KpiCalcPeriod.table_name}.locked = ? AND #{KpiCalcPeriod.table_name}.active = ? AND #{KpiPeriodUser.table_name}.locked = ? ", @date, false, true, false)
     
     find_user_periods #unless @users_with_open_period.any?
-    @is_open_periods = @user_periods.map{|up| up.locked}.include?(false)
+
+    @department_period_states = {}
+
+    @all_surcharges_names = KpiSurcharge.joins(:kpi_period_surcharges).where("kpi_calc_period_id IN (?)", @user_periods.map{|up| up.kpi_calc_period.id}.uniq).group("#{KpiSurcharge.table_name}.id")
+    @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}}
   end
 
   def apply
+    #department = UserDepartment.find(params[:department_id])
+    @department_id = params[:department_id]
+    @user_who_approved = User.current
+
     @applied_report = KpiAppliedReport.new
     @applied_report.date = @date
     @applied_report.user_id = User.current.id
+    @applied_report.user_department_id = @department_id #department.id
     @applied_report.save
 
-    find_user_periods
-
-    #find_closed_user_periods.each{|cup| @applied_report << cup }
-    @applied_report.kpi_calc_periods << KpiCalcPeriod.where("#{KpiCalcPeriod.table_name}.locked = ?
-                                                            AND #{KpiCalcPeriod.table_name}.date = ?", true, @date)
-
-    redirect_to :action => 'show', :date => @date
-  end
-
-  def redo
-    KpiAppliedReport.where(:date => @date).each do |ar|
-    ar.destroy
+    respond_to do |format| format.js { render "kpi_applied_reports/apply" }
     end
 
-    redirect_to :action => 'show', :date => @date
+    # @applied_report.kpi_calc_periods << KpiCalcPeriod.where("#{KpiCalcPeriod.table_name}.locked = ?
+                                                            # AND #{KpiCalcPeriod.table_name}.date = ?", true, @date)
+  end
+
+  def cancel
+    @department_id = params[:department_id]
+    KpiAppliedReport.where(:date => @date, :user_department_id => params[:department_id]).each do |ar|
+      ar.destroy
+    end
+
+    respond_to do |format| format.js { render "kpi_applied_reports/cancel" } 
+    end
   end
 
   private
@@ -54,7 +61,7 @@ class KpiAppliedReportsController < ApplicationController
       @user_periods = KpiPeriodUser.joins(:kpi_calc_period, :user => [{:user_department => :node}, :user_title])                                          
                                     .where("#{KpiCalcPeriod.table_name}.date = ?",
                                             @date)
-                                    .includes(:kpi_calc_period, :user => [:user_department, :user_title])
+                                    .includes(:kpi_calc_period, :user => [{:user_department => :node}, :user_title])
                                     .order("#{UserDepartmentTree.table_name}.lft,
                                             CASE WHEN #{UserDepartment.table_name}.manager_id=#{KpiPeriodUser.table_name}.user_id THEN 0 ELSE 1 END,
                                             #{UserTitle.table_name}.name,
@@ -64,7 +71,7 @@ class KpiAppliedReportsController < ApplicationController
                                             .where("#{KpiCalcPeriod.table_name}.date = ?
                                                     AND ((#{UserTree.table_name}.lft>=? AND #{UserTree.table_name}.rgt<=? AND #{KpiCalcPeriod.table_name}.user_id IS NULL) OR (#{KpiCalcPeriod.table_name}.user_id = ?))",
                                                     @date, User.current.user_tree.lft, User.current.user_tree.right, User.current.id)
-                                            .includes(:kpi_calc_period, :user => [:user_department, :user_title])
+                                            .includes(:kpi_calc_period, :user => [{:user_department => :node}, :user_title])
                                             .order("#{UserDepartmentTree.table_name}.lft,
                                                      CASE WHEN #{UserDepartment.table_name}.manager_id=#{KpiPeriodUser.table_name}.user_id THEN 0 ELSE 1 END,
                                                     #{UserTitle.table_name}.name,

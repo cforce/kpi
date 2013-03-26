@@ -36,8 +36,8 @@ RedmineApp::Application.routes.draw do
 	resources :kpi_applied_reports do
 		collection do
 			get 'show', :action => 'show'
-			get 'apply/:date', :action => 'apply'
-			get 'redo/:date', :action => 'redo'
+			get 'apply/:date/:department_id', :action => 'apply'
+			get 'cancel/:date/:department_id', :action => 'cancel'
 		end
 
 	end

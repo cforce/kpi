@@ -12,6 +12,7 @@ module Kpi
 		has_many :kpi_inspector_marks, :class_name => 'KpiMark', :foreign_key => 'inspector_id'
 		has_many :kpi_period_users
 		has_many :kpi_calc_periods, :through => :kpi_period_users
+		has_many :kpi_applied_reports
 
 		scope :not_in_kpi_pattern, lambda {|pattern|
 		    pattern_id = pattern.is_a?(KpiPattern) ? pattern.id : pattern.to_i

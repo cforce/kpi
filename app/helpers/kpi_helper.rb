@@ -1,5 +1,5 @@
 module KpiHelper
-  def salary_report_table_thead(all_surcharges_names)
+  def salary_report_table_thead()
     s = ''
     s << '<tr>'
     s << "<th>#{l(:employee)}</th>"
@@ -10,7 +10,7 @@ module KpiHelper
     s << "<th>#{l(:calculated_salary).html_safe} </th>"  
 
     
-    all_surcharges_names.each do |sn|
+    @all_surcharges_names.each do |sn|
         s << '<th>'
         s << sn.name
         s << '</th>'

@@ -1,0 +1,29 @@
+<tr>
+<td colspan="<%= 5 %>"></td>
+<td>
+<%= kpi_value @totals[:calculated_salary][last_department.id], l(:money_unit_abridgement), false, false, true %>
+</td>
+<% @all_surcharges_names.each do |su| %>
+  <td class="align_right">
+  <%= kpi_value @totals[:surcharges][last_department.id][su.id], l(:money_unit_abridgement), false, false, true  %>
+  </td>
+<% end %>
+<td class="align_right"><%= kpi_value @totals[:salary][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td></td>
+</tr> 
+
+<tr class="divider">
+<td colspan="<%= 8 + @all_surcharges_names.length %>" >
+
+<div class="R kpi_footnote" id="footnote_<%= last_department.id %>">
+    <% user_who_approved = KpiAppliedReport.user_who_approved(@date, last_department) %>
+    <% if not user_who_approved.nil? %>
+      <%= render :partial => 'kpi_applied_reports/approved', :locals => {:user_who_approved => user_who_approved, :department_id => last_department} %>
+    <% else  %>
+      <%= render :partial => 'kpi_applied_reports/approve', :locals => {:department_id => last_department.id, :department_period_state => @department_period_states[last_department.id]} %>
+    <% end  %>
+</div>
+
+</td>
+</tr> 
+
