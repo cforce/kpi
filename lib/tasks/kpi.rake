@@ -19,12 +19,20 @@ namespace :redmine do
   end
 
   task :copy_calc_periods => :environment do
-    puts "Copy Calc Period task is executing"
+
+
+    if ENV['source_date'].nil?
+      target_date = Date.today
+    else
+      target_date = Date.today+1.months
+    end
+    puts "Copy Calc Period task is executing. Target date is #{target_date}"
     puts "-----------------------------------" 
-    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{Date.today.at_beginning_of_month} 
+
+    KpiCalcPeriod.joins("LEFT JOIN #{KpiCalcPeriod.table_name} AS p ON p.parent_id=#{KpiCalcPeriod.table_name}.id AND p.date = #{target_date.at_beginning_of_month} 
                          INNER JOIN #{KpiPattern.table_name} ON #{KpiPattern.table_name}.id = #{KpiCalcPeriod.table_name}.kpi_pattern_id ")
                  .where("#{KpiCalcPeriod.table_name}.date = ? AND p.id IS NULL AND #{KpiCalcPeriod.table_name}.active = ?", 
-                         Date.today.at_beginning_of_month-1.months,
+                         target_date.at_beginning_of_month-1.months,
                          true)
                  .each do |original_period|
       #puts "Original period date - #{original_period.date}"
