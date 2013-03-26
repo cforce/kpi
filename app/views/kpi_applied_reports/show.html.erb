@@ -4,22 +4,27 @@
 
 <% if @user_periods.any? and @period_dates.any? %>
 
-
-
 <div class="autoscroll"> 
 <table class="list"> 
   <% last_department = nil %>
 
   <% @user_periods.each_with_index do |pu, index| %>
 
-  <% if @user_periods[index-1].try(:user).try(:user_department_id) != pu.user.user_department_id %>
+  <% if @user_periods[index-1].try(:user).try(:user_department_id) != pu.user.user_department_id or index==0 %>
 
     <% if pu.user.user_department.head_of_branch or last_department.nil? or (not last_department.nil? and (pu.user.user_department.node.lft>last_department.node.rgt or pu.user.user_department.node.lft<last_department.node.lft) ) %>
-      <%= render :partial => 'kpi_applied_reports/deprtment_totals', :locals => {:last_department => last_department} if index!=0 %>        
+            
+      <% if index!=0 %>
+        <%= render :partial => 'kpi_applied_reports/deprtment_totals', :locals => {:last_department => last_department} %>  
+        </tbody>
+      <% end %>
+
+      <tbody id="department_<%= pu.user.user_department.id %>" class="departments">
       <tr class="divider"><td colspan="<%= 8 + @all_surcharges_names.length %>" ><big><big>&nbsp;<%= pu.user.user_department.name %></big></big></td></tr>
       <%= salary_report_table_thead %>
 
       <% last_department = pu.user.user_department %>
+      <% @departments[pu.user.user_department.id]=pu.user.user_department.name %>
       <% @department_period_states[pu.user.user_department_id] = true %>
     <% else %>
       <tr class="kpi_cat">
@@ -28,6 +33,7 @@
     <% end %>
 
   <% end %>
+
 
   <% @department_period_states[last_department.id] &&= pu.locked  %>
 
@@ -41,7 +47,7 @@
     </td>
 
     <td class="align_right"><%= kpi_value (pu.locked ? pu.main_money : 'x'), l(:money_unit_abridgement), false, false, true %></td>
-    <td class="align_right"><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice' or not pu.locked) ? 'x' : pu.time_ratio*100, '%', false, false, true) %></td>
+    <td class="align_right"><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice' or not pu.locked or pu.time_ratio.nil?) ? 'x' : pu.time_ratio*100, '%', false, false, true) %></td>
     <td class="align_right"><%= kpi_value (pu.locked ? pu.kpi_ratio : 'x'), '%', false, false, true %></td>
     <% calculated_salary = pu.main_money*pu.kpi_ratio/100 if pu.locked %>
     <% @totals[:calculated_salary][last_department.id] = 0.to_f if @totals[:calculated_salary][last_department.id].nil? %>
@@ -70,6 +76,7 @@
   <% end %>
 
   <%= render :partial => 'kpi_applied_reports/deprtment_totals', :locals => {:last_department => last_department} %>
+  </tbody>
   <%= render :partial => 'kpi_applied_reports/main_totals' %>
 
 </table>

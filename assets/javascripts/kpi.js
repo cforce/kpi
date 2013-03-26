@@ -1,5 +1,22 @@
 jQuery(document).ready(function(){
 
+    jQuery('#department_list li a').click(function(){
+        jQuery('#department_list li a').removeClass('selected');
+        jQuery(this).addClass("selected");
+        if(jQuery(this).attr('data-department-id')!=0)
+            {
+            jQuery('tbody.departments').hide();
+            jQuery('tbody.main_totals').hide();
+            jQuery('#department_'+jQuery(this).attr('data-department-id')).show();
+            }
+        else
+            {
+            jQuery('tbody.departments').show();
+            jQuery('tbody.main_totals').show();   
+            }
+
+    })
+
     jQuery(document.body).on("click", 'input.enable_field', function(){
         if(jQuery('#'+jQuery(this).attr('data-rel-element')).attr('disabled')=='disabled')
             jQuery('#'+jQuery(this).attr('data-rel-element')).removeAttr('disabled')

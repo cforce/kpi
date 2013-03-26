@@ -12,6 +12,7 @@ class KpiAppliedReportsController < ApplicationController
     find_user_periods #unless @users_with_open_period.any?
 
     @department_period_states = {}
+    @departments = {}
 
     @all_surcharges_names = KpiSurcharge.joins(:kpi_period_surcharges).where("kpi_calc_period_id IN (?)", @user_periods.map{|up| up.kpi_calc_period.id}.uniq).group("#{KpiSurcharge.table_name}.id")
     @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}}

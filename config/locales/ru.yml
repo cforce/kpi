@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 ru:
   employee: "Сотрудник"
+  all: "Все"
   exclude: "Исключить"
   calculated_salary: "Расчетная"
   customer_custom_field: "Настраеваемое поле заказчик (закрытие периода)"

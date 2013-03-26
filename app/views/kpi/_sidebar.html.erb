@@ -40,7 +40,17 @@
 		<h3><%= l(:reports) %></h3>
 		<ul>
 			<li>
-			<%= link_to "<span>#{l(:salary_report)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "show"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_applied_reports'}" %>
+			<%= link_to "<span>#{l(:salary_report)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "show"}, :class=>"no_line" %>
+
+			<% if not @departments.nil? %>
+				<ul id="department_list">
+					<li><%= link_to l(:all), '#', :class => "in_link selected", :data => {:department_id => 0} %></li>				
+						
+					<% @departments.sort{|a,b| a[1]<=>b[1]}.each do |d| %>
+						<li><%= link_to "<span>#{d[1]}</span>".html_safe, '#', :class => "in_link no_line", :data => {:department_id => d[0]} %></li>
+					<% end %>
+				</ul>
+			<% end %>
 			</li>
 		</ul>
 	<% end %>
