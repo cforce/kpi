@@ -287,8 +287,8 @@ class KpiPeriodUser < ActiveRecord::Base
 			salary
 		else
 			return nil if main_money.nil? or kpi_ratio_value(kpi_values).nil?
-
-			main_money*kpi_ratio_value(kpi_values)/100+subcharge_total.to_f
+			Rails.logger.debug "gggggggggg #{kpi_ratio_value(kpi_values).round(2)}"
+			main_money*kpi_ratio_value(kpi_values).round(2)/100+subcharge_total.to_f
 		end
 	end
 

@@ -180,7 +180,7 @@ module KpiHelper
 	end
 
 	def completion_view(mark, completion)
-		link_to_modal_window kpi_val_round(completion), {:controller => 'kpi_marks', :action=> 'show_info', :id => mark.id}, :class => 'click_out' unless completion.nil?
+		link_to_modal_window kpi_val_round(completion), {:controller => 'kpi_marks', :action=> 'show_info', :id => mark.id}, :class => 'click_out', :title => completion unless completion.nil?
 	end
 
 	def fact_view(mark, period, period_indicator, period_user)
@@ -368,8 +368,8 @@ module KpiHelper
     ratio = number_with_precision(kpi_values[:ratio], :separator => ".", :strip_insignificant_zeros => true, :precision => 2)
     v = ratio
     v = "#{ratio} &rarr; #{cut_ratio}".html_safe if cut_ratio!=ratio
-    v = kpi_percent(v)
-    v
+    v = "<span title=\"#{kpi_values[:cut_ratio]}\">"+kpi_percent(v)+"</span>"
+    v.html_safe
   end
 
   # def get_weighted_average_value(value)
