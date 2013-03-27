@@ -224,7 +224,8 @@ function numeric_value(obj)
 
         space_count_after = obj.val().substring(0, caret_position).split(' ').length-1
 
-        set_caret_position(document.getElementById(obj.attr('id')), caret_position+(space_count_after-space_count_before))
+        if(caret_position!=0)
+            {set_caret_position(document.getElementById(obj.attr('id')), caret_position+(space_count_after-space_count_before))}
         }
     }
 
