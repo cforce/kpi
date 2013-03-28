@@ -20,7 +20,6 @@ namespace :redmine do
 
   task :copy_calc_periods => :environment do
 
-
     if ENV['source_date'].nil?
       target_date = Date.today
     else
@@ -46,6 +45,7 @@ namespace :redmine do
       period.kpi_imported_value_id = original_period.kpi_imported_value_id
       period.base_salary = original_period.base_salary
       period.user_id = original_period.user_id
+      period.allowed_change_salary = original_period.allowed_change_salary
 
 
       if period.save

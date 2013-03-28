@@ -31,7 +31,7 @@ ru:
   redo: "Отменить согласование"
   detailed_calculation: "Расчет"
   user_title: "Должность"
-  main_money: "База"
+  main_money: "База x T"
   time_ratio: "<span title='Временной коэффициент'>Т</span>"
   kpi_ratio: "<span title='Коэффициент результативности'>E</span>"
   what_marks_are_involved_in_the_calculation: "Какие оценки участвовали в расчете"
@@ -47,6 +47,7 @@ ru:
   field_kpi_imported_value: "Норма часов"
   jobprice_and_salary: "Сдельная оплата и оклад"
   exclude_time_ratio_label: "Исключить часы из расчета"
+  allowed_change_salary_label: "Разрешить менять базовый оклад"
   label_salary_calc: "Зарпалта"
   chart_available_values: Допустимые значения
   kpi_indicator_max_effectiveness_label: Максимум

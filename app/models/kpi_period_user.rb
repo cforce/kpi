@@ -13,8 +13,8 @@ class KpiPeriodUser < ActiveRecord::Base
 	include KpiHelper
 	
 	def check_user_for_salary_update?(user)
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
-		#(User.current.admin?) and not locked
+		#(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
+		(User.current.admin? or ((user.subordinate? or kpi_calc_period.user_id==User.current.id) and kpi_calc_period.allowed_change_salary)) and not self.locked
 	end
 
 	def check_user_for_jobprise_update?(user)

@@ -21,6 +21,9 @@
     <%= f.check_box :exclude_time_ratio, :label => l(:exclude_time_ratio_label), :disabled => @period.locked %>
 </p>
 <p>
+    <%= f.check_box :allowed_change_salary, :label => l(:allowed_change_salary_label), :disabled => @period.locked %>
+</p>
+<p>
     <%= f.select(:kpi_imported_value_id, (KpiImportedValue.where(:time_clocks => true).order(:name).map {|p| [p.name, p.id]}), {}, :disabled => @period.locked) %>
 </p>
 
