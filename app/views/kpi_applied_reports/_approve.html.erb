@@ -1,5 +1,7 @@
-<% if  KpiAppliedReport.user_can_apply? and department_period_state %>
-  <%= link_to "<span>#{l(:aprove)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "apply", :date => @date, :department_id => department_id}, :class => 'icon approve in_link', :remote => true  %>
-<% else %> 
-  <div class="nodata"><%= l(:salary_report_can_not_be_approved) %></div>
+<% if  KpiAppliedReport.user_can_apply? %>
+  <% if department_period_state %>
+    <%= link_to "<span>#{l(:aprove)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "apply", :date => @date, :department_id => department_id}, :class => 'icon approve in_link', :remote => true  %>
+  <% else %> 
+    <div class="nodata"><%= l(:salary_report_can_not_be_approved) %></div>
+  <% end %>
 <% end %>
