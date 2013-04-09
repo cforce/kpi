@@ -83,6 +83,9 @@
     <% end %>
 
     <td class="align_right">
+    <% if pu.locked %>
+      <%= deductions %> = <%= pu.salary.round(2) %> - <%= calculated_salary.round(2) %> - <%= surcharge_sum %> |||||
+    <% end %>
     <%= kpi_value((pu.locked ? deductions : 'x'), l(:money_unit_abridgement), false, false, true) %></td>
     <td class="align_right"><%= kpi_value (pu.locked ? pu.salary : 'x'), l(:money_unit_abridgement), false, false, true  %></td>
     <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
