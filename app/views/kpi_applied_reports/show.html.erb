@@ -59,7 +59,7 @@
 
 
     <% surcharge_details = pu.get_positive_surcharge_details %>
-    <% surcharge_sum = surcharge_details.inject(0.to_f){|sum, (k,v)| sum+=v; sum;} %>
+    <% surcharge_sum = surcharge_details.inject(0.to_f){|sum, (k,v)| sum+=v; sum;}.round(2) %>
 
     <% @totals[:surcharges][last_department.id] = {} if @totals[:salary][last_department.id].nil? %>
     <% @all_surcharges_names.each do |su| %>
