@@ -8,12 +8,14 @@
   <%= kpi_value @totals[:surcharges][last_department.id][su.id], l(:money_unit_abridgement), false, false, true  %>
   </td>
 <% end %>
+<td><%= kpi_value @totals[:salary_whithout_deduction][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td><%= kpi_value @totals[:deductions][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
 <td class="align_right"><%= kpi_value @totals[:salary][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
 <td></td>
 </tr> 
 
 <tr class="divider">
-<td colspan="<%= 8 + @all_surcharges_names.length %>" >
+<td colspan="<%= 10 + @all_surcharges_names.length %>" >
 
 <div class="R kpi_footnote" id="footnote_<%= last_department.id %>">
     <% user_who_approved = KpiAppliedReport.user_who_approved(@date, last_department) %>

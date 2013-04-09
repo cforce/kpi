@@ -7,7 +7,7 @@ module KpiHelper
     s << "<th>#{l(:main_money)}</th>"  
     s << "<th>#{l(:time_ratio).html_safe}</th>"  
     s << "<th>#{l(:kpi_ratio).html_safe} </th>"  
-    s << "<th>#{l(:calculated_salary).html_safe} </th>"  
+    s << "<th>#{l(:calculated_salary).html_safe} </th>"
 
     
     @all_surcharges_names.each do |sn|
@@ -15,6 +15,9 @@ module KpiHelper
         s << sn.name
         s << '</th>'
     end
+
+    s << "<th>#{l(:total_without_deduction).html_safe} </th>" 
+    s << "<th>#{l(:deduction).html_safe} </th>" 
 
     s << '<th>'
     s << l(:total)

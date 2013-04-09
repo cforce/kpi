@@ -2,6 +2,8 @@
 ru:
   employee: "Сотрудник"
   all: "Все"
+  deduction: "Вычеты"
+  total_without_deduction: "Без выч-ов"
   exclude: "Исключить"
   calculated_salary: "Расчетная"
   customer_custom_field: "Настраеваемое поле заказчик (закрытие периода)"

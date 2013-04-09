@@ -15,7 +15,7 @@ class KpiAppliedReportsController < ApplicationController
     @departments = {}
 
     @all_surcharges_names = KpiSurcharge.joins(:kpi_period_surcharges).where("kpi_calc_period_id IN (?)", @user_periods.map{|up| up.kpi_calc_period.id}.uniq).group("#{KpiSurcharge.table_name}.id")
-    @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}}
+    @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}, :salary_whithout_deduction => {}, :deductions => {}}
   end
 
   def apply

@@ -20,7 +20,7 @@
       <% end %>
 
       <tbody id="department_<%= pu.user.user_department.id %>" class="departments">
-      <tr class="divider"><td colspan="<%= 8 + @all_surcharges_names.length %>" ><big><big>&nbsp;<%= pu.user.user_department.name %></big></big></td></tr>
+      <tr class="divider"><td colspan="<%= 10 + @all_surcharges_names.length %>" ><big><big>&nbsp;<%= pu.user.user_department.name %></big></big></td></tr>
       <%= salary_report_table_thead %>
 
       <% last_department = pu.user.user_department %>
@@ -28,7 +28,7 @@
       <% @department_period_states[pu.user.user_department_id] = true %>
     <% else %>
       <tr class="kpi_cat">
-      <td colspan="<%= 8+@all_surcharges_names.length %>"><%= pu.user.user_department.name %></td>
+      <td colspan="<%= 10+@all_surcharges_names.length %>"><%= pu.user.user_department.name %></td>
       </tr>
     <% end %>
 
@@ -58,7 +58,9 @@
     <td class="align_right"><%= kpi_value (pu.locked ? calculated_salary : 'x'), l(:money_unit_abridgement), false, false, true %></td>
 
 
-    <% surcharge_details = pu.get_surcharge_details %>
+    <% surcharge_details = pu.get_positive_surcharge_details %>
+    <% surcharge_sum = surcharge_details.inject(0.to_f){|sum, (k,v)| sum+=v; sum;} %>
+
     <% @totals[:surcharges][last_department.id] = {} if @totals[:salary][last_department.id].nil? %>
     <% @all_surcharges_names.each do |su| %>
       <td class="align_right">      
@@ -69,6 +71,15 @@
       </td>
     <% end %>
 
+    <% @totals[:salary_whithout_deduction][last_department.id] = 0.to_f if @totals[:salary_whithout_deduction][last_department.id].nil? %>
+    <% @totals[:salary_whithout_deduction][last_department.id] += calculated_salary.round(2)+surcharge_sum if pu.locked  %>
+
+    <td><%= kpi_value (pu.locked ? calculated_salary.round(2)+surcharge_sum : 'x'), l(:money_unit_abridgement), false, false, true %></td>
+
+    <% @totals[:deductions][last_department.id] = 0.to_f if @totals[:deductions][last_department.id].nil? %>
+    <% @totals[:deductions][last_department.id] += pu.salary - calculated_salary.round(2) - surcharge_sum if pu.locked  %>
+
+    <td class="align_right"><%= kpi_value((pu.locked ? (pu.salary - calculated_salary.round(2) - surcharge_sum) : 'x'), l(:money_unit_abridgement), false, false, true) %></td>
     <td class="align_right"><%= kpi_value (pu.locked ? pu.salary : 'x'), l(:money_unit_abridgement), false, false, true  %></td>
     <td><%= link_to l(:detailed_calculation), {:controller => 'kpi', :action => 'effectiveness', :date => @date, :user_id => pu.user.id} %></td>
 

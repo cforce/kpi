@@ -301,6 +301,16 @@ class KpiPeriodUser < ActiveRecord::Base
 		period_surcharges.merge(user_surcharges){|key, oldval, newval| oldval+newval}
 	end
 
+	def get_positive_surcharge_details
+		period_surcharges = kpi_calc_period.kpi_period_surcharges.where("default_value IS NOT NULL").includes(:kpi_surcharge).inject({}){|h, v| h[v.kpi_surcharge.name] = v.default_value if v.default_value>=0; h}
+		user_surcharges = kpi_user_surcharges.joins(:kpi_surcharge)
+							.group("#{KpiSurcharge.table_name}.name")
+							.select("#{KpiSurcharge.table_name}.name AS surcharge_name, SUM(#{KpiUserSurcharge.table_name}.value) AS surcharge")
+							.where("#{KpiUserSurcharge.table_name}.value >= 0")
+							.inject({}){|h, v| h[v.attributes['surcharge_name']] = v.surcharge; h }
+		period_surcharges.merge(user_surcharges){|key, oldval, newval| oldval+newval}
+	end
+
 	def subcharge_total
 		kpi_calc_period.kpi_period_surcharges
 						.where("default_value IS NOT NULL")
