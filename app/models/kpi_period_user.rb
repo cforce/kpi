@@ -316,7 +316,7 @@ class KpiPeriodUser < ActiveRecord::Base
 						.where("default_value IS NOT NULL")
 						.select("SUM(default_value) AS sum")
 						.try(:first).try(:sum).to_f + kpi_user_surcharges
-													.select("SUM(#{KpiUserSurcharge.table_name}.value) AS sum").try(:first).try(:sum).to_f
+													.select("SUM(#{KpiUserSurcharge.table_name}.value) AS sum").try(:first).try(:sum).to_f.round(2)
 	end
 
 	private	
