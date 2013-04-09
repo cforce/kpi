@@ -51,7 +51,7 @@
     <td class="align_right"><%= kpi_value (pu.locked ? pu.kpi_ratio : 'x'), '%', false, false, true %></td>
 
     <% if pu.locked and not pu.kpi_ratio.nil? %>
-      <% calculated_salary = pu.main_money*pu.kpi_ratio/100 %>
+      <% calculated_salary = pu.main_money*pu.kpi_ratio.round(2)/100 %>
       <% @totals[:calculated_salary][last_department.id] = 0.to_f if @totals[:calculated_salary][last_department.id].nil? %>
       <% @totals[:calculated_salary][last_department.id] += calculated_salary if pu.locked  %>    
     <% end %>
