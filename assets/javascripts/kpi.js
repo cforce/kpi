@@ -1,5 +1,32 @@
 jQuery(document).ready(function(){
 
+    jQuery('table.list tr th img.hide_table_column').click(function(){
+        var index = jQuery(this).parents('th').index();
+        jQuery(this).hide();
+        jQuery(this).next().show();
+        jQuery(this).parents('table.list').find('tr').each(function(){
+            var td = jQuery(this).children('td:eq('+index+')')
+            var th = jQuery(this).children('th:eq('+index+')')
+            td.html('<div class="I">'+td.html()+'</div>')
+            th.children('span').addClass('I')
+            })
+        })
+
+    jQuery('table.list tr th img.show_table_column').click(function(){
+        var index = jQuery(this).parents('th').index();
+        jQuery(this).hide();
+        jQuery(this).prev().show();
+        jQuery(this).parents('table.list').find('tr').each(function(){
+            var td = jQuery(this).children('td:eq('+index+')')
+            var th = jQuery(this).children('th:eq('+index+')')
+            td.html(td.children('div.I').html())
+            th.children('span').removeClass('I')
+            })
+        })
+
+    
+
+
     jQuery('#department_list li a').click(function(){
         jQuery('#department_list li a').removeClass('selected');
         jQuery(this).addClass("selected");

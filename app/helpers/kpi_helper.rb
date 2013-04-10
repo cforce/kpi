@@ -2,28 +2,38 @@ module KpiHelper
   def salary_report_table_thead()
     s = ''
     s << '<tr>'
-    s << "<th>#{l(:employee)}</th>"
-    s << "<th>#{l(:user_title)}</th>"  
-    s << "<th>#{l(:main_money)}</th>"  
-    s << "<th>#{l(:time_ratio).html_safe}</th>"  
-    s << "<th>#{l(:kpi_ratio).html_safe} </th>"  
-    s << "<th>#{l(:calculated_salary).html_safe} </th>"
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:employee)}</span></th>"
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:user_title)}</span></th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:main_money)}</span></th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:time_ratio).html_safe}</span></th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:kpi_ratio).html_safe}</span> </th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:calculated_salary).html_safe}</span> </th>"
 
     
     @all_surcharges_names.each do |sn|
         s << '<th>'
+        s << image_tag('hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column')
+        s << image_tag('show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column')
+        s << '<span>'
         s << sn.name
+        s << '</span>'
         s << '</th>'
     end
 
-    s << "<th>#{l(:total_without_deduction).html_safe} </th>" 
-    s << "<th>#{l(:deduction).html_safe} </th>" 
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:total_without_deduction).html_safe}</span> </th>" 
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:deduction).html_safe}</span> </th>" 
 
     s << '<th>'
+    s << image_tag('hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column')
+    s << image_tag('show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column')
+    s << '<span>'
     s << l(:total)
+    s << '</span>'
     s << '</th>'
 
     s << '<th>'
+    s << image_tag('hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column')
+    s << image_tag('show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column')
     s << '</th>'
     s << '</tr>'
     s.html_safe       

@@ -480,6 +480,11 @@ div.grey
 	background-color: #cde8f8;
 	}
 
+img.hide_table_column, img.show_table_column
+	{
+	cursor:pointer;
+	}
+
 /*Всплывающие подсказки*/
 /*----------------------------------------------------------------------------------------------*/
 .explanation_window{

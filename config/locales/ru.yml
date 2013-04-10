@@ -3,6 +3,8 @@ ru:
   employee: "Сотрудник"
   all: "Все"
   deduction: "Вычеты"
+  hide: "Скрыть"
+  show: "Показать"
   total_without_deduction: "Без выч-ов"
   exclude: "Исключить"
   calculated_salary: "Расчетная"
