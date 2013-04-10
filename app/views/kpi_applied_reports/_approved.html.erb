@@ -1,2 +1,2 @@
-<span class="selected"><%= l(:aproved) %>. <%= format_date @date %>, <%= link_to_user user_who_approved %></span>
+<span class="selected"><%= l(:aproved) %>. <%= format_date applied_report.created_at %>, <%= link_to_user applied_report.user %></span>
 <%= link_to "<span>#{l(:redo)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "cancel", :date => @date, :department_id => department_id}, :class => 'icon redo in_link', :remote => true if KpiAppliedReport.user_can_cancel? %>
