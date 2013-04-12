@@ -13,6 +13,7 @@ module Kpi
 		has_many :kpi_period_users
 		has_many :kpi_calc_periods, :through => :kpi_period_users
 		has_many :kpi_applied_reports
+		has_many :kpi_managed_periods, :table_name => KpiCalcPeriod.table_name
 
 		scope :not_in_kpi_pattern, lambda {|pattern|
 		    pattern_id = pattern.is_a?(KpiPattern) ? pattern.id : pattern.to_i
