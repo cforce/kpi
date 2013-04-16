@@ -524,3 +524,28 @@ height: 0;
 overflow: hidden;
 }	
 /*----------------------------------------------------------------------------------------------*/
+
+label.praise
+	{
+	background-image: url(../images/thumb_up.png);
+	display: block;
+	background-repeat: no-repeat;
+	padding: 0px 0px 0px 20px;
+	}
+
+label.complain
+	{
+	background-image: url(../images/thumb_down.png);
+	display: block;
+	background-repeat: no-repeat;
+	padding: 0px 0px 0px 20px;
+	}
+
+.in_col label
+	{
+	display: block;
+	}
+.in_col label
+	{
+	margin-bottom: 10px;
+	}

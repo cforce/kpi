@@ -1,21 +1,30 @@
 class KpiMark < ActiveRecord::Base
-    validates :kpi_indicator_inspector_id, :uniqueness => {:scope => [:user_id, :inspector_id, :start_date, :end_date]}
+  validates :kpi_indicator_inspector_id, :uniqueness => {:scope => [:user_id, :inspector_id, :start_date, :end_date]}
 
 	belongs_to :kpi_indicator_inspector
 	belongs_to :user
 	belongs_to :inspector, :class_name => 'User', :foreign_key => 'inspector_id'
 	has_one :kpi_period_indicator, :through => :kpi_indicator_inspector
 	
-
 	before_save :check_mark
 	before_destroy :check_mark
 
 	serialize :issues
 
+	scope :not_locked, :conditions => "#{KpiMark.table_name}.locked = 0 "	
+	scope :enabled, :conditions => "#{KpiMark.table_name}.disabled = 0 "	
 	scope :not_set, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"	
 
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"
+
+	def self.get_mark_for_offer(user_id)
+		KpiMark.not_locked.enabled
+						.select("#{KpiMark.table_name}.*, #{Indicator.table_name}.name AS indicator_name, #{KpiCategory.table_name}.color AS color, #{KpiPattern.table_name}.name AS pattern_name")
+						.joins(:kpi_period_indicator => [{:indicator => :kpi_category}, {:kpi_calc_period => :kpi_pattern}])
+						.where("#{KpiMark.table_name}.user_id = ?", user_id)
+						.order("#{KpiPattern.table_name}.id, #{Indicator.table_name}.name,  #{KpiMark.table_name}.start_date")
+	end
 
 	def mark_period
 		"<nobr>#{format_date(start_date)} &mdash; #{format_date(end_date)}</nobr>".html_safe

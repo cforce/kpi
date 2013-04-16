@@ -1,6 +1,8 @@
 RedmineApp::Application.routes.draw do
 	resources :indicators
 	resources :kpi_patterns
+
+	resources :kpi_mark_offers
 	#resources :kpi_calc_periods
 	#match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
 	#match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]
@@ -68,9 +70,10 @@ RedmineApp::Application.routes.draw do
 	    end
 
 	    collection do
-			get '/:date', :action => 'index'
+				#get '/:date', :action => 'index'
 	    	get 'user/:user_id', :action => 'user_marks'
 	    	post 'update_user_marks/:user_id', :action => 'update_user_marks'
+	    	get 'show_for_offer', :action => 'show_for_offer'
 	    	#get 'user/:user'
 	    end
 	end

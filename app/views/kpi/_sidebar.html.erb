@@ -32,6 +32,7 @@
 	<% if User.current.global_permission_to?('kpi_imported_values', 'create') %>
 		<li>
 		<%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values' and controller.action_name=='index'}" %>
+
 		</li>
 	<% end %>
 </ul>
@@ -61,6 +62,20 @@
 <h3><%= l(:my_kpi_marks) %></h3>
 
 <ul>
+	<% if User.current.imported_values.any? or User.current.global_permission_to?('kpi_imported_values', 'create') %>
+		<li>
+		<%= link_to "<span>#{l(:complain_or_praise)}</span>".html_safe, {:controller => "kpi_mark_offers", :action => "new"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_mark_offers' and controller.action_name=='new'}" %>
+		<% if controller.controller_name=='kpi_mark_offers'%>
+			<ul>
+				<li>
+
+				<%= link_to "<span>#{l(:my_offers)}</span>".html_safe, {:controller => "kpi_mark_offers", :action => "index"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_mark_offers' and controller.action_name=='index'}" %>
+				</li>
+			</ul>
+		<% end %>
+		</li>
+	<% end %>
+
 
 	<% if User.current.imported_values.any? or User.current.global_permission_to?('kpi_imported_values', 'create') %>
 		<li><%= link_to "<span>#{l(:imported_values)}</span>".html_safe, {:controller => "kpi_imported_values", :action => "edit_values"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_imported_values' and controller.action_name=='edit_values'}" %></li>

@@ -15,9 +15,20 @@ class KpiMarksController < ApplicationController
 		render "edit_plan", :layout => false
 	end
 
-	def user_marks
+	# def user_marks
 		
+	# end
+
+	def show_for_offer
+		@marks_for_offer = KpiMark.get_mark_for_offer(params[:user_id])
+
+    respond_to do |format|
+      format.js {
+       render "show_for_offer"
+       }
+    end
 	end
+
 
 	def disable
 		@user = @mark.user

@@ -1,4 +1,14 @@
 jQuery(document).ready(function(){
+    jQuery('select.select2').change(function(){
+        $.ajax({
+            url: jQuery(this).attr('data-url'),
+            type: 'get',
+            dataType: 'script',
+            data: 'user_id='+jQuery(this).val()
+          });
+        
+        })
+
 
     jQuery('table.list tr th img.hide_table_column').click(function(){
         var index = jQuery(this).parents('th').index();
