@@ -1,0 +1,27 @@
+<%= error_messages_for 'mark_offer' %>
+
+<div class="H">
+<div class="L">
+<div class="L"><%= radio_button_tag'kpi_mark_offer[is_praise]', 1, @mark_offer.is_praise.to_s=='1' %></div> <div class="L"> &nbsp;&mdash;&nbsp; </div> <%= label_tag 'kpi_mark_offer_is_praise_1', l(:praise), :class => 'praise L' %>
+</div>
+<div class="L"><%= radio_button_tag 'kpi_mark_offer[is_praise]', -1, @mark_offer.is_praise.to_s=='-1' %></div> <div class="L"> &nbsp;&mdash;&nbsp;</div> <%= label_tag 'kpi_mark_offer_is_praise_-1', l(:complain), :class => 'complain L' %>
+</div>
+
+<p class="in_col">
+<%= f.select(:user_id, (User.active
+                            .includes(:user_department).order('lastname').map{|v| ["<nobr>#{v.name} &mdash; #{v.user_department.try(:name)}</nobr>".html_safe, v.id]}), {:label => l(:target_employee), :include_blank => true }, :class => 'select2', :data => {:url => url_for(:controller => 'kpi_marks', :action => 'show_for_offer')}) %>
+</p>
+
+<div id="show_for_offer">
+  <% unless @mark_offer.user_id.nil? %>
+    <%= render :partial => 'kpi_marks/show_for_offer' %>
+  <% end %>
+</div>
+
+<p class="in_col">   
+<%= f.text_area :description, :rows => 8, :class => 'wiki-edit' %>
+</p>
+
+<p>
+<%= submit_tag l(@mark_offer.new_record? ? :button_create : :button_save) %>
+</p>

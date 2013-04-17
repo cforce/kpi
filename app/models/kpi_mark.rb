@@ -5,6 +5,7 @@ class KpiMark < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :inspector, :class_name => 'User', :foreign_key => 'inspector_id'
 	has_one :kpi_period_indicator, :through => :kpi_indicator_inspector
+	has_many :kpi_mark_offers
 	
 	before_save :check_mark
 	before_destroy :check_mark
@@ -18,11 +19,15 @@ class KpiMark < ActiveRecord::Base
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"
 
+	def get_mark_offer_totals
+		kpi_mark_offers.select("is_praise, SUM(is_praise) AS is_praise_total").group("is_praise").inject({}){|h,v| h[v.is_praise]=v.attributes['is_praise_total']; h;}
+	end
+
 	def self.get_mark_for_offer(user_id)
 		KpiMark.not_locked.enabled
 						.select("#{KpiMark.table_name}.*, #{Indicator.table_name}.name AS indicator_name, #{KpiCategory.table_name}.color AS color, #{KpiPattern.table_name}.name AS pattern_name")
 						.joins(:kpi_period_indicator => [{:indicator => :kpi_category}, {:kpi_calc_period => :kpi_pattern}])
-						.where("#{KpiMark.table_name}.user_id = ?", user_id)
+						.where("#{KpiMark.table_name}.user_id = ? AND #{KpiPeriodIndicator.table_name}.objective = ?", user_id, false)
 						.order("#{KpiPattern.table_name}.id, #{Indicator.table_name}.name,  #{KpiMark.table_name}.start_date")
 	end
 

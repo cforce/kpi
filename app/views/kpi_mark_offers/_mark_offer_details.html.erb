@@ -1,0 +1,27 @@
+<% totals = @mark.get_mark_offer_totals %>
+
+
+<% is_praise = nil %>
+<% i = 0 %>
+<% @mark.kpi_mark_offers.includes(:author).order('is_praise, created_at').each_with_index do |offer, k| %>
+  <% if is_praise!=offer.is_praise %>
+    <% if k > 0 %>
+      </table>
+    <% end %>
+    <caption><div class="<%= offer.is_praise>0 ? 'praise' : 'complain' %>"><big><%= totals[offer.is_praise].abs.to_i %></big> &mdash; <%= offer.is_praise>0 ? l(:praises) : l(:complains) %></div></caption>
+    <table class="list">
+    <% i = k %>
+    <% is_praise = offer.is_praise %>
+  <% end %>
+  <tr>
+    <td><%= format_date offer.created_at %></td>
+    <td>
+    <%= link_to_user offer.author %>
+      <div class="grey">
+      <%= offer.description %>
+      </div>
+    </td>
+  </tr>
+<% end %>
+</table>
+

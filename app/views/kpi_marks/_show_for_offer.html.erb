@@ -1,0 +1,30 @@
+<% if @marks_for_offer==[] %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% else %>
+  <div><%= l(:offer_for_mark) %></div>
+    <% indicator_name, pattern_name = nil %>
+
+    <% @marks_for_offer.each_with_index do |mark, k| %>
+      <% if pattern_name!=mark.attributes['pattern_name'] %>
+        <% if k>0 %> </table> <% end %>
+        <table class="list">
+        <caption><%= mark.attributes['pattern_name'] %></caption>
+        <% pattern_name = mark.attributes['pattern_name'] %>
+      <% end %>
+
+      <% if indicator_name!=mark.attributes['indicator_name'] %>
+        <tr class="<%= mark.attributes['color'] %> kpi_indicator" ><td colspan="1"><%= mark.attributes['indicator_name'] %></td></tr>
+        <% indicator_name = mark.attributes['indicator_name'] %>
+      <% end %>
+
+      <tr class="<%= mark.attributes['color'] %>">
+      <td>
+        <%= radio_button_tag 'kpi_mark_offer[kpi_mark_id]', mark.id, @mark_offer.try(:kpi_mark_id)==mark.id %> 
+
+        <%= label_tag "kpi_mark_offer_kpi_mark_id_"+mark.id.to_s, ((format_date mark.start_date)+" &mdash; "+(format_date mark.end_date)).html_safe %> 
+      </td>
+      </tr>
+    <% end %> 
+  </table>
+
+<% end %>

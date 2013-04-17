@@ -1,5 +1,11 @@
-<%= form_for @mark, :remote => true, :url => {:controller => 'kpi_marks', :action =>'update_fact', :id => @mark.id}, :html => {:method => :post} do |f| %>
+<% if @mark.kpi_mark_offers != [] %>
+  <div class="L right_indent_10">
+  <%= render :partial => "kpi_mark_offers/mark_offer_details" %>
+  </div> 
+  <div class="L left_divider_5">
+<% end %>
 
+<%= form_for @mark, :remote => true, :url => {:controller => 'kpi_marks', :action =>'update_fact', :id => @mark.id}, :html => {:method => :post} do |f| %>
 <%= f.hidden_field :i, :value => params[:i] %>
 
 <% plan = @mark.plan(@mark.kpi_indicator_inspector.kpi_period_indicator) %>
@@ -15,6 +21,10 @@
 <%= text_area_tag "kpi_mark[explanation]", @mark.explanation, :size => "40x1", :id => "explanation_#{@mark.id}", :class => 'explanation ' + (@mark.explanation.to_s=='' ? '' : 'completed') %>
 </p>
 <%= submit_tag l(:button_save), :class => 'kpi_mark_submit_button' %>
+<% end %>
+
+<% if @mark.kpi_mark_offers != [] %>
+  </div>
 <% end %>
 
 <script>

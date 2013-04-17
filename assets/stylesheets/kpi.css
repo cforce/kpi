@@ -525,7 +525,7 @@ overflow: hidden;
 }	
 /*----------------------------------------------------------------------------------------------*/
 
-label.praise
+label.praise, div.praise
 	{
 	background-image: url(../images/thumb_up.png);
 	display: block;
@@ -533,13 +533,19 @@ label.praise
 	padding: 0px 0px 0px 20px;
 	}
 
-label.complain
+label.complain, div.complain
 	{
 	background-image: url(../images/thumb_down.png);
 	display: block;
 	background-repeat: no-repeat;
 	padding: 0px 0px 0px 20px;
 	}
+
+div.complain, div.praise
+	{
+	background-position: 0% 50%;
+	}
+
 
 .in_col label
 	{

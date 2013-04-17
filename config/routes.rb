@@ -2,7 +2,12 @@ RedmineApp::Application.routes.draw do
 	resources :indicators
 	resources :kpi_patterns
 
-	resources :kpi_mark_offers
+	resources :kpi_mark_offers do
+		collection do
+			get 'mark_offers/:mark_id', :action => 'mark_offers'
+			end
+		
+		end
 	#resources :kpi_calc_periods
 	#match 'kpi', :controller => 'kpi', :action => 'index', :via => [:get]
 	#match 'kpi/marks', :controller => 'kpi', :action => 'marks', :via => [:get]

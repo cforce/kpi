@@ -11,6 +11,7 @@
 				<th><%= l(:label_kpi_indicators) %></th>
 				<th style="width:5%"><%= l(:label_plan) %></th>
 				<th style="width:10%"><%= l(:my_kpi_mark) %></th>
+				<th style="width:1%"><%= l(:mark_offers) %></th>
 				<th><%= l(:kpi_mark_desc) %></th>
 				<% if User.current.admin? or user.subordinate? %>
 					<th><%= l(:exclude) %></th>
@@ -42,7 +43,12 @@
 	</td>
 	<td class="fact_value">
 	<nobr><%= get_indicator_input(mark, "mark[#{mark.id}]", i)  %> </nobr>
+	
 	</td>
+	<td>
+		<%= show_mark_offer_totals(mark) %>
+	</td>
+
 	<td>
 	<%= text_area_tag "explanation[#{mark.id}]", mark.explanation, :size => "40x1", :class => 'explanation ' + (mark.explanation.to_s=='' ? '' : 'completed') %>
 	<%= hidden_field_tag "disabled[#{mark.id}]", 0, :id => "disabled_ht_#{mark.id}" %>
