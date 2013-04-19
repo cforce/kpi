@@ -62,7 +62,6 @@
 <h3><%= l(:my_kpi_marks) %></h3>
 
 <ul>
-	<% if User.current.imported_values.any? or User.current.global_permission_to?('kpi_imported_values', 'create') %>
 		<li>
 		<%= link_to "<span>#{l(:complain_or_praise)}</span>".html_safe, {:controller => "kpi_mark_offers", :action => "new"}, :class=>"no_line #{'selected' if controller.controller_name=='kpi_mark_offers' and controller.action_name=='new'}" %>
 		<% if controller.controller_name=='kpi_mark_offers'%>
@@ -74,7 +73,6 @@
 			</ul>
 		<% end %>
 		</li>
-	<% end %>
 
 
 	<% if User.current.imported_values.any? or User.current.global_permission_to?('kpi_imported_values', 'create') %>
