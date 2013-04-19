@@ -1,1 +1,1 @@
-$('#footnote_<%= @department_id %>').html('<%= escape_javascript(render :partial => 'kpi_applied_reports/approved', :locals => {:user_who_approved => @user_who_approved, :department_id => @department_id}) %>');
+$('#footnote_<%= @department_id %>').html('<%= escape_javascript(render :partial => 'kpi_applied_reports/approved', :locals => {:applied_report => @applied_report, :department_id => @department_id}) %>');

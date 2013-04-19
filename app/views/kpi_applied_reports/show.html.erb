@@ -7,12 +7,19 @@
 <div class="autoscroll"> 
 <table class="list"> 
   <% last_department = nil %>
+  <% last_subdivision = nil %>
+  <% are_some_subdivisions = false %>
 
   <% @user_periods.each_with_index do |pu, index| %>
 
   <% if @user_periods[index-1].try(:user).try(:user_department_id) != pu.user.user_department_id or index==0 %>
 
+    <% if index!=0 and are_some_subdivisions %>
+      <%= render :partial => 'kpi_applied_reports/subdivision_totals', :locals => {:last_subdivision => last_subdivision} %>  
+    <% end %>
+
     <% if pu.user.user_department.head_of_branch or last_department.nil? or (not last_department.nil? and (pu.user.user_department.node.lft>last_department.node.rgt or pu.user.user_department.node.lft<last_department.node.lft) ) %>
+      <% are_some_subdivisions = false %>
             
       <% if index!=0 %>
         <%= render :partial => 'kpi_applied_reports/deprtment_totals', :locals => {:last_department => last_department} %>  
@@ -20,17 +27,20 @@
       <% end %>
 
       <tbody id="department_<%= pu.user.user_department.id %>" class="departments">
-      <tr class="divider"><td colspan="<%= 10 + @all_surcharges_names.length %>" ><big><big>&nbsp;<%= pu.user.user_department.name %></big></big></td></tr>
+      <tr class="divider"><td colspan="<%= 12 + @all_surcharges_names.length %>" ><big><big>&nbsp;<%= pu.user.user_department.name %></big></big></td></tr>
       <%= salary_report_table_thead %>
 
       <% last_department = pu.user.user_department %>
       <% @departments[pu.user.user_department.id]=pu.user.user_department.name %>
       <% @department_period_states[pu.user.user_department_id] = true %>
     <% else %>
+      <% are_some_subdivisions = true %>
       <tr class="kpi_cat">
       <td colspan="<%= 10+@all_surcharges_names.length %>"><%= pu.user.user_department.name %></td>
       </tr>
     <% end %>
+
+    <% last_subdivision = pu.user.user_department %>
 
   <% end %>
 
@@ -38,6 +48,11 @@
   <% @department_period_states[last_department.id] &&= pu.locked  %>
 
   <tr class="<%= 'locked' unless pu.locked %>">
+    <% @totals[:users][last_department.id] = 0 if @totals[:users][last_department.id].nil? %>
+    <% @totals[:users][last_department.id] += 1 if @user_periods[index-1].try(:user_id) != pu.user_id %>    
+    <% @subdivision_totals[:users][last_subdivision.id] = 0 if @subdivision_totals[:users][last_subdivision.id].nil? %>
+    <% @subdivision_totals[:users][last_subdivision.id] += 1 if @user_periods[index-1].try(:user_id) != pu.user_id %>    
+
     <td><%= link_to_user pu.user %></td>
     <td>
       <%= pu.user.user_title.name %>
@@ -47,6 +62,9 @@
     </td>
 
     <td class="align_right"><%= kpi_value (pu.locked ? pu.main_money : 'x'), l(:money_unit_abridgement), false, false, true %></td>
+    <td><%= kpi_value pu.hours, l(:hour_unit_abridgement), false, false, true %></td>
+    <td><%= kpi_value pu.kpi_calc_period.get_month_time_clock, l(:hour_unit_abridgement), false, false, true %></td>
+    
     <td class="align_right"><%= kpi_value((pu.kpi_calc_period.exclude_time_ratio or KpiCalcPeriod::BASE_SALARY_PATTERNS[pu.kpi_calc_period.base_salary_pattern]=='only_jobprice' or not pu.locked or pu.time_ratio.nil?) ? 'x' : pu.time_ratio*100, '%', false, false, true) %></td>
     <td class="align_right"><%= kpi_value (pu.locked ? pu.kpi_ratio : 'x'), '%', false, false, true %></td>
 
@@ -54,6 +72,8 @@
       <% calculated_salary = pu.main_money*pu.kpi_ratio.round(2)/100 %>
       <% @totals[:calculated_salary][last_department.id] = 0.to_f if @totals[:calculated_salary][last_department.id].nil? %>
       <% @totals[:calculated_salary][last_department.id] += calculated_salary if pu.locked  %>    
+      <% @subdivision_totals[:calculated_salary][last_subdivision.id] = 0.to_f if @subdivision_totals[:calculated_salary][last_subdivision.id].nil? %>
+      <% @subdivision_totals[:calculated_salary][last_subdivision.id] += calculated_salary if pu.locked  %>    
     <% end %>
     <td class="align_right"><%= kpi_value (pu.locked ? calculated_salary : 'x'), l(:money_unit_abridgement), false, false, true %></td>
 
@@ -62,10 +82,13 @@
     <% surcharge_sum = surcharge_details.inject(0.to_f){|sum, (k,v)| sum+=v; sum;}.round(2) %>
 
     <% @totals[:surcharges][last_department.id] = {} if @totals[:salary][last_department.id].nil? %>
+    <% @subdivision_totals[:surcharges][last_subdivision.id] = {} if @subdivision_totals[:salary][last_subdivision.id].nil? %>
     <% @all_surcharges_names.each do |su| %>
       <td class="align_right">      
       <% @totals[:surcharges][last_department.id][su.id] = 0.to_f if @totals[:surcharges][last_department.id][su.id].nil? %>
       <% @totals[:surcharges][last_department.id][su.id] += surcharge_details[su.name] if pu.locked and not surcharge_details[su.name].nil? %>
+      <% @subdivision_totals[:surcharges][last_subdivision.id][su.id] = 0.to_f if @subdivision_totals[:surcharges][last_subdivision.id][su.id].nil? %>
+      <% @subdivision_totals[:surcharges][last_subdivision.id][su.id] += surcharge_details[su.name] if pu.locked and not surcharge_details[su.name].nil? %>
 
       <%= kpi_value (pu.locked ? surcharge_details[su.name] : 'x'), l(:money_unit_abridgement), false, false, true %>
       </td>
@@ -73,13 +96,18 @@
 
     <% @totals[:salary_whithout_deduction][last_department.id] = 0.to_f if @totals[:salary_whithout_deduction][last_department.id].nil? %>
     <% @totals[:salary_whithout_deduction][last_department.id] += calculated_salary.round(2)+surcharge_sum if pu.locked  %>
+    <% @subdivision_totals[:salary_whithout_deduction][last_subdivision.id] = 0.to_f if @subdivision_totals[:salary_whithout_deduction][last_subdivision.id].nil? %>
+    <% @subdivision_totals[:salary_whithout_deduction][last_subdivision.id] += calculated_salary.round(2)+surcharge_sum if pu.locked  %>
+
 
     <td><%= kpi_value (pu.locked ? calculated_salary.round(2)+surcharge_sum : 'x'), l(:money_unit_abridgement), false, false, true %></td>
 
     <% @totals[:deductions][last_department.id] = 0.to_f if @totals[:deductions][last_department.id].nil? %>
+    <% @subdivision_totals[:deductions][last_subdivision.id] = 0.to_f if @subdivision_totals[:deductions][last_subdivision.id].nil? %>
     <%  if pu.locked %>
       <% deductions = pu.salary.round(2) - calculated_salary.round(2) - surcharge_sum %>
       <% @totals[:deductions][last_department.id] += deductions  %>
+      <% @subdivision_totals[:deductions][last_subdivision.id] += deductions  %>
     <% end %>
 
     <td class="align_right">
@@ -90,6 +118,8 @@
 
     <% @totals[:salary][last_department.id] = 0.to_f if @totals[:salary][last_department.id].nil? %>
     <% @totals[:salary][last_department.id] += pu.salary.to_f if pu.locked  %>
+    <% @subdivision_totals[:salary][last_subdivision.id] = 0.to_f if @subdivision_totals[:salary][last_subdivision.id].nil? %>
+    <% @subdivision_totals[:salary][last_subdivision.id] += pu.salary.to_f if pu.locked  %>
   </tr>
 
   <% end %>

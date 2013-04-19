@@ -16,7 +16,8 @@ Redmine::Plugin.register :kpi do
   url 'http://pitin.su'
   author_url 'http://pitin.su'
 
-  menu :top_menu, :my_marks, { :controller => 'kpi_marks', :action => 'index' }, :caption => Proc.new { User.current.my_kpi_marks_caption },  :if => Proc.new { User.current.logged? }, :first => true
+  menu :top_menu, :my_marks, { :controller => 'kpi_marks', :action => 'index' }, :caption => Proc.new { User.current.my_kpi_marks_caption },  :if => Proc.new { User.current.logged? and User.current.get_my_marks_num > 0}, :first => true
+  menu :top_menu, :my_effectiveness, { :controller => 'kpi', :action => 'effectiveness'}, :caption => :my_kpi_marks,  :if => Proc.new { User.current.logged? and User.current.get_my_marks_num == 0}, :first => true
   project_module :kpi do
     permission :manage_kpi_indicators, :indicators => [:index, :update, :new, :edit, :create, :destroy]
     permission :manage_kpi_periods, :kpi_calc_periods => [:show_warning_message, :index, :new, :edit, :close_for_user, :reopen_for_user, :activate, :update, :create, :destroy, :autocomplete_for_user, :autocomplete_for_applied_user, :add_users, :remove_user, :add_inspectors, :remove_inspector, :update_plans, :update_inspectors]

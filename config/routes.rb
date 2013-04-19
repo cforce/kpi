@@ -60,6 +60,7 @@ RedmineApp::Application.routes.draw do
 	    	post 'update_hours', :action => 'update_hours'
 	    	get 'close'
 	    	get 'reopen'
+	    	get 'reopen_message'
 	    end
 	end
 

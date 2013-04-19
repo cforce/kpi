@@ -1,5 +1,5 @@
 class KpiPeriodUsersController < ApplicationController
-    before_filter :find_period_user, :only => [:close_message, :edit_hours, :edit_base_salary, :update_hours, :update_base_salary, :edit_jobprise, :update_jobprise, :close, :reopen]
+    before_filter :find_period_user, :only => [:reopen_message, :close_message, :edit_hours, :edit_base_salary, :update_hours, :update_base_salary, :edit_jobprise, :update_jobprise, :close, :reopen]
     #before_filter :find_user, :only => [:disable, :enable, :update_plan, :update_fact, :edit_plan, :edit_fact]
 
     helper :kpi
@@ -28,6 +28,11 @@ class KpiPeriodUsersController < ApplicationController
         @isues_requiring_attention = Issue.joins({:fixed_version => :milestones}).where(:assigned_to_id => @period_user.user_id, :status_id => Setting.plugin_kpi['issue_status_id']).where("DATE_FORMAT(#{Milestone.table_name}.effective_date, '%c.%Y') = ? ", "#{@period_user.kpi_calc_period.date.month}.#{@period_user.kpi_calc_period.date.year}")
         
         render "close_message", :layout => false
+    end
+
+    def reopen_message
+        @applied_report = KpiAppliedReport.where(:user_department_id => @period_user.user.top_department.id)
+        render "reopen_message", :layout => false
     end
 
     def reopen

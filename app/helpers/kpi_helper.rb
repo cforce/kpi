@@ -3,8 +3,11 @@ module KpiHelper
     s = ''
     s << '<tr>'
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:employee)}</span></th>"
-    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:user_title)}</span></th>"  
-    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:main_money)}</span></th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:user_title)}</span></th>"      
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:main_money)}</span></th>" 
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:hours_fact)}</span></th>"  
+    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:hours_plan)}</span></th>"  
+     
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:time_ratio).html_safe}</span></th>"  
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:kpi_ratio).html_safe}</span> </th>"  
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:calculated_salary).html_safe}</span> </th>"
@@ -356,7 +359,7 @@ module KpiHelper
 
   def job_prise_view(period_user, user, value)
     value='x' if value.nil?
-    value = number_with_delimiter(value, :delimiter => " ", :separator => '.')
+    value = number_with_delimiter(number_with_precision(value, :separator => ".", :strip_insignificant_zeros => true, :precision => 2), :delimiter => " ", :separator => '.')
     if period_user.check_user_for_jobprise_update?(user)
         value = link_to_modal_window(value, {:controller => 'kpi_period_users', :action=> 'edit_jobprise', :id => period_user.id}, {:class => 'click_out'})
     end

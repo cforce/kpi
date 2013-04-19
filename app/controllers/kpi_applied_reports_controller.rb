@@ -15,13 +15,16 @@ class KpiAppliedReportsController < ApplicationController
     @departments = {}
 
     @all_surcharges_names = KpiSurcharge.joins(:kpi_period_surcharges).where("kpi_calc_period_id IN (?)", @user_periods.map{|up| up.kpi_calc_period.id}.uniq).group("#{KpiSurcharge.table_name}.id")
-    @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}, :salary_whithout_deduction => {}, :deductions => {}}
+    @totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}, :salary_whithout_deduction => {}, :deductions => {}, :users => {}}
+    @subdivision_totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}, :salary_whithout_deduction => {}, :deductions => {}, :users => {}}
   end
 
   def apply
     #department = UserDepartment.find(params[:department_id])
     @department_id = params[:department_id]
-    @user_who_approved = User.current
+
+    #@user_who_approved = User.current
+    @applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? ", @date, @department_id).try(:first)
 
     @applied_report = KpiAppliedReport.new
     @applied_report.date = @date

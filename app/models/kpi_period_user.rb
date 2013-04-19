@@ -39,7 +39,7 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def reopen
-        if  for_closing?
+        if  for_opening?
         	self.locked = false
         	self.save 
 
@@ -67,6 +67,10 @@ class KpiPeriodUser < ActiveRecord::Base
 
             kpi_marks.where("#{KpiMark.table_name}.user_id = ?", user_id).update_all("#{KpiMark.table_name}.locked=1")
         end
+	end
+
+	def for_opening?
+		locked and (user.subordinate? or kpi_calc_period.user_id==User.current.id or User.current.admin?) and not KpiAppliedReport.where(:user_department_id => user.top_department.id).any?
 	end
 
 	def for_closing?

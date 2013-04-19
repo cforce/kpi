@@ -1,7 +1,11 @@
 # English strings go here for Rails i18n
 ru:
   employee: "Сотрудник"
+  user_has_already_agreed_period: "уже согласовал период. Вы не можете открыть согласованный период. Что бы открыть период, попросите сотрудника отменить согласование."
+  employees: "Cотрудников"
   all: "Все"
+  hours_plan: "Норма, ч."
+  hours_fact: "Факт, ч."
   deduction: "Вычеты"
   field_objective: "Объективный показатель"
   watch_all_mark_offers: "Все предложения"

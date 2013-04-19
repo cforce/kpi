@@ -5,7 +5,7 @@ class ChangeKpiPeriodUsers2 < ActiveRecord::Migration
       t.integer :jobprise
       t.float :time_clock
       t.float :kpi_ratio
-      t.float :salary
+      t.decimal :salary
     end
   end
 

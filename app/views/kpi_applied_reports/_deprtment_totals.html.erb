@@ -1,25 +1,27 @@
 <tr>
+<td><b><nobr><%= l(:employees) %> &mdash; <%= @totals[:users][last_department.id] %></nobr></b></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 <td></td>
 <td>
-<%= kpi_value @totals[:calculated_salary][last_department.id], l(:money_unit_abridgement), false, false, true %>
+<b><%= kpi_value @totals[:calculated_salary][last_department.id], l(:money_unit_abridgement), false, false, true %></b>
 </td>
 <% @all_surcharges_names.each do |su| %>
   <td class="align_right">
-  <%= kpi_value @totals[:surcharges][last_department.id][su.id], l(:money_unit_abridgement), false, false, true  %>
+  <b><%= kpi_value @totals[:surcharges][last_department.id][su.id], l(:money_unit_abridgement), false, false, true  %></b>
   </td>
 <% end %>
-<td><%= kpi_value @totals[:salary_whithout_deduction][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
-<td><%= kpi_value @totals[:deductions][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
-<td class="align_right"><%= kpi_value @totals[:salary][last_department.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td><b><%= kpi_value @totals[:salary_whithout_deduction][last_department.id], l(:money_unit_abridgement), false, false, true  %></b></td>
+<td><b><%= kpi_value @totals[:deductions][last_department.id], l(:money_unit_abridgement), false, false, true  %></b></td>
+<td class="align_right"><b><%= kpi_value @totals[:salary][last_department.id], l(:money_unit_abridgement), false, false, true  %></b></td>
 <td></td>
 </tr> 
 
 <tr class="divider">
-<td colspan="<%= 10 + @all_surcharges_names.length %>" >
+<td colspan="<%= 12 + @all_surcharges_names.length %>" >
 
 <div class="R kpi_footnote" id="footnote_<%= last_department.id %>">
     <% applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? ", @date, last_department.id).try(:first) %>
