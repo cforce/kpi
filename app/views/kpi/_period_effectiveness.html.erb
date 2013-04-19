@@ -6,7 +6,7 @@ kpi = period_user.kpi
 %> 
 
 	<table class="list kpi_calc">
-	<caption><%= pattern_name(period) %></caption>
+	<caption><%= pattern_name(period) %>. <big><%= period_user.hours %> <%= l(:hour_unit_abridgement) %></big> &mdash; <%= l(:hours_in_calc_period) %> </caption>
 	<thead>
 		<tr>
 		<th><%= l(:label_kpi_indicators) %></th>
