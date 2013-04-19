@@ -1,0 +1,21 @@
+<tr>
+<td><nobr><%= l(:employees) %> &mdash; <%= @subdivision_totals[:users][last_subdivision.id] %></nobr></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+<%= kpi_value @subdivision_totals[:calculated_salary][last_subdivision.id], l(:money_unit_abridgement), false, false, true %>
+</td>
+<% @all_surcharges_names.each do |su| %>
+  <td class="align_right">
+  <%= kpi_value @subdivision_totals[:surcharges][last_subdivision.id][su.id], l(:money_unit_abridgement), false, false, true  %>
+  </td>
+<% end %>
+<td><%= kpi_value @subdivision_totals[:salary_whithout_deduction][last_subdivision.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td><%= kpi_value @subdivision_totals[:deductions][last_subdivision.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td class="align_right"><%= kpi_value @subdivision_totals[:salary][last_subdivision.id], l(:money_unit_abridgement), false, false, true  %></td>
+<td></td>
+</tr> 

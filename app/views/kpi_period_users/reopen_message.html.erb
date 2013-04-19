@@ -1,0 +1,8 @@
+
+
+<% if @applied_report.any? %>
+  <%= link_to_user @applied_report.first.user %>, <%= format_date @applied_report.first.date %> <%= l(:user_has_already_agreed_period) %>
+  <span class="selected"> </span>
+<% else %>
+  <%= link_to l(:text_are_you_sure), {:controller => "kpi_period_users", :action => "reopen", :id => @period_user.id}, :class => 'icon reopen_period' %>
+<% end %>
