@@ -2,8 +2,8 @@
 
 <div id="select_period_date" class="L">
 <%= form_tag({:controller => "kpi_imported_values", :action => 'edit_values'}, :method => :get) do %>
-    <%= select_month(@date, :use_short_month => true) %>
-    <%= select_year(@date, :start_year => Date.today.year-1, :end_year => Date.today.year+1) %>
+    <%= select_month(@date, :prefix => 'iv_date', :use_short_month => true) %>
+    <%= select_year(@date, :prefix => 'iv_date', :start_year => Date.today.year-1, :end_year => Date.today.year+1) %>
     <%= submit_tag(l(:show)) %>
 <% end %>
 

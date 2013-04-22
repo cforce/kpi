@@ -88,7 +88,7 @@ class KpiImportedValuesController < ApplicationController
     private 
     def find_date
         @date = Date.today.at_beginning_of_month
-        @date = Date.parse("1/#{params[:date][:month]}/#{params[:date][:year]}") unless params[:date].nil?
+        @date = Date.parse("1/#{params[:iv_date][:month]}/#{params[:iv_date][:year]}") unless params[:iv_date].nil?
         @date = Date.parse("#{params[:full_date]}") unless params[:full_date].nil?
     end
 
