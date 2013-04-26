@@ -33,6 +33,24 @@ module Kpi
 	
 	module InstanceMethods
 
+		def sql_conditions_for_periods
+      substitutable_employees = self.substitutable_employees.includes(:user_tree)
+      cond1 = "(#{UserTree.table_name}.lft>=#{user_tree.lft} AND #{UserTree.table_name}.rgt<=#{user_tree.rgt} AND (#{KpiCalcPeriod.table_name}.user_id IS NULL OR (ut.lft>=#{user_tree.lft} AND ut.rgt<=#{user_tree.rgt})))"
+      cond2 = "(#{KpiCalcPeriod.table_name}.user_id = #{id})"
+      substitutable_employees.each do |sub_user|
+        cond1 << " OR (#{UserTree.table_name}.lft>=#{sub_user.user_tree.lft} 
+                      AND #{UserTree.table_name}.rgt<=#{sub_user.user_tree.rgt} 
+                      AND (#{KpiCalcPeriod.table_name}.user_id IS NULL OR (ut.lft>=#{sub_user.user_tree.lft} AND ut.rgt<=#{sub_user.user_tree.rgt}))"
+        cond1 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
+        cond1 << ")"
+
+        cond2 << " OR (#{KpiCalcPeriod.table_name}.user_id=#{sub_user.id}"
+        cond2 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
+        cond2 << ")"
+        end 
+       {'cond1' => cond1, 'cond2' => cond2}   
+		end
+
 		def has_managed_periods?
 			KpiPeriodUser.joins(:kpi_calc_period, :user => [:user_tree])                                          
 			             .where("(#{UserTree.table_name}.lft>? AND #{UserTree.table_name}.rgt<? AND #{KpiCalcPeriod.table_name}.user_id IS NULL)
@@ -61,12 +79,24 @@ module Kpi
 		end
 
 		def get_my_marks
-			kpi_inspector_marks.joins(:kpi_period_indicator)
-							   .where("#{KpiMark.table_name}.start_date <= ? 
-										AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
-										AND #{KpiMark.table_name}.locked = ?
-										",
-										Date.today, false)
+			cond = "inspector_id = #{id}"
+			self.substitutable_employees.each do |sub_user|
+				cond << " OR (inspector_id = #{sub_user.id} "
+				cond << "AND (
+											(#{KpiMark.table_name}.start_date >= '#{sub_user.vacation_start}' AND #{KpiMark.table_name}.start_date <= '#{sub_user.vacation_end}')
+											OR (#{KpiMark.table_name}.end_date >= '#{sub_user.vacation_start}' AND #{KpiMark.table_name}.end_date <= '#{sub_user.vacation_end}')
+											) " if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
+				cond << ")"
+				end
+			KpiMark.joins(:kpi_period_indicator)
+						 .where("
+						 		#{cond}
+						 		AND #{KpiMark.table_name}.start_date <= ? 
+								AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
+								AND #{KpiMark.table_name}.locked = ?
+								",
+								Date.today,
+								false)
 			#AND #{KpiMark.table_name}.disabled = ?
 		end
 

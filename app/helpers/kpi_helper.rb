@@ -243,18 +243,74 @@ module KpiHelper
 		end
 	end
 
-	def show_sidebar_users()
-		user_list = ""
+  def initial_user
+    if User.current.global_permission_to?('kpi', 'effectiveness')
+      initial_user = UserTree.find(Setting.plugin_kpi['initial_user_id'])
+    else
+      #highest_substitutable = User.current.highest_substitutable_employee_node
+      #initial_user = highest_substitutable.nil? ? UserTree.find(User.current.id) : highest_substitutable
+      initial_user = UserTree.find(User.current.id)
+    end
+  end
 
-		if User.current.global_permission_to?('kpi', 'effectiveness')
-			initial_user = UserTree.find(Setting.plugin_kpi['initial_user_id'])
-		else
-			initial_user = UserTree.find(User.current.id)
-		end
+  def show_users_tree(initial_user)
+    last_parent_id, last_id, last_level, last_user_tree, first_user_tree = nil
+    i=0  
+    delta_level=0   
+    user_list = ""
+    cond = ""
 
-		last_parent_id, last_id, last_level = nil
-    i=0 
+    initial_user.substitutable_employees.each do |user_tree_node|
+      cond << " OR (lft > #{user_tree_node.lft} AND rgt < #{user_tree_node.rgt})"
+    end
 
+    UserTree.each_with_level(UserTree.joins(:user).includes(:user)
+                     .order("lft")
+                     .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
+                     .where("#{User.table_name}.status=? AND ((lft>? AND rgt<?) #{cond})", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
+
+      if first_user_tree.nil?
+        first_user_tree = user_tree 
+      else
+        if first_user_tree.rgt < user_tree.rgt
+          first_user_tree = user_tree 
+          delta_level = level.to_i - 1
+        end
+      end
+
+      level = level.to_i - delta_level
+
+      user_list << "<ul class=\"folding_tree opened\">" if last_id.nil? # First time
+
+      unless last_id.nil?
+        if last_id == user_tree.attributes['parent_id'] # Next is child
+          user_list << "<ul class=\"folding_tree closed\">" # Not First time
+        else
+          if not last_id.nil? and last_user_tree.attributes['parent_id'] == user_tree.attributes['parent_id'] # Have same parent
+            user_list << "</li>" # Not First time
+          else
+            user_list << "</ul></li>"*(last_level-level.to_i)  # Not First time
+          end
+        end
+      end
+
+      user_list << "<li class=\"disc\">" # Every time
+      user_list << link_to("<span>#{user_tree.user.name}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => user_tree.attributes['id']},
+              :class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user_tree.attributes['id']}")
+      last_parent_id = user_tree.attributes['parent_id']
+      last_id = user_tree.attributes['id']
+      last_level = level.to_i
+      last_user_tree = user_tree
+
+      i+=1
+    end
+
+    user_list << "</li></ul>"*last_level unless last_id.nil? #last time
+    user_list.html_safe
+  end
+
+  def show_unders_sidebar_users(initial_user)
+    user_list = ""
 
     user_list << "<h3>#{l(:label_effectiveness)}</h3>"
     user_list << "<ul><li>"
@@ -262,38 +318,14 @@ module KpiHelper
                     {:controller => "kpi", :action => "effectiveness", :date => params[:date] || nil, :user_id => User.current.id},
                     :class=>"no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==User.current.id}")
     user_list << "</li></ul>"
+    user_list << show_users_tree(initial_user)
 
-		UserTree.each_with_level(UserTree.joins(:user).includes(:user)
-										 .order("lft")
-										 .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
-										 .where("#{User.table_name}.status=? AND lft>? AND rgt<?", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
-			user_list << "<ul class=\"folding_tree opened\">" if last_id.nil? # First time
+    user_list.html_safe
+  end
 
-			if last_id == user_tree.attributes['parent_id'] # Next is child
-				user_list << "<ul class=\"folding_tree closed\">" unless last_id.nil? # Not First time
-			else
-				if last_id == user_tree.attributes['parent_id'] # Have single parent
-					user_list << "</li>" unless last_id.nil? # Not First time
-				else
-					user_list << "</ul></li>"*(last_level-level.to_i) unless last_id.nil? # Not First time
-				end
-			end
-
-			user_list << "<li class=\"disc\">" # Every time
-			#user_list << "<div style=\"padding-left:"+((level-1)*10).to_s+"px;\">"
-			user_list << link_to("<span>#{user_tree.user.name}</span>".html_safe, {:controller => 'kpi', :action => 'effectiveness', :date => params[:date] || nil , :user_id => user_tree.attributes['id']},
-							:class => "no_line #{'selected' if controller.action_name=='effectiveness' and @user.id==user_tree.attributes['id']}")
-			#user_list << "</div>"
-			last_parent_id = user_tree.attributes['parent_id']
-			last_id = user_tree.attributes['id']
-			last_level = level.to_i
-      i+=1
-		end
-		#Rails.logger.debug "dddddddddddddddddddddddddddddd"
-
-		user_list << "</li></ul>"*last_level unless last_id.nil? #last time
-
-    functional_unders = User.joins(:kpi_period_users => :kpi_calc_period).where("#{KpiCalcPeriod.table_name}.user_id = ?", User.current.id).group("#{User.table_name}.id").order(:lastname)
+  def show_functional_unders_sidebar_users(initial_user)
+    user_list = ""
+    functional_unders = User.joins({:kpi_period_users => :kpi_calc_period}, :user_tree).where("#{KpiCalcPeriod.table_name}.user_id IN (?) AND (lft < ? OR lft >?)", [initial_user.id] + initial_user.substitutable_employees, initial_user.lft, initial_user.rgt).group("#{User.table_name}.id").order(:lastname)
 
     i=0
     functional_unders.each do |u|
@@ -309,7 +341,14 @@ module KpiHelper
       end
     user_list << "</ul>" unless i!=0
 
-		user_list.html_safe
+    user_list.html_safe    
+  end
+
+	def show_sidebar_users(initial_user)
+    user_list = ""
+    user_list << show_unders_sidebar_users(initial_user)
+    user_list << show_functional_unders_sidebar_users(initial_user)
+    user_list.html_safe
 	end
 
 

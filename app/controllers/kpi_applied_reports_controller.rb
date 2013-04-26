@@ -71,10 +71,15 @@ class KpiAppliedReportsController < ApplicationController
                                             #{UserTitle.table_name}.name,
                                             #{User.table_name}.lastname")
     else
-      @user_periods = KpiPeriodUser.joins(:kpi_calc_period, :user => [{:user_department => :node}, :user_title, :user_tree])                                          
+      conds = User.current.sql_conditions_for_periods
+
+      @user_periods = KpiPeriodUser.joins(:kpi_calc_period, :user => [{:user_department => :node}, :user_title, :user_tree]).joins("LEFT JOIN #{UserTree.table_name} AS ut ON ut.id=#{KpiCalcPeriod.table_name}.user_id")                                          
                                             .where("#{KpiCalcPeriod.table_name}.date = ?
-                                                    AND ((#{UserTree.table_name}.lft>=? AND #{UserTree.table_name}.rgt<=? AND #{KpiCalcPeriod.table_name}.user_id IS NULL) OR (#{KpiCalcPeriod.table_name}.user_id = ?))",
-                                                    @date, User.current.user_tree.lft, User.current.user_tree.right, User.current.id)
+                                                    AND (
+                                                        #{conds['cond1']}
+                                                        OR #{conds['cond2']}
+                                                        )",
+                                                    @date)
                                             .includes(:kpi_calc_period, :user => [{:user_department => :node}, :user_title])
                                             .order("#{UserDepartmentTree.table_name}.lft,
                                                      CASE WHEN #{UserDepartment.table_name}.manager_id=#{KpiPeriodUser.table_name}.user_id THEN 0 ELSE 1 END,

@@ -7,6 +7,8 @@
 <td></td>
 <td></td>
 <td></td>
+<td></td>
+<td></td>
 <td>
 <%= kpi_value @totals[:calculated_salary].inject(0.to_f){|sum, (id, salary)| sum+=salary; sum}, l(:money_unit_abridgement), false, false, true %>
 </td>

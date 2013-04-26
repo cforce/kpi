@@ -25,16 +25,21 @@ class KpiController < ApplicationController
 		#find_date
 
 		if User.current == @user or User.current.admin? or User.current.global_permission_to?(params[:controller], 'effectiveness')
-			cond = ""
+			@periods = @user.kpi_calc_periods.active
+											.where("#{KpiCalcPeriod.table_name}.date = ?", @date)
+											.includes(:kpi_pattern, :kpi_period_categories => [:kpi_category, {:kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}}])
 		else
-			if @user.under?
-				cond = "AND (#{KpiCalcPeriod.table_name}.user_id IS NULL OR #{KpiCalcPeriod.table_name}.user_id = #{User.current.id})"
-			else
-				cond = "AND #{KpiCalcPeriod.table_name}.user_id = #{User.current.id}"
-			end
+	    conds = User.current.sql_conditions_for_periods
+			@periods = KpiCalcPeriod.active
+															.includes(:kpi_pattern, :kpi_period_categories => [:kpi_category, {:kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}}])
+															.joins(:users => :user_tree)
+															.joins("LEFT JOIN #{UserTree.table_name} AS ut ON ut.id=#{KpiCalcPeriod.table_name}.user_id")
+															.where("#{KpiPeriodUser.table_name}.user_id = ? AND #{KpiCalcPeriod.table_name}.date = ?
+	                                    AND (#{conds['cond1']} OR #{conds['cond2']})
+																			", @user.id, @date)
 		end
 
-		@periods = @user.kpi_calc_periods.active.includes(:kpi_pattern, :kpi_period_categories => [:kpi_category, {:kpi_period_indicators => {:kpi_marks => :inspector, :indicator => :kpi_unit}}]).where("date = ? #{cond}", @date)
+
 
 	end
 
@@ -71,6 +76,6 @@ class KpiController < ApplicationController
 	end
 
 	def check_user
-		render_403 if User.current != @user and not @user.under? and not User.current.admin? and not User.current.global_permission_to?(params[:controller], 'effectiveness') and not @managed_periods.any?
+		render_403 if User.current != @user and not @user.under? and not @user.substitutable_employees_under? and not User.current.admin? and not User.current.global_permission_to?(params[:controller], 'effectiveness') and not @managed_periods.any?
 	end
 end
