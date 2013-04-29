@@ -5,7 +5,7 @@ class KpiController < ApplicationController
 	#before_filter :find_actual_period_dates, :only => [:marks]
 	before_filter :find_user_period_dates, :only => [:effectiveness]
 	before_filter :find_managed_periods, :only => [:effectiveness]
-	before_filter :check_user, :only => [:effectiveness]
+	#before_filter :check_user, :only => [:effectiveness]
 
 	helper :kpi
 	include KpiHelper
@@ -76,6 +76,7 @@ class KpiController < ApplicationController
 	end
 
 	def check_user
+		#It should be removed
 		render_403 if User.current != @user and not @user.under? and not @user.substitutable_employees_under? and not User.current.admin? and not User.current.global_permission_to?(params[:controller], 'effectiveness') and not @managed_periods.any?
 	end
 end

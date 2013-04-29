@@ -13,12 +13,14 @@ class KpiPeriodUser < ActiveRecord::Base
 	include KpiHelper
 	
 	def check_user_for_salary_update?(user)
-		#(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
-		(User.current.admin? or ((user.subordinate? or kpi_calc_period.user_id==User.current.id) and kpi_calc_period.allowed_change_salary)) and not self.locked
+		substitutable_employees = User.current.substitutable_employees
+
+		(User.current.admin? or ((user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id)) and kpi_calc_period.allowed_change_salary)) and not self.locked
 	end
 
 	def check_user_for_jobprise_update?(user)
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
+		substitutable_employees = User.current.substitutable_employees
+		(User.current.admin? or user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id)) and not self.locked
 	end
 
 	def check_user_for_hours_update?(user)
@@ -27,7 +29,9 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def check_user_for_surcharge_update?
-		(User.current.admin? or user.subordinate? or kpi_calc_period.user_id==User.current.id) and not self.locked
+		substitutable_employees = User.current.substitutable_employees
+
+		(User.current.admin? or user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id)) and not self.locked
 	end
 
 	def check_user_for_surcharge_show?
@@ -70,12 +74,18 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def for_opening?
-		locked and (user.subordinate? or kpi_calc_period.user_id==User.current.id or User.current.admin?) and not KpiAppliedReport.where(:user_department_id => user.top_department.id).any?
+		locked and user_for_opening? and not KpiAppliedReport.where(:user_department_id => user.top_department.id).any?
+	end
+
+	def user_for_opening?
+		substitutable_employees = User.current.substitutable_employees
+		(user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id) or User.current.admin?)
 	end
 
 	def for_closing?
+		substitutable_employees = User.current.substitutable_employees
 		period = kpi_calc_period
-		period.active and not period.kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ? AND #{KpiMark.table_name}.disabled=?", user.id, false).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate? or kpi_calc_period.user_id==User.current.id) and is_salary_calc_attr?
+		period.active and not period.kpi_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND #{KpiMark.table_name}.user_id = ? AND #{KpiMark.table_name}.disabled=?", user.id, false).any? and ( User.current.global_permission_to?('kpi_calc_periods', 'close_for_user') or user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id)) and is_salary_calc_attr?
 	end
 
 	def is_salary_calc_attr?
