@@ -79,20 +79,23 @@ module Kpi
 		end
 
 		def get_my_marks
-			cond = "inspector_id = #{id}"
+			cond = "(inspector_id = #{id}"
 			self.substitutable_employees.each do |sub_user|
-				cond << " OR (inspector_id = #{sub_user.id} "
-				cond << "AND (
+				cond << " OR (
+											inspector_id = #{sub_user.id} "
+				cond << "			AND 
+											(
 											(#{KpiMark.table_name}.start_date >= '#{sub_user.vacation_start}' AND #{KpiMark.table_name}.start_date <= '#{sub_user.vacation_end}')
 											OR (#{KpiMark.table_name}.end_date >= '#{sub_user.vacation_start}' AND #{KpiMark.table_name}.end_date <= '#{sub_user.vacation_end}')
 											) " if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
 				cond << ")"
 				end
+			cond << ")"
 			KpiMark.joins(:kpi_period_indicator)
 						 .where("
 						 		#{cond}
 						 		AND #{KpiMark.table_name}.start_date <= ? 
-								AND #{KpiPeriodIndicator.table_name}.pattern is NULL 
+								AND #{KpiPeriodIndicator.table_name}.pattern IS NULL 
 								AND #{KpiMark.table_name}.locked = ?
 								",
 								Date.today,
@@ -101,7 +104,7 @@ module Kpi
 		end
 
 		def get_my_marks_num
-			get_my_marks.where("#{KpiMark.table_name}.fact_value IS NULL").count
+			get_my_marks.where("#{KpiMark.table_name}.fact_value IS NULL AND disabled = ?", false).count
 		end
 
 		def superior

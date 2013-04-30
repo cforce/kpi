@@ -141,7 +141,7 @@ class KpiMarksController < ApplicationController
 
 		@marks.each do |m|
 			@user_mark_counts[m.user] = 0 if @user_mark_counts[m.user].nil?
-			@user_mark_counts[m.user]+=1 if m.fact_value.nil? 
+			@user_mark_counts[m.user]+=1 if m.fact_value.nil? and not m.disabled
 			end
 
 		curent_user_lft = User.current.user_tree.lft
