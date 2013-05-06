@@ -31,7 +31,7 @@ class KpiPeriodUsersController < ApplicationController
     end
 
     def reopen_message
-        @applied_report = KpiAppliedReport.where(:user_department_id => @period_user.user.top_department.id)
+        @applied_report = KpiAppliedReport.where(:user_department_id => @period_user.user.top_department.id, :date => @period_user.kpi_calc_period.date)
         render "reopen_message", :layout => false
     end
 
