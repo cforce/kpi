@@ -74,7 +74,7 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def for_opening?
-		locked and user_for_opening? and not KpiAppliedReport.where(:user_department_id => user.top_department.id).any?
+		locked and user_for_opening? and not KpiAppliedReport.where(:user_department_id => user.top_department.id, :date => kpi_calc_period.date).any?
 	end
 
 	def user_for_opening?
