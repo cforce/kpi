@@ -21,8 +21,15 @@
 <% @mark_offers.each do |offer| %>
   <tr>
   <td><%= link_to_user offer.user  %></td>
-  <td><%= ((format_date offer.kpi_mark.start_date)+" &mdash; "+(format_date offer.kpi_mark.end_date)).html_safe %></td>
-  <td><%= offer.kpi_mark.kpi_period_indicator.indicator.try(:name) %></td>  
+  <td>
+    <% unless offer.kpi_mark.nil? %>
+    <%= ((format_date offer.kpi_mark.start_date)+" &mdash; "+(format_date offer.kpi_mark.end_date)).html_safe %>
+    <% end %>
+  </td>
+  <td>
+    <% unless offer.kpi_mark.nil? %>
+    <%= offer.kpi_mark.kpi_period_indicator.indicator.try(:name) %></td>  
+    <% end %>
   <td><% if offer.is_praise > 0 %> <%= image_tag 'thumb_up.png', :plugin => :kpi %> <% else %> <%= image_tag 'thumb_down.png', :plugin => :kpi %><% end %></td>
   <td>
       <%= link_to(l(:button_edit), { :controller => 'kpi_mark_offers', :action => 'edit', :id => offer }, :class => 'icon icon-edit') %>
