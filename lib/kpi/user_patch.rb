@@ -41,11 +41,11 @@ module Kpi
         cond1 << " OR (#{UserTree.table_name}.lft>=#{sub_user.user_tree.lft} 
                       AND #{UserTree.table_name}.rgt<=#{sub_user.user_tree.rgt} 
                       AND (#{KpiCalcPeriod.table_name}.user_id IS NULL OR (ut.lft>=#{sub_user.user_tree.lft} AND ut.rgt<=#{sub_user.user_tree.rgt}))"
-        cond1 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
+        cond1 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month-1.month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
         cond1 << ")"
 
         cond2 << " OR (#{KpiCalcPeriod.table_name}.user_id=#{sub_user.id}"
-        cond2 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
+        cond2 << " AND (#{KpiCalcPeriod.table_name}.date >= '#{sub_user.vacation_start.at_beginning_of_month-1.month}' AND #{KpiCalcPeriod.table_name}.date <= '#{sub_user.vacation_start.at_end_of_month}')" if not sub_user.vacation_start.nil? and not sub_user.vacation_end.nil?
         cond2 << ")"
         end 
        {'cond1' => cond1, 'cond2' => cond2}   
