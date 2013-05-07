@@ -27,11 +27,15 @@ class KpiPeriodUser < ActiveRecord::Base
 		#(User.current.admin? or user.subordinate?) and not locked
 		(User.current.admin?) and not locked
 	end
-
+    
 	def check_user_for_surcharge_update?
 		substitutable_employees = User.current.substitutable_employees
 
 		(User.current.admin? or user.subordinate? or substitutable_employees.map(&:id).include?(user.parent_id) or kpi_calc_period.user_id==User.current.id or substitutable_employees.map(&:id).include?(kpi_calc_period.user_id)) and not self.locked
+	end
+
+	def check_user_for_self_surcharge_update?
+		user_id = User.current.id
 	end
 
 	def check_user_for_surcharge_show?
@@ -241,25 +245,34 @@ class KpiPeriodUser < ActiveRecord::Base
 	end
 
 	def available_surcharges(user_surcharges = false, period_surcharges = false, period_not_null_surcharges = false)
-		user_surcharges = kpi_user_surcharges unless user_surcharges
-		period_surcharges = kpi_calc_period.kpi_surcharges unless kpi_calc_period.kpi_surcharges
-		period_not_null_surcharges = period_surcharges.where("default_value IS NOT NULL").select("default_value, #{KpiSurcharge.table_name}.*") unless period_not_null_surcharges
+		surcharges = []
+		if check_user_for_surcharge_update?
+			user_surcharges = kpi_user_surcharges unless user_surcharges
+			period_surcharges = kpi_calc_period.kpi_surcharges unless kpi_calc_period.kpi_surcharges
+			period_not_null_surcharges = period_surcharges.where("default_value IS NOT NULL").select("default_value, #{KpiSurcharge.table_name}.*") unless period_not_null_surcharges
 
- 		KpiSurcharge.order(:name).where("
-                                        (
-                                        (#{KpiSurcharge.table_name}.id NOT IN (?) 
-                                        AND #{KpiSurcharge.table_name}.id NOT IN (?) 
-                                        AND #{KpiSurcharge.table_name}.some_values = ?)
-                                        OR 
-                                        #{KpiSurcharge.table_name}.some_values = ?
-                                        )
-                                        AND #{KpiSurcharge.table_name}.id IN (?)",
-                                        user_surcharges.any? ? user_surcharges.map{|s| s.kpi_surcharge_id} : '',
-                                        period_not_null_surcharges.any? ? period_not_null_surcharges : '',
-                                        false,
-                                        true,
-                                        period_surcharges
-                                        )
+	 		surcharges = surcharges +  KpiSurcharge.order(:name).where("
+	                                       					 							(
+	                                       					 							(#{KpiSurcharge.table_name}.id NOT IN (?) 
+	                                       					 							AND #{KpiSurcharge.table_name}.id NOT IN (?) 
+	                                       					 							AND #{KpiSurcharge.table_name}.some_values = ?)
+	                                       					 							OR 
+	                                       					 							#{KpiSurcharge.table_name}.some_values = ?
+	                                       					 							)
+	                                       					 							AND #{KpiSurcharge.table_name}.id IN (?)",
+	                                       					 							user_surcharges.any? ? user_surcharges.map{|s| s.kpi_surcharge_id} : '',
+	                                       					 							period_not_null_surcharges.any? ? period_not_null_surcharges : '',
+	                                       					 							false,
+	                                       					 							true,
+	                                       					 							period_surcharges
+	                                       					 							)
+ 		end					
+
+ 		if check_user_for_self_surcharge_update?
+ 			surcharges = surcharges + kpi_calc_period.kpi_surcharges.where(:changable_by_user => true)
+ 		end
+
+ 		surcharges
 	end
 
 

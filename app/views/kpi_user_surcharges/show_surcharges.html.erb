@@ -1,4 +1,4 @@
-<% updated = @period_user.check_user_for_surcharge_update? %>
+<% updated = @period_user.check_user_for_surcharge_update? || @period_user.check_user_for_self_surcharge_update? %>
 
 <div style="font-size: 9pt">
 <% if @period_not_null_surcharges.any? or @user_surcharges.any? %>
