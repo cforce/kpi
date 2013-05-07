@@ -272,7 +272,7 @@ class KpiPeriodUser < ActiveRecord::Base
  			surcharges = surcharges + kpi_calc_period.kpi_surcharges.where(:changable_by_user => true)
  		end
 
- 		surcharges.unique
+ 		surcharges.uniq
 	end
 
 
