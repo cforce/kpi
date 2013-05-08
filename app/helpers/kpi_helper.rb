@@ -1,7 +1,7 @@
 module KpiHelper
   def salary_report_table_thead()
     s = ''
-    s << '<tr>'
+    s << '<tr class="thead">'
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:employee)}</span></th>"
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:user_title)}</span></th>"      
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:main_money)}</span></th>" 
@@ -231,8 +231,9 @@ module KpiHelper
 	end
 
 	def lag(check_date, due_date)
-		lag = (check_date.day - due_date.day)
+		lag = (check_date - due_date).to_i
 		(lag>0) ? (lag) : 0
+
 	end
 
 	def link_to_mark_state(mark)
