@@ -14,7 +14,7 @@ class KpiPeriodUsersController < ApplicationController
     def close_message
         @not_set_marks_in_period = KpiMark.not_set.where("#{KpiMark.table_name}.inspector_id = ? 
                                                         AND #{KpiMark.table_name}.start_date BETWEEN ? AND ?
-                                                        #{KpiMark.table_name}.disabled = ?", 
+                                                        AND #{KpiMark.table_name}.disabled = ?", 
                                                         @period_user.user_id,
                                                         @period_user.kpi_calc_period.date,
                                                         @period_user.kpi_calc_period.date.at_end_of_month,
