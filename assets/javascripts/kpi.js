@@ -1,4 +1,69 @@
 jQuery(document).ready(function(){
+
+    jQuery(window).bind('resize', function() {
+        if(typeof $(document).data('thead_clone') != 'undefined')
+            {
+            var clone = $(document).data('thead_clone')
+            clone.width($('table.float_thead').parents('div.autoscroll').width());
+            }
+        });
+
+    jQuery(window).bind('scroll', function() {
+        var theads = $('table.float_thead tr.thead')
+        if(one_from_object_in_vertical_visible_area(theads))
+            {
+            if(typeof $(document).data('thead_clone') != 'undefined')
+                {
+                $(document).data('thead_clone').hide()  
+                }
+            }
+        else
+            {
+            if(typeof $(document).data('thead_clone') == 'undefined')
+                {
+                var native_table = theads.first().parents('table')
+                var cloned_table = native_table.clone()
+
+                cloned_table.children().remove()
+                cloned_table.removeClass('float_thead')
+                cloned_table.html(theads.first().clone())
+                cloned_table.find('tr').removeClass('thead')
+                cloned_table.css('table-layout', 'fixed')
+
+                cloned_table.width(0)
+                theads.first().find('th').each(function(index){
+                    cloned_table.width(cloned_table.width+$(this).width())
+                    cloned_table.find('tr th').eq(index).width($(this).width()+1)
+                    });
+
+                if($('table.float_thead').parents('div.autoscroll').length == 1)
+                    {
+                    var clone = $(document.createElement('div'))
+                    clone.width($('table.float_thead').parents('div.autoscroll').width());
+                    clone.css('overflow', 'hidden')
+                    }
+                else
+                    {var clone = $(document.createElement('div'))}
+                
+                clone.html(cloned_table);
+                $('body').append(clone);
+
+                $(document).data('thead_clone', clone)
+
+                clone.css('position', 'absolute')
+                     .css('z-index', 200)
+                     .css('top', $(document).scrollTop())
+                     .css('left', native_table.offset().left)
+                 }
+            else
+                {
+                $(document).data('thead_clone').show().css('top', $(document).scrollTop())
+                }
+            }
+
+        });   
+
+
     jQuery('select.select2').change(function(){
         $.ajax({
             url: jQuery(this).attr('data-url'),
@@ -435,3 +500,21 @@ function build_chart(container, data_id)
         });
 
 	}
+    function one_from_object_in_vertical_visible_area(elements)
+        {
+        var flag=0
+        elements.each(function(){
+            
+            if($(this).offset().top >= $(document).scrollTop() && $(this).offset().top+$(this).height()<=$(document).scrollTop()+$(window).height()*0.3)
+                {
+                flag = 1;
+                /*alert('' + $(this).height()+' + '+$(this).offset().top+ ' = '+ k + '<=' + b)
+                $(this).find('th').attr("style", "background-color: red;")*/
+                }
+
+            })
+        if(flag==1)
+            {return true}
+        else
+            {return false}    
+        }

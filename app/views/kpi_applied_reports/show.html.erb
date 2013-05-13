@@ -1,3 +1,4 @@
+
 <div class="contextual"> <%= render :partial => 'kpi/period_links' %> </div>
 
 <h2><%=l(:salary_report) %></h2>
@@ -5,7 +6,7 @@
 <% if @user_periods.any? and @period_dates.any? %>
 
 <div class="autoscroll"> 
-<table class="list"> 
+<table class="list float_thead"> 
   <% last_department = nil %>
   <% last_subdivision = nil %>
   <% are_some_subdivisions = false %>
@@ -36,7 +37,7 @@
     <% else %>
       <% are_some_subdivisions = true %>
       <tr class="kpi_cat">
-      <td colspan="<%= 10+@all_surcharges_names.length %>"><%= pu.user.user_department.name %></td>
+      <td colspan="<%= 12+@all_surcharges_names.length %>"><%= pu.user.user_department.name %></td>
       </tr>
     <% end %>
 
