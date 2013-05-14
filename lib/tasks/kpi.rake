@@ -92,24 +92,48 @@ namespace :redmine do
   end
 
   task :make_kpi_mark_plan_calc => :environment do
-    KpiCalcPeriod.novel.each do |p|
-      puts "------------------------------"
-      date = "#{p.date.month}.#{p.date.year}"
-      puts "Period date is - #{date} Period id is - #{p.id} "
-      p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern_plan IS NOT NULL").each do |i|
-        puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}. Period pattern name is #{Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]}"
+    if ENV['UNLOCKED_MARKS'].nil? 
+      KpiCalcPeriod.novel.each do |p|
+        puts "------------------------------"
+        date = "#{p.date.month}.#{p.date.year}"
+        puts "Period date is - #{date} Period id is - #{p.id} "
+        p.kpi_period_indicators.where("#{KpiPeriodIndicator.table_name}.pattern_plan IS NOT NULL").each do |i|
+          puts "Period id is - #{i.id}. Period pattern_plan is - #{i.pattern_plan.to_s}. Period pattern name is #{Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]}"
 
-        case Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]
-        when "import_from_other_system"
-            puts "Pattern is 'import_from_other_system'"
-            imported_value = KpiImportedMonthValue.joins(:kpi_imported_value).where("#{KpiImportedValue.table_name}.id=? AND #{KpiImportedMonthValue.table_name}.date=?", i.pattern_plan_settings['imported_value_id'], p.date).first
-            if ! imported_value.nil? && ! imported_value.plan_value.nil?
-              i.plan_value = (imported_value.plan_value.to_f * i.pattern_plan_settings['imported_value_percent'].to_f) / 100
-              i.save 
-            end
-        end
-        end
+          case Indicator::PLAN_PATTERNS[i.pattern_plan.to_s]
+          when "import_from_other_system"
+              puts "Pattern is 'import_from_other_system'"
+              imported_value = KpiImportedMonthValue.joins(:kpi_imported_value).where("#{KpiImportedValue.table_name}.id=? AND #{KpiImportedMonthValue.table_name}.date=?", i.pattern_plan_settings['imported_value_id'], p.date).first
+              if ! imported_value.nil? && ! imported_value.plan_value.nil?
+                i.plan_value = (imported_value.plan_value.to_f * i.pattern_plan_settings['imported_value_percent'].to_f) / 100
+                i.save 
+              end
+          end
+          end
+      end
+    else
+      puts "Updating unlocked marks"
+      KpiMark.not_locked.select("#{KpiMark.table_name}.*,
+                                 #{KpiPeriodIndicator.table_name}.pattern_plan AS pattern_plan,
+                                 #{KpiPeriodIndicator.table_name}.pattern_plan_settings AS pattern_plan_settings,
+                                 #{KpiCalcPeriod.table_name}.date AS period_date")
+                        .joins(:kpi_period_indicator => :kpi_calc_period).where("pattern_plan IS NOT NULL AND #{KpiCalcPeriod.table_name}.locked=?", false).each do |mark|
+          puts "------------------------------"
+          puts "Mark period - #{mark.start_date} - #{mark.end_date}"
+          case Indicator::PLAN_PATTERNS[mark.attributes['pattern_plan'].to_s]
+          when "import_from_other_system"
+              puts "Pattern is 'import_from_other_system'"
+              pattern_plan_settings = YAML.load(mark.attributes['pattern_plan_settings'])
+              imported_value = KpiImportedMonthValue.joins(:kpi_imported_value).where("#{KpiImportedValue.table_name}.id=? AND #{KpiImportedMonthValue.table_name}.date=?", pattern_plan_settings['imported_value_id'], mark.attributes['period_date']).first
 
+              if ! imported_value.nil? && ! imported_value.plan_value.nil?
+                puts "Mark ID is  #{mark.id}. user_id id #{mark.user_id}"
+
+                mark.plan_value = (imported_value.plan_value.to_f * pattern_plan_settings['imported_value_percent'].to_f) / 100
+                mark.save 
+              end
+          end    
+      end
     end
   end
 
