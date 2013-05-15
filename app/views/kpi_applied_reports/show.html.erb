@@ -1,4 +1,4 @@
-
+<div id="fff" style="position:fixed; background-color: #000; color: #fff; top: 100px; right: 100px;">0</div>
 <div class="contextual"> <%= render :partial => 'kpi/period_links' %> </div>
 
 <h2><%=l(:salary_report) %></h2>
@@ -54,7 +54,7 @@
     <% @subdivision_totals[:users][last_subdivision.id] = 0 if @subdivision_totals[:users][last_subdivision.id].nil? %>
     <% @subdivision_totals[:users][last_subdivision.id] += 1 if @user_periods[index-1].try(:user_id) != pu.user_id %>    
 
-    <td><%= link_to_user pu.user %></td>
+    <td class="fixed_coll"><%= link_to_user pu.user %></td>
     <td>
       <%= pu.user.user_title.name %>
       <% if @user_periods[index-1].try(:user_id) == pu.user_id or @user_periods[index+1].try(:user_id) == pu.user_id %><br>

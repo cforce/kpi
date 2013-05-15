@@ -2,7 +2,7 @@ module KpiHelper
   def salary_report_table_thead()
     s = ''
     s << '<tr class="thead">'
-    s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:employee)}</span></th>"
+    s << "<th class=\"fixed_coll\">#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:employee)}</span></th>"
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:user_title)}</span></th>"      
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:main_money)}</span></th>" 
     s << "<th>#{image_tag 'hide_table_column.png', :plugin => :kpi, :title => l(:hide), :class => 'hide_table_column'} #{image_tag 'show_table_column.png', :plugin => :kpi, :title => l(:show), :class => 'I show_table_column'} <span>#{l(:hours_fact)}</span></th>"  

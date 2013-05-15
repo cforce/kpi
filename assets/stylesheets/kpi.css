@@ -1,3 +1,8 @@
+td.fixed_coll, th.fixed_coll
+	{
+	background-image: url(../images/fixed_bg.png);
+	}
+
 table.list tr.divider td, table.list tr.divider:hover td
 	{
 	border: none;

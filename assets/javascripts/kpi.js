@@ -1,66 +1,162 @@
 jQuery(document).ready(function(){
 
-    jQuery(window).bind('resize', function() {
+    /*jQuery(window).bind('resize', function() {
         if(typeof $(document).data('thead_clone') != 'undefined')
             {
             var clone = $(document).data('thead_clone')
             clone.width($('table.float_thead').parents('div.autoscroll').width());
             }
-        });
+        });*/
 
-    jQuery(window).bind('scroll', function() {
-        var theads = $('table.float_thead tr.thead')
-        if(one_from_object_in_vertical_visible_area(theads))
+    $('div.autoscroll').bind('scroll', function() {
+
+        var autoscroll = $(this)
+       
+        if(autoscroll.data('last_scroll_left') <= autoscroll.scrollLeft() || typeof autoscroll.data('last_scroll_left') == 'undefined')
             {
-            if(typeof $(document).data('thead_clone') != 'undefined')
-                {
-                $(document).data('thead_clone').hide()  
-                }
+            var right = true;
             }
         else
             {
-            if(typeof $(document).data('thead_clone') == 'undefined')
-                {
-                var native_table = theads.first().parents('table')
-                var cloned_table = native_table.clone()
+            var right = false;
+            }
+        autoscroll.data('last_scroll_left', autoscroll.scrollLeft())
 
-                cloned_table.children().remove()
-                cloned_table.removeClass('float_thead')
-                cloned_table.html(theads.first().clone())
-                cloned_table.find('tr').removeClass('thead')
-                cloned_table.css('table-layout', 'fixed')
 
-                cloned_table.width(0)
-                theads.first().find('th').each(function(index){
-                    cloned_table.width(cloned_table.width+$(this).width())
-                    cloned_table.find('tr th').eq(index).width($(this).width()+1)
-                    });
+        if(!$(autoscroll).data('program_scroll') || typeof $(autoscroll).data('program_scroll') == 'undefined')
+            {
 
-                if($('table.float_thead').parents('div.autoscroll').length == 1)
-                    {
-                    var clone = $(document.createElement('div'))
-                    clone.width($('table.float_thead').parents('div.autoscroll').width());
-                    clone.css('overflow', 'hidden')
-                    }
-                else
-                    {var clone = $(document.createElement('div'))}
-                
-                clone.html(cloned_table);
-                $('body').append(clone);
+            var first_fixed_cell = autoscroll.find('th.fixed_coll').first()
+            var sum = 0
+            autoscroll.data('cell_widths0', sum)
+            first_fixed_cell.siblings().each(function(index){
+                sum = sum + $(this).innerWidth()+2
+                i = index+1
+                autoscroll.data('cell_widths'+i, sum)
+                })
 
-                $(document).data('thead_clone', clone)
-
-                clone.css('position', 'absolute')
-                     .css('z-index', 200)
-                     .css('top', $(document).scrollTop())
-                     .css('left', native_table.offset().left)
-                 }
+            if(typeof autoscroll.data('scroll_offset') == 'undefined')
+                autoscroll.data('scroll_offset', 1)
             else
                 {
-                $(document).data('thead_clone').show().css('top', $(document).scrollTop())
+                if(right)
+                    {
+                    autoscroll.data('scroll_offset', autoscroll.data('scroll_offset')+1)
+                    }
+                else
+                    {                   
+                    autoscroll.data('scroll_offset', autoscroll.data('scroll_offset')-1)                  
+                    }
                 }
-            }
 
+            //$('#fff').html($('#fff').html()+'-'+autoscroll.data('scroll_offset'))
+
+            var scroll_length = autoscroll.data('cell_widths'+autoscroll.data('scroll_offset'))
+            if(scroll_length==autoscroll.scrollLeft())
+                autoscroll.data('program_scroll', false)
+            else
+                autoscroll.data('program_scroll', true)
+            autoscroll.scrollLeft(scroll_length)
+
+            if(autoscroll.scrollLeft()!=scroll_length)
+                {
+                //$('#fff').html($('#fff').html()+'-'+autoscroll.data('scroll_offset'))
+                autoscroll.data('program_scroll', true)
+                }
+
+            autoscroll.find('.fixed_coll').each(function() {
+                if(right)
+                    {
+                    $(this).next().after($(this))
+                    }
+                else
+                    {
+                    $(this).prev().before($(this))
+                    }
+                })
+
+            
+
+            }
+        else
+            {
+            autoscroll.data('program_scroll', false)
+            }
+        
+        });
+
+    jQuery(document).bind('scroll', function() {
+        //$('#fff').html($('#fff').html()+' - '+$(document).scrollTop())
+        if(typeof $(document).data('last_scroll_top') == 'undefined' || Math.abs($(document).data('last_scroll_top') - $(document).scrollTop()) > 70)
+            {
+            $(document).data('last_scroll_top', $(document).scrollTop())
+            var sub_scroll = false
+            //
+            }
+        else
+            {
+            var sub_scroll = true
+            //$(document).data('last_scroll_top', $(document).scrollTop())
+            }
+        //var date = new Date()
+       //$(document).data('last_scroll_microtime', date.getTime())
+        //alert(date.getTime());
+
+        if(!$(document).data('program_scroll') || typeof $(document).data('program_scroll') == 'undefined') //Если scroll не программный
+            {
+            //$('#fff').html($('#fff').html()+' - '+ $(document).scrollTop())
+            if(!sub_scroll)
+                {
+                setTimeout(function(){
+
+                    var theads = $('table.float_thead tr.thead')
+                    if(one_from_object_in_vertical_visible_area(theads))
+                        {
+                        if(typeof $(document).data('thead_clone') != 'undefined')
+                            {
+                            $(document).data('thead_clone').hide()  
+                            }
+                        }
+                    else
+                        {
+                        if(typeof $(document).data('thead_clone') == 'undefined')
+                            {
+                            native_thead = theads.first()
+                            var clone_thead = native_thead.clone("true")
+                            clone_thead.removeClass('thead')
+                
+                            }
+                        else
+                            {
+                            clone_thead = $(document).data('thead_clone')
+                            clone_thead.show()
+                            }
+                            //$('#fff').html($('#fff').html()+' - '+$(document).scrollTop())
+
+                            var first_visible_tr = get_first_visible_tr_index($('table.float_thead'))
+                            $(document).data('program_scroll', true)
+                            first_visible_tr.after(clone_thead)
+             
+                           var scroll_length = Math.round(clone_thead.offset().top)
+
+                           //$('#fff').html($('#fff').html()+' - Math.'+scroll_length)
+
+                           //alert(scroll_length)
+                           if(scroll_length!=0)
+                                { $(document).scrollTop(scroll_length)  }
+                                    
+            
+                           $(document).data('thead_clone', clone_thead)
+
+                                   } 
+                    }, 100)
+                }        
+
+            }
+        else //Если scroll  программный
+            {
+            $(document).data('program_scroll', false) 
+            }
         });   
 
 
@@ -517,4 +613,17 @@ function build_chart(container, data_id)
             {return true}
         else
             {return false}    
+        }
+
+    function get_first_visible_tr_index(table)
+        {
+        var first_visible_tr;
+        table.find('tr').each(function(index){
+            if($(this).offset().top + $(this).height() >= $(document).scrollTop())
+                {
+                first_visible_tr = $(this)
+                return false;
+                }
+            })
+        return first_visible_tr
         }
