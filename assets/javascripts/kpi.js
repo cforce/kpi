@@ -26,10 +26,12 @@ jQuery(document).ready(function(){
         if(!$(autoscroll).data('program_scroll') || typeof $(autoscroll).data('program_scroll') == 'undefined')
             {
 
-            var first_fixed_cell = autoscroll.find('th.fixed_coll').first()
+            var first_fixed_cell = autoscroll.find('tbody:visible th.fixed_coll').first()
             var sum = 0
             autoscroll.data('cell_widths0', sum)
             first_fixed_cell.siblings().each(function(index){
+                //alert($(this).innerWidth());
+                //$('#fff').html($('#fff').html()+'-'+$(this).innerWidth())
                 sum = sum + $(this).innerWidth()+2
                 i = index+1
                 autoscroll.data('cell_widths'+i, sum)
