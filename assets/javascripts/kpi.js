@@ -32,7 +32,7 @@ jQuery(document).ready(function(){
             first_fixed_cell.siblings().each(function(index){
                 //alert($(this).innerWidth());
                 //$('#fff').html($('#fff').html()+'-'+$(this).innerWidth())
-                sum = sum + $(this).innerWidth()+2
+                sum = sum + $(this).innerWidth()+1
                 i = index+1
                 autoscroll.data('cell_widths'+i, sum)
                 })
@@ -66,7 +66,7 @@ jQuery(document).ready(function(){
                 autoscroll.data('program_scroll', true)
                 }
 
-            autoscroll.find('.fixed_coll').each(function() {
+            autoscroll.find('tbody:visible .fixed_coll').each(function() {
                 if(right)
                     {
                     $(this).next().after($(this))
