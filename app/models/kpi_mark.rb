@@ -5,6 +5,7 @@ class KpiMark < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :inspector, :class_name => 'User', :foreign_key => 'inspector_id'
 	has_one :kpi_period_indicator, :through => :kpi_indicator_inspector
+	has_one :kpi_calc_period, :through => :kpi_period_indicator
 	has_many :kpi_mark_offers
 	
 	before_save :check_mark
@@ -16,8 +17,16 @@ class KpiMark < ActiveRecord::Base
 	scope :enabled, :conditions => "#{KpiMark.table_name}.disabled = 0 "	
 	scope :not_set, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"	
 
+	WHO_CAN_DISABLE = {'0' => 'inspector',
+	             		   '1' => 'manager'}
+
 	#scope :active, :conditions => "#{KpiMark.table_name}.locked != 1 OR #{KpiMark.table_name}.locked IS NULL"	
 	#scope :urgent, :conditions => "#{KpiMark.table_name}.fact_value IS NULL"
+
+	def can_be_disabled?(user, period=false)
+		period = kpi_calc_period unless period
+		(user.subordinate? and KpiMark::WHO_CAN_DISABLE[period.who_can_disable_mark.to_s] == 'manager') or (inspector_id == User.current.id and KpiMark::WHO_CAN_DISABLE[period.who_can_disable_mark.to_s] == 'inspector') or User.current.admin?
+	end
 
 	def get_mark_offer_totals
 		kpi_mark_offers.select("is_praise, SUM(is_praise) AS is_praise_total").group("is_praise").inject({}){|h,v| h[v.is_praise]=v.attributes['is_praise_total']; h;}

@@ -35,7 +35,7 @@ class KpiMarksController < ApplicationController
 		@period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		period_user = @period.kpi_period_users.where(:user_id => @user.id).first
 		@mark.disabled=true
-		@mark.save if @user.user_kpi_marks_can_be_disabled?(period_user)
+		@mark.save if @mark.can_be_disabled?(@user, @period)
 	
         respond_to do |format|
           #format.html { redirect_to :controller => 'groups', :action => 'edit', :id => @group, :tab => 'relations' }
@@ -61,7 +61,7 @@ class KpiMarksController < ApplicationController
 		@period=@mark.kpi_indicator_inspector.kpi_period_indicator.kpi_period_category.kpi_calc_period
 		period_user = @period.kpi_period_users.where(:user_id => @user.id).first
 		@mark.disabled=false
-		@mark.save if @user.user_kpi_marks_can_be_disabled?(period_user)
+		@mark.save if @mark.can_be_disabled?(@user, @period)
 	
         respond_to do |format|
           #format.html { redirect_to :controller => 'groups', :action => 'edit', :id => @group, :tab => 'relations' }
@@ -83,7 +83,7 @@ class KpiMarksController < ApplicationController
 		marks.each{|mark|
 			mark.fact_value=params[:mark][mark.id.to_s]
 			mark.explanation=params[:explanation][mark.id.to_s]
-			mark.disabled=params[:disabled][mark.id.to_s] if mark.user.kpi_mark_can_be_disabled?(mark)
+			mark.disabled=params[:disabled][mark.id.to_s] if mark.can_be_disabled?(mark.user)
 			mark.save if mark.check_user_for_fact_update		
 			}	
 		find_marks

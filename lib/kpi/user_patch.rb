@@ -63,9 +63,9 @@ module Kpi
 			KpiImportedValue.order(:name).where(:user_department_id => self.user_department_id, :user_title_id => self.user_title_id)
 		end
 
-		def user_kpi_marks_can_be_disabled?(period_user)
-			(User.current.admin? or subordinate?) and not period_user.locked
-		end
+		# def user_kpi_marks_can_be_disabled?(period_user)
+			# (User.current.admin? or subordinate?) and not period_user.locked
+		# end
 
 		def kpi_mark_can_be_disabled?(mark)
 			(User.current.admin? or subordinate?) and not mark.locked

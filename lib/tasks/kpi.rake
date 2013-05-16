@@ -45,6 +45,7 @@ namespace :redmine do
       period.kpi_imported_value_id = original_period.kpi_imported_value_id
       period.base_salary = original_period.base_salary
       period.user_id = original_period.user_id
+      period.who_can_disable_mark = original_period.who_can_disable_mark
       period.allowed_change_salary = original_period.allowed_change_salary
 
 

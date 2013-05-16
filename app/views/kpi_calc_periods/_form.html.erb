@@ -12,6 +12,10 @@
 	<%= f.select :kpi_pattern_id, (@patterns.collect {|p| [p.name, p.id]}), {}, :disabled => !@period.new_record? %>
 </p>
 
+<p>
+  <%= f.select :who_can_disable_mark, (KpiMark::WHO_CAN_DISABLE.collect {|k,v| [l(v), k]}), {}, :disabled => @period.locked %>
+</p>
+
 </div>
 </div>
 

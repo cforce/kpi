@@ -1,7 +1,6 @@
 <% 
 period_user = period.kpi_period_users.where(:user_id => @user.id).first
-colspan = 2
-colspan = (@user.user_kpi_marks_can_be_disabled?(period_user)) ? colspan+1 : colspan 
+colspan = 3
 kpi = period_user.kpi 
 %> 
 
@@ -11,9 +10,7 @@ kpi = period_user.kpi
 		<tr>
 		<th><%= l(:label_kpi_indicators) %></th>
 		<th><%= l(:label_mark_period) %></th>
-		<% if @user.user_kpi_marks_can_be_disabled?(period_user) %>
-			<th  class="narrow"></th> 
-		<% end %>
+		<th  class="narrow"></th> 
 		<th class="narrow"><%= l(:weight_label) %></th>
 		<th class="narrow"><%= l(:label_plan) %></th>
 		<th class="narrow"><%= l(:value_of_fact) %></th>
@@ -59,9 +56,13 @@ kpi = period_user.kpi
 				<tr class="<%= color %> <%= "disabled" if mark.disabled %>">
 				<td class="inspector"><%= link_to_user mark.inspector %></td>
 				<td><%= mark.mark_period %> <small><%= link_to_modal_window l(:kpi_mark_desc), mark.explanation, {:class => 'static_content_only'} if mark.explanation.to_s!='' %></small></td>
-				<% if @user.user_kpi_marks_can_be_disabled?(period_user) %>
-					<td><%= link_to_mark_state(mark) %></td> 
+				<td>
+				<% if mark.can_be_disabled?(@user, period) %>
+					<%= link_to_mark_state(mark) %>
+				<% else %>
+					<%= image_tag(mark.disabled ? "show_table_row.png" : "hide_table_row.png", :plugin => :kpi, :style => 'opacity:0.5;') %>
 				<% end %>
+				</td>
 				<td><%= kpi_percent mark.kpi_indicator_inspector.percent %> </td>
 				<td><nobr><%= kpi_value plan_view(mark.plan(period_indicator), mark, period_indicator, period, period_user), 
 								        period_indicator.kpi_unit.abridgement %></nobr></td>
