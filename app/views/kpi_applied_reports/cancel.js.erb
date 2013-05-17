@@ -1,1 +1,1 @@
-$('#footnote_<%= @department_id %>').html('<%= escape_javascript(render :partial => 'kpi_applied_reports/approve', :locals => {:department_period_state => true, :department_id => @department_id}) %>');
+$('#footnote_<%= @department_id %> .approve_block').html('<%= escape_javascript(render :partial => 'kpi_applied_reports/approve', :locals => {:department_period_state => true, :department_id => @department_id}) %>');

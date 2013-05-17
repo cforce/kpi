@@ -1,0 +1,2 @@
+<span class="selected"><%= l(:audited) %>. <%= format_date audited_report.created_at %>, <%= link_to_user audited_report.user %></span>
+<%= link_to "<span>#{l(:cancel_audit)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "cancel_audit", :date => @date, :department_id => department_id}, :class => 'icon reopen_period in_link', :remote => true if KpiAppliedReport.user_can_cancel? %>

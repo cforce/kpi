@@ -6,6 +6,14 @@
     </div>
   <% end %>
 
+  <% if @not_closed_user_periods!=[] %>
+    <div class="info">
+      <%= l(:employee_doesnt_close_all_periods) %>
+    </div>
+  <% end %>
+
+  
+
   <% if @isues_requiring_attention!=[] %>
     <div class="info"><%= l(:employee_doesnt_set_all_issue_mark) %></div>
     <br/>

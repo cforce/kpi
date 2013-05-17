@@ -24,12 +24,23 @@
 <td colspan="<%= 12 + @all_surcharges_names.length %>" >
 
 <div class="R kpi_footnote" id="footnote_<%= last_department.id %>">
-    <% applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? ", @date, last_department.id).try(:first) %>
+    <span class="approve_block">
+    <% applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? AND audit=?", @date, last_department.id, false).try(:first) %>
     <% if not applied_report.nil? %>
       <%= render :partial => 'kpi_applied_reports/approved', :locals => {:applied_report => applied_report, :department_id => last_department} %>
     <% else  %>
       <%= render :partial => 'kpi_applied_reports/approve', :locals => {:department_id => last_department.id, :department_period_state => @department_period_states[last_department.id]} %>
     <% end  %>
+    </span>
+
+    <span class="audit_block">
+    <% audited_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? AND audit=?", @date, last_department.id, true).try(:first) %>
+    <% if not audited_report.nil? %>
+      <%= render :partial => 'kpi_applied_reports/audited', :locals => {:audited_report => audited_report, :department_id => last_department} %>
+    <% else  %>
+      <%= render :partial => 'kpi_applied_reports/audit', :locals => {:department_id => last_department.id, :department_period_state => @department_period_states[last_department.id]} %>
+    <% end  %>
+    </span>
 </div>
 
 </td>

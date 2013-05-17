@@ -21,6 +21,26 @@ class KpiPeriodUsersController < ApplicationController
                                                         false
                                                         )
 
+        @not_closed_user_periods = KpiPeriodUser.open
+                                                .joins(:kpi_calc_period, :user)
+                                                .joins("LEFT JOIN #{User.table_name} AS managers ON #{User.table_name}.parent_id = managers.id")
+                                                .joins("LEFT JOIN #{User.table_name} AS period_managers ON #{KpiCalcPeriod.table_name}.user_id = period_managers.id")
+                                                .where("#{KpiCalcPeriod.table_name}.date = ?
+                                                        AND
+                                                            (
+                                                            (#{User.table_name}.parent_id = ? AND #{KpiCalcPeriod.table_name}.user_id IS NULL)
+                                                            OR (#{KpiCalcPeriod.table_name}.user_id = ?)
+                                                            OR (managers.id IS NOT NULL AND managers.deputy_id = ? AND #{KpiCalcPeriod.table_name}.user_id IS NULL)
+                                                            OR (period_managers.deputy_id = ?)
+                                                            )", 
+                                                        @period_user.kpi_calc_period.date,
+                                                        User.current.id,
+                                                        User.current.id,
+                                                        User.current.id,
+                                                        User.current.id
+                                                        )
+
+
         # @isues_requiring_attention = Issue.joins("INNER JOIN #{CustomValue.table_name} AS cv_cus ON cv_cus.custom_field_id = #{Setting.plugin_kpi['customer_custom_field_id']} 
         #                                                                                             AND cv_cus.value = #{@period_user.user_id}
         #                                           LEFT JOIN #{CustomValue.table_name} AS cv_mark ON cv_mark.custom_field_id = #{Setting.plugin_kpi['mark_custom_field_that_should_be_set_id']}"

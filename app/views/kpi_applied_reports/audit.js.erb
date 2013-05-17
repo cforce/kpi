@@ -1,0 +1,1 @@
+$('#footnote_<%= @department_id %> .audit_block').html('<%= escape_javascript(render :partial => 'kpi_applied_reports/audited', :locals => {:audited_report => @audited_report, :department_id => @department_id}) %>');

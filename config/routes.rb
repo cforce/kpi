@@ -44,7 +44,9 @@ RedmineApp::Application.routes.draw do
 		collection do
 			get 'show', :action => 'show'
 			get 'apply/:date/:department_id', :action => 'apply'
+			get 'audit/:date/:department_id', :action => 'audit'
 			get 'cancel/:date/:department_id', :action => 'cancel'
+			get 'cancel_audit/:date/:department_id', :action => 'cancel_audit'
 		end
 
 	end

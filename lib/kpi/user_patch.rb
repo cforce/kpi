@@ -33,6 +33,10 @@ module Kpi
 	
 	module InstanceMethods
 
+		def can_audit_salary_report?(department_id)
+			User.current.global_permission_to?('kpi_applied_reports', 'audit') or UserDeparment.find(department_id).manager == @user
+		end
+
 		def sql_conditions_for_periods
       substitutable_employees = self.substitutable_employees.includes(:user_tree)
       cond1 = "(#{UserTree.table_name}.lft>=#{user_tree.lft} AND #{UserTree.table_name}.rgt<=#{user_tree.rgt} AND (#{KpiCalcPeriod.table_name}.user_id IS NULL OR (ut.lft>=#{user_tree.lft} AND ut.rgt<=#{user_tree.rgt})))"

@@ -88,76 +88,77 @@ jQuery(document).ready(function(){
         });
 
     jQuery(document).bind('scroll', function() {
-        //$('#fff').html($('#fff').html()+' - '+$(document).scrollTop())
-        if(typeof $(document).data('last_scroll_top') == 'undefined' || Math.abs($(document).data('last_scroll_top') - $(document).scrollTop()) > 70)
+        var theads = $('table.float_thead tr.thead')
+        if(theads.length > 0)
             {
-            $(document).data('last_scroll_top', $(document).scrollTop())
-            var sub_scroll = false
-            //
-            }
-        else
-            {
-            var sub_scroll = true
-            //$(document).data('last_scroll_top', $(document).scrollTop())
-            }
-        //var date = new Date()
-       //$(document).data('last_scroll_microtime', date.getTime())
-        //alert(date.getTime());
-
-        if(!$(document).data('program_scroll') || typeof $(document).data('program_scroll') == 'undefined') //Если scroll не программный
-            {
-            //$('#fff').html($('#fff').html()+' - '+ $(document).scrollTop())
-            if(!sub_scroll)
+            if(typeof $(document).data('last_scroll_top') == 'undefined' || Math.abs($(document).data('last_scroll_top') - $(document).scrollTop()) > 70)
                 {
-                setTimeout(function(){
-
-                    var theads = $('table.float_thead tr.thead')
-                    if(one_from_object_in_vertical_visible_area(theads))
-                        {
-                        if(typeof $(document).data('thead_clone') != 'undefined')
+                $(document).data('last_scroll_top', $(document).scrollTop())
+                var sub_scroll = false
+                //
+                }
+            else
+                {
+                var sub_scroll = true
+                //$(document).data('last_scroll_top', $(document).scrollTop())
+                }
+            //var date = new Date()
+            //$(document).data('last_scroll_microtime', date.getTime())
+            //alert(date.getTime());
+    
+            if(!$(document).data('program_scroll') || typeof $(document).data('program_scroll') == 'undefined') //Если scroll не программный
+                {
+                //$('#fff').html($('#fff').html()+' - '+ $(document).scrollTop())
+                if(!sub_scroll)
+                    {
+                    setTimeout(function(){
+                        if(one_from_object_in_vertical_visible_area(theads))
                             {
-                            $(document).data('thead_clone').hide()  
-                            }
-                        }
-                    else
-                        {
-                        if(typeof $(document).data('thead_clone') == 'undefined')
-                            {
-                            native_thead = theads.first()
-                            var clone_thead = native_thead.clone("true")
-                            clone_thead.removeClass('thead')
-                
+                            if(typeof $(document).data('thead_clone') != 'undefined')
+                                {
+                                $(document).data('thead_clone').hide()  
+                                }
                             }
                         else
                             {
-                            clone_thead = $(document).data('thead_clone')
-                            clone_thead.show()
-                            }
-                            //$('#fff').html($('#fff').html()+' - '+$(document).scrollTop())
-
-                            var first_visible_tr = get_first_visible_tr_index($('table.float_thead'))
-                            $(document).data('program_scroll', true)
-                            first_visible_tr.after(clone_thead)
-             
-                           var scroll_length = Math.round(clone_thead.offset().top)
-
-                           //$('#fff').html($('#fff').html()+' - Math.'+scroll_length)
-
-                           //alert(scroll_length)
-                           if(scroll_length!=0)
-                                { $(document).scrollTop(scroll_length)  }
-                                    
-            
-                           $(document).data('thead_clone', clone_thead)
-
-                                   } 
-                    }, 100)
-                }        
-
-            }
-        else //Если scroll  программный
-            {
-            $(document).data('program_scroll', false) 
+                            if(typeof $(document).data('thead_clone') == 'undefined')
+                                {
+                                native_thead = theads.first()
+                                var clone_thead = native_thead.clone("true")
+                                clone_thead.removeClass('thead')
+                    
+                                }
+                            else
+                                {
+                                clone_thead = $(document).data('thead_clone')
+                                clone_thead.show()
+                                }
+                                //$('#fff').html($('#fff').html()+' - '+$(document).scrollTop())
+    
+                                var first_visible_tr = get_first_visible_tr_index($('table.float_thead'))
+                                $(document).data('program_scroll', true)
+                                first_visible_tr.after(clone_thead)
+                 
+                               var scroll_length = Math.round(clone_thead.offset().top)
+    
+                               //$('#fff').html($('#fff').html()+' - Math.'+scroll_length)
+    
+                               //alert(scroll_length)
+                               if(scroll_length!=0)
+                                    { $(document).scrollTop(scroll_length)  }
+                                        
+                
+                               $(document).data('thead_clone', clone_thead)
+    
+                                       } 
+                        }, 100)
+                    }        
+    
+                }
+            else //Если scroll  программный
+                {
+                $(document).data('program_scroll', false) 
+                }
             }
         });   
 

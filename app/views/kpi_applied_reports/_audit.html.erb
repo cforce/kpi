@@ -1,0 +1,5 @@
+<% if  User.current.can_audit_salary_report?(department_id) %>
+  <% if department_period_state %>
+    <%= link_to "<span>#{l(:audit)}</span>".html_safe, {:controller => "kpi_applied_reports", :action => "audit", :date => @date, :department_id => department_id}, :class => 'icon icon close_period in_link', :remote => true  %>
+  <% end %>
+<% end %>

@@ -1,7 +1,7 @@
 class KpiAppliedReportsController < ApplicationController
   before_filter :authorized_globaly?, :except => [:show]
-  before_filter :find_period_dates, :only => [:show,  :apply, :cancel]
-  before_filter :find_date, :only => [:show, :apply, :cancel]
+  before_filter :find_period_dates, :only => [:show,  :apply, :cancel, :audit, :cancel_audit]
+  before_filter :find_date, :only => [:show, :apply, :cancel, :audit, :cancel_audit]
     
   helper :kpi
   include KpiHelper
@@ -19,12 +19,36 @@ class KpiAppliedReportsController < ApplicationController
     @subdivision_totals = {:salary => {}, :surcharges => {}, :calculated_salary => {}, :salary_whithout_deduction => {}, :deductions => {}, :users => {}}
   end
 
+  def audit
+    @department_id = params[:department_id]
+
+    @audited_report = KpiAppliedReport.new
+    @audited_report.date = @date
+    @audited_report.user_id = User.current.id
+    @audited_report.user_department_id = @department_id #department.id
+    @audited_report.audit = true
+    @audited_report.save
+
+    respond_to do |format| format.js { render "kpi_applied_reports/audit" }
+    end
+  end
+
+  def cancel_audit
+    @department_id = params[:department_id]
+    KpiAppliedReport.where(:date => @date, :user_department_id => params[:department_id], :audit => true).each do |ar|
+      ar.destroy
+    end
+
+    respond_to do |format| format.js { render "kpi_applied_reports/cancel_audit" } 
+    end
+  end
+
   def apply
     #department = UserDepartment.find(params[:department_id])
     @department_id = params[:department_id]
 
     #@user_who_approved = User.current
-    @applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? ", @date, @department_id).try(:first)
+    #@applied_report = KpiAppliedReport.includes(:user).where("#{KpiAppliedReport.table_name}.date = ? AND #{KpiAppliedReport.table_name}.user_department_id = ? ", @date, @department_id).try(:first)
 
     @applied_report = KpiAppliedReport.new
     @applied_report.date = @date
@@ -41,7 +65,7 @@ class KpiAppliedReportsController < ApplicationController
 
   def cancel
     @department_id = params[:department_id]
-    KpiAppliedReport.where(:date => @date, :user_department_id => params[:department_id]).each do |ar|
+    KpiAppliedReport.where(:date => @date, :user_department_id => params[:department_id], :audit => false).each do |ar|
       ar.destroy
     end
 

@@ -10,6 +10,8 @@ class KpiPeriodUser < ActiveRecord::Base
 	before_save :check_period
 	before_destroy :check_period
 
+	scope :open, :conditions => "#{KpiPeriodUser.table_name}.locked = 0 "	
+
 	include KpiHelper
 	
 	def check_user_for_salary_update?(user)

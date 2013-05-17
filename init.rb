@@ -29,6 +29,7 @@ Redmine::Plugin.register :kpi do
     permission :manage_imported_values, :kpi_imported_values => [:index, :create, :update, :destroy, :new, :edit_values, :update_values]
     permission :apply_salary_report, :kpi_applied_reports => [:show, :apply, :cancel]
     permission :show_salary_report, :kpi_applied_reports => [:show]
+    permission :audit_salary_report, :kpi_applied_reports => [:audit, :cancel_audit]
   end
 	settings :partial => 'settings/kpi_settings',
              :default => {
