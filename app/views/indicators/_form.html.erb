@@ -54,14 +54,15 @@
 
 
 <div id="kpi_pattern_plan_custom_fields">
-<p class="I kpi_pattern_custom_field_1">
+<p class="I kpi_pattern_custom_field_1 kpi_pattern_custom_field_2">
 <%= label_tag 'indicator_pattern_settings_role', l(:imported_value) %>
 <%= select_tag 'indicator[pattern_plan_settings][imported_value_id]', options_for_imported_values(@indicator, true) %>
 </p>
-<p class="I kpi_pattern_custom_field_1">
+<p class="I kpi_pattern_custom_field_1 kpi_pattern_custom_field_2">
 <%= label_tag 'indicator_pattern_settings_imported_value_percent', l(:imported_value_percent) %>
 <%= text_field_tag 'indicator[pattern_plan_settings][imported_value_percent]', !@indicator.pattern_plan_settings.nil? && !@indicator.pattern_plan_settings['imported_value_percent'].nil? ? @indicator.pattern_plan_settings['imported_value_percent'] : 100, :class => 'weight', :maxlength => 3 %>
 </p>
+
 </div>
 
 </fieldset>

@@ -2,6 +2,7 @@
 ru:
   employee: "Сотрудник"
   audit: "Аудит ЗП проведен. Заблокировать редактирование ЗП"
+  field_default_plan_value: "План по умолчанию"
   user_has_already_agreed_period: "уже согласовал период. Вы не можете открыть согласованный период. Что бы открыть период, попросите сотрудника отменить согласование."
   employees: "Cотрудников"
   hours_in_calc_period: "отработано в расчетный период"
@@ -50,6 +51,7 @@ ru:
   reports: "Отчеты"
   administration: "Администрирование"
   department: "Структурное подразделение"
+  time_clocks_in_current_period: "Часов по табелю"
   position: 'Должность'
   calc_period_manager: "Управляющий периодом"
   effectiveness_functional_unders: "Резуьтативность функциональных подчиненных"

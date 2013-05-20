@@ -43,7 +43,8 @@ class Indicator < ActiveRecord::Base
 
   PLAN_PATTERNS = {
                   '' => 'no_pattern',
-                  '1' => 'import_from_other_system'
+                  '1' => 'import_from_other_system',
+                  '2' => 'time_clocks_in_current_period'
                   } 
 
   MAX_NUM_IN_PERIOD=5          
