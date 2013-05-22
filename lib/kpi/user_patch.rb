@@ -34,7 +34,7 @@ module Kpi
 	module InstanceMethods
 
 		def can_audit_salary_report?(department_id)
-			User.current.global_permission_to?('kpi_applied_reports', 'audit') or UserDeparment.find(department_id).manager == @user
+			User.current.global_permission_to?('kpi_applied_reports', 'audit') or UserDepartment.find(department_id).manager == @user
 		end
 
 		def sql_conditions_for_periods
