@@ -268,7 +268,7 @@ module KpiHelper
     UserTree.each_with_level(UserTree.joins(:user).includes(:user)
                      .order("lft")
                      .select("#{UserTree.table_name}.*, #{User.table_name}.lastname")
-                     .where("{User.table_name}.status=? AND ((lft>? AND rgt<?) #{cond})", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
+                     .where("#{User.table_name}.status=? AND ((lft>? AND rgt<?) #{cond})", User::STATUS_ACTIVE, initial_user.lft, initial_user.rgt)) do |user_tree, level|
 
       if first_user_tree.nil?
         first_user_tree = user_tree 
